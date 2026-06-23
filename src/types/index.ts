@@ -39,3 +39,13 @@ export type {
   ExperienceEntry,
   ExperienceSectionHeader,
 } from "@/types/experience";
+export type {
+  ProjectCaseStudy,
+  ProjectCategory,
+  ProjectEntry,
+  ProjectMetric,
+  ProjectsContent,
+  ProjectsSectionHeader,
+  ProjectsSubsectionHeader,
+  ProjectStatus,
+} from "@/types/project";

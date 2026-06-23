@@ -8,4 +8,10 @@ export {
   selectStats,
   TECHNOLOGY_LIST_SEPARATOR,
 } from "@/lib/content";
+export {
+  getProjectBySlug,
+  getProjectDetailPath,
+  getProjectsByCategory,
+  partitionFeaturedProjects,
+} from "@/lib/projects";
 export { A11Y, FOCUS_RING_CLASS } from "@/lib/accessibility";
