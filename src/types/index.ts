@@ -17,3 +17,10 @@ export type {
   TextTone,
   TextVariant,
 } from "@/types/ui";
+export type {
+  HeroContent,
+  HeroCta,
+  HeroProfile,
+  HeroStat,
+  HeroTechnologyHighlight,
+} from "@/types/hero";
