@@ -1,7 +1,7 @@
 import { type HTMLAttributes, type ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
-import type { SectionSpacing } from "@/types/ui";
+import type { HeadingLevel, SectionSpacing } from "@/types/ui";
 
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -15,6 +15,8 @@ const SPACING_CLASSES: Record<SectionSpacing, string> = {
 interface SectionProps extends HTMLAttributes<HTMLElement> {
   title?: string;
   description?: string;
+  titleAs?: HeadingLevel;
+  headingId?: string;
   spacing?: SectionSpacing;
   children: ReactNode;
 }
@@ -22,6 +24,8 @@ interface SectionProps extends HTMLAttributes<HTMLElement> {
 export function Section({
   title,
   description,
+  titleAs = "h2",
+  headingId,
   spacing = "default",
   className,
   children,
@@ -33,7 +37,11 @@ export function Section({
     <section className={cn(SPACING_CLASSES[spacing], className)} {...props}>
       {hasHeader && (
         <header className="mb-8 md:mb-12">
-          {title && <Heading as="h2">{title}</Heading>}
+          {title && (
+            <Heading as={titleAs} id={headingId}>
+              {title}
+            </Heading>
+          )}
           {description && (
             <Text variant="body-large" tone="muted" className="mt-3 max-w-2xl">
               {description}

@@ -1,3 +1,4 @@
+import { heroHighlights } from "@/data/professional-highlights.data";
 import { ROUTES } from "@/constants/routes";
 import { siteConfig } from "@/config/site.config";
 import type { HeroContent } from "@/types/hero";
@@ -33,11 +34,7 @@ export const heroContent = {
     label: "Contact Me",
     href: ROUTES.contact,
   },
-  socialProof: [
-    { label: "Years of Experience", value: "5+" },
-    { label: "Completed Projects", value: "20+" },
-    { label: "Technologies Used", value: "15+" },
-  ],
+  socialProof: heroHighlights.map(({ label, value }) => ({ label, value })),
   profile: {
     imageAlt: `${siteConfig.author.name} professional headshot`,
     initials: "SŞ",

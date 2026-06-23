@@ -24,3 +24,9 @@ export type {
   HeroStat,
   HeroTechnologyHighlight,
 } from "@/types/hero";
+export type {
+  AboutContent,
+  AboutContentBlock,
+  AboutSectionHeader,
+  AboutStory,
+} from "@/types/about";
