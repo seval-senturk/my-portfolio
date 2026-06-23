@@ -1,9 +1,11 @@
 import { aboutContent } from "@/data/about.data";
 import { experienceContent } from "@/data/experience.data";
 import { heroContent } from "@/data/hero.data";
+import { projectsContent } from "@/data/projects.data";
 import { AboutSection } from "@/features/about";
 import { ExperienceSection } from "@/features/experience";
 import { HeroSection } from "@/features/hero";
+import { ProjectsSection } from "@/features/projects";
 import { createPageMetadata } from "@/seo/metadata";
 import { ROUTES } from "@/constants/routes";
 
@@ -18,6 +20,7 @@ export default function HomePage() {
       <HeroSection content={heroContent} />
       <AboutSection content={aboutContent} />
       <ExperienceSection content={experienceContent} />
+      <ProjectsSection content={projectsContent} />
     </>
   );
 }
