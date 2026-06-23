@@ -32,3 +32,10 @@ export type {
   AboutTitledSection,
 } from "@/types/about";
 export type { IdentifiedStatItem, StatItem } from "@/types/stats";
+export type {
+  EmploymentDate,
+  EmploymentType,
+  ExperienceContent,
+  ExperienceEntry,
+  ExperienceSectionHeader,
+} from "@/types/experience";
