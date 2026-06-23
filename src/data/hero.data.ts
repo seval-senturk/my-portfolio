@@ -1,4 +1,3 @@
-import { heroHighlights } from "@/data/professional-highlights.data";
 import { ROUTES } from "@/constants/routes";
 import { siteConfig } from "@/config/site.config";
 import type { HeroContent } from "@/types/hero";
@@ -8,6 +7,7 @@ export const heroContent = {
   headline: `${siteConfig.author.name} — ${siteConfig.author.jobTitle}`,
   summary:
     "Full Stack Developer with 5+ years of experience building scalable web applications. I specialize in React, Next.js, and TypeScript — delivering performant interfaces, reliable APIs, and AI-powered solutions that create measurable business value.",
+  technologyHighlightsTitle: "Core Expertise",
   technologyHighlights: [
     {
       category: "Frontend",
@@ -34,7 +34,6 @@ export const heroContent = {
     label: "Contact Me",
     href: ROUTES.contact,
   },
-  socialProof: heroHighlights.map(({ label, value }) => ({ label, value })),
   profile: {
     imageAlt: `${siteConfig.author.name} professional headshot`,
     initials: "SŞ",

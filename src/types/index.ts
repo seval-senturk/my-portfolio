@@ -29,4 +29,6 @@ export type {
   AboutContentBlock,
   AboutSectionHeader,
   AboutStory,
+  AboutTitledSection,
 } from "@/types/about";
+export type { IdentifiedStatItem, StatItem } from "@/types/stats";
