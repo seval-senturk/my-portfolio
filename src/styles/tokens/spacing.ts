@@ -13,3 +13,22 @@ export const spacingScale = {
   20: "5rem",
   24: "6rem",
 } as const;
+
+export const spacingTokens = {
+  xs: spacingScale[2],
+  sm: spacingScale[3],
+  md: spacingScale[4],
+  lg: spacingScale[6],
+  xl: spacingScale[8],
+  "2xl": spacingScale[12],
+} as const;
+
+export type SpacingToken = keyof typeof spacingTokens;
+
+export const sectionSpacing = {
+  compact: spacingScale[12],
+  default: spacingScale[16],
+  loose: spacingScale[24],
+} as const;
+
+export type SectionSpacing = keyof typeof sectionSpacing;

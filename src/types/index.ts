@@ -7,3 +7,13 @@ export type {
   StructuredDataSchema,
   WebSiteSchema,
 } from "@/types/seo";
+export type {
+  BadgeVariant,
+  ButtonSize,
+  ButtonVariant,
+  ContainerSize,
+  HeadingLevel,
+  SectionSpacing,
+  TextTone,
+  TextVariant,
+} from "@/types/ui";
