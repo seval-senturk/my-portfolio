@@ -1,3 +1,5 @@
+import { formatTechnologyList } from "@/lib/content";
+
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -26,7 +28,7 @@ export function ContentCard({
         </Text>
         {technologies && technologies.length > 0 && (
           <Text as="p" variant="small" className="mt-3 text-foreground">
-            {technologies.join(" · ")}
+            {formatTechnologyList(technologies)}
           </Text>
         )}
       </Card.Content>

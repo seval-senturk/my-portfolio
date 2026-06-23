@@ -1,14 +1,16 @@
-import type { ProfessionalHighlight } from "@/data/professional-highlights.data";
+import type { IdentifiedStatItem, StatItem } from "@/types/stats";
 
 import { cn } from "@/lib/cn";
 import { Text } from "@/components/ui/text";
 
 interface StatGridProps {
-  items:
-    | readonly ProfessionalHighlight[]
-    | readonly { label: string; value: string }[];
+  items: readonly StatItem[] | readonly IdentifiedStatItem[];
   columns?: 2 | 3 | 4;
   className?: string;
+}
+
+function getStatKey(item: StatItem | IdentifiedStatItem): string {
+  return "id" in item ? item.id : item.label;
 }
 
 export function StatGrid({ items, columns = 4, className }: StatGridProps) {
@@ -21,7 +23,7 @@ export function StatGrid({ items, columns = 4, className }: StatGridProps) {
   return (
     <dl className={cn("grid gap-6", columnClasses[columns], className)}>
       {items.map((item) => (
-        <div key={"id" in item ? item.id : item.label}>
+        <div key={getStatKey(item)}>
           <Text as="dt" variant="caption" tone="muted">
             {item.label}
           </Text>
