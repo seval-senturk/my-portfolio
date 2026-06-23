@@ -1,9 +1,9 @@
-import type { HeroStat } from "@/types/hero";
+import type { StatItem } from "@/types/stats";
 
 import { StatGrid } from "@/components/shared/stat-grid";
 
 interface HeroSocialProofProps {
-  stats: readonly HeroStat[];
+  stats: readonly StatItem[];
 }
 
 export function HeroSocialProof({ stats }: HeroSocialProofProps) {

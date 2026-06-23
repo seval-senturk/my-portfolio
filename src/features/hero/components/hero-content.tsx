@@ -1,4 +1,5 @@
 import type { HeroContent } from "@/types/hero";
+import type { StatItem } from "@/types/stats";
 
 import { HeroActions } from "@/features/hero/components/hero-actions";
 import { HeroEyebrow } from "@/features/hero/components/hero-eyebrow";
@@ -9,20 +10,27 @@ import { HeroTechnologyHighlights } from "@/features/hero/components/hero-techno
 
 interface HeroContentBlockProps {
   content: HeroContent;
+  socialProof: readonly StatItem[];
 }
 
-export function HeroContentBlock({ content }: HeroContentBlockProps) {
+export function HeroContentBlock({
+  content,
+  socialProof,
+}: HeroContentBlockProps) {
   return (
     <div>
       <HeroEyebrow label={content.eyebrow} />
       <HeroHeadline headline={content.headline} />
       <HeroSummary summary={content.summary} />
-      <HeroTechnologyHighlights highlights={content.technologyHighlights} />
+      <HeroTechnologyHighlights
+        title={content.technologyHighlightsTitle}
+        highlights={content.technologyHighlights}
+      />
       <HeroActions
         primaryCta={content.primaryCta}
         secondaryCta={content.secondaryCta}
       />
-      <HeroSocialProof stats={content.socialProof} />
+      <HeroSocialProof stats={socialProof} />
     </div>
   );
 }

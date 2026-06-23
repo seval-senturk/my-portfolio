@@ -1,3 +1,4 @@
+import type { AboutContent } from "@/types/about";
 import type { HeadingLevel } from "@/types/ui";
 
 import { aboutContent } from "@/data/about.data";
@@ -12,18 +13,23 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 
 interface AboutSectionProps {
+  content?: AboutContent;
   titleAs?: HeadingLevel;
 }
 
-export function AboutSection({ titleAs = "h2" }: AboutSectionProps) {
+export function AboutSection({
+  content = aboutContent,
+  titleAs = "h2",
+}: AboutSectionProps) {
   const {
     section,
     introduction,
     story,
     coreExpertise,
     workingPrinciples,
+    professionalHighlights,
     personalValues,
-  } = aboutContent;
+  } = content;
 
   return (
     <Section
@@ -32,15 +38,16 @@ export function AboutSection({ titleAs = "h2" }: AboutSectionProps) {
       description={section.description}
       titleAs={titleAs}
       headingId="about-section-heading"
+      headerContainerSize="default"
       spacing="default"
     >
       <Container size="default">
         <AboutIntroduction paragraphs={introduction.paragraphs} />
         <AboutStoryBlock story={story} />
-        <AboutExpertise items={coreExpertise} />
-        <AboutPrinciples items={workingPrinciples} />
-        <AboutHighlights />
-        <AboutValues items={personalValues} />
+        <AboutExpertise section={coreExpertise} />
+        <AboutPrinciples section={workingPrinciples} />
+        <AboutHighlights section={professionalHighlights} />
+        <AboutValues section={personalValues} />
       </Container>
     </Section>
   );

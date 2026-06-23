@@ -1,17 +1,18 @@
-import type { AboutContentBlock } from "@/types/about";
+import type { AboutContentBlock, AboutTitledSection } from "@/types/about";
 
 import { AboutSubsection } from "@/features/about/components/about-subsection";
 import { ContentCard } from "@/components/shared/content-card";
+import { FeatureGrid } from "@/components/shared/feature-grid";
 
 interface AboutExpertiseProps {
-  items: readonly AboutContentBlock[];
+  section: AboutTitledSection<AboutContentBlock>;
 }
 
-export function AboutExpertise({ items }: AboutExpertiseProps) {
+export function AboutExpertise({ section }: AboutExpertiseProps) {
   return (
-    <AboutSubsection title="Core Expertise">
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((item) => (
+    <AboutSubsection title={section.title}>
+      <FeatureGrid columns={3}>
+        {section.items.map((item) => (
           <li key={item.title}>
             <ContentCard
               title={item.title}
@@ -20,7 +21,7 @@ export function AboutExpertise({ items }: AboutExpertiseProps) {
             />
           </li>
         ))}
-      </ul>
+      </FeatureGrid>
     </AboutSubsection>
   );
 }

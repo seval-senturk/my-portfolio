@@ -1,5 +1,6 @@
 import { footerNavigation } from "@/config/navigation.config";
 import { siteConfig } from "@/config/site.config";
+import { footerContent } from "@/data/footer.data";
 import { cn } from "@/lib/cn";
 
 import { SocialLinks } from "@/features/layout/components/social-links";
@@ -24,15 +25,14 @@ export function Footer({ className }: FooterProps) {
               {siteConfig.author.name}
             </Heading>
             <Text tone="muted" className="mt-3 max-w-sm">
-              {siteConfig.author.jobTitle}. Building reliable, scalable web
-              experiences with a focus on performance and user experience.
+              {footerContent.tagline}
             </Text>
             <SocialLinks className="mt-6" iconSize="sm" />
           </div>
 
           <div>
             <Heading as="h3" variant="h4">
-              Quick Links
+              {footerContent.columns.quickLinks}
             </Heading>
             <nav aria-label="Footer navigation" className="mt-4">
               <ul className="grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-1">
@@ -54,7 +54,7 @@ export function Footer({ className }: FooterProps) {
 
           <div className="md:col-span-2 lg:col-span-1">
             <Heading as="h3" variant="h4">
-              Connect
+              {footerContent.columns.connect}
             </Heading>
             <ul className="mt-4 space-y-2">
               {siteConfig.author.email && (
@@ -75,7 +75,8 @@ export function Footer({ className }: FooterProps) {
 
         <div className="mt-12 border-t border-border pt-8">
           <Text variant="small" tone="muted">
-            &copy; {currentYear} {siteConfig.author.name}. All rights reserved.
+            &copy; {currentYear} {siteConfig.author.name}.{" "}
+            {footerContent.copyrightSuffix}
           </Text>
         </div>
       </Container>

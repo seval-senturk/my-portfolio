@@ -1,3 +1,4 @@
+import { aboutContent } from "@/data/about.data";
 import { heroContent } from "@/data/hero.data";
 import { AboutSection } from "@/features/about";
 import { HeroSection } from "@/features/hero";
@@ -12,8 +13,8 @@ export const metadata = createPageMetadata({
 export default function HomePage() {
   return (
     <>
-      <HeroSection />
-      <AboutSection />
+      <HeroSection content={heroContent} />
+      <AboutSection content={aboutContent} />
     </>
   );
 }

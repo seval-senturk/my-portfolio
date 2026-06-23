@@ -1,12 +1,17 @@
-import { professionalHighlights } from "@/data/professional-highlights.data";
+import type { AboutTitledSection } from "@/types/about";
+import type { IdentifiedStatItem } from "@/types/stats";
 
 import { AboutSubsection } from "@/features/about/components/about-subsection";
 import { StatGrid } from "@/components/shared/stat-grid";
 
-export function AboutHighlights() {
+interface AboutHighlightsProps {
+  section: AboutTitledSection<IdentifiedStatItem>;
+}
+
+export function AboutHighlights({ section }: AboutHighlightsProps) {
   return (
-    <AboutSubsection title="Professional Highlights">
-      <StatGrid items={professionalHighlights} columns={4} />
+    <AboutSubsection title={section.title}>
+      <StatGrid items={section.items} columns={4} />
     </AboutSubsection>
   );
 }

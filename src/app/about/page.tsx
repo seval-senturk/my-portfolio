@@ -10,5 +10,5 @@ export const metadata = createPageMetadata({
 });
 
 export default function AboutPage() {
-  return <AboutSection titleAs="h1" />;
+  return <AboutSection content={aboutContent} titleAs="h1" />;
 }

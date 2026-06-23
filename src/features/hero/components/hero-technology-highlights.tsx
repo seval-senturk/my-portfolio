@@ -1,13 +1,17 @@
 import type { HeroTechnologyHighlight } from "@/types/hero";
 
+import { formatTechnologyList } from "@/lib/content";
+
 import { Badge } from "@/components/ui/badge";
 import { Text } from "@/components/ui/text";
 
 interface HeroTechnologyHighlightsProps {
+  title: string;
   highlights: readonly HeroTechnologyHighlight[];
 }
 
 export function HeroTechnologyHighlights({
+  title,
   highlights,
 }: HeroTechnologyHighlightsProps) {
   return (
@@ -18,7 +22,7 @@ export function HeroTechnologyHighlights({
         tone="muted"
         className="mb-4 uppercase tracking-wide"
       >
-        Core Expertise
+        {title}
       </Text>
       <ul className="grid gap-4 sm:grid-cols-2">
         {highlights.map((highlight) => (
@@ -27,7 +31,7 @@ export function HeroTechnologyHighlights({
               {highlight.category}
             </Badge>
             <Text as="p" variant="small" className="text-foreground">
-              {highlight.technologies.join(" · ")}
+              {formatTechnologyList(highlight.technologies)}
             </Text>
           </li>
         ))}
