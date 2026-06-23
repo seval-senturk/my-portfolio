@@ -1,7 +1,9 @@
+export type SocialPlatform = "github" | "linkedin" | "email" | "x" | "medium";
+
 export interface SocialLink {
   label: string;
   href: string;
-  platform: "github" | "linkedin" | "email" | "x";
+  platform: SocialPlatform;
 }
 
 export const socialLinks: readonly SocialLink[] = [
