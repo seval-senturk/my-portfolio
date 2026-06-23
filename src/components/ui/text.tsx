@@ -23,7 +23,7 @@ const TONE_CLASSES: Record<TextTone, string> = {
 interface TextProps extends HTMLAttributes<HTMLElement> {
   variant?: TextVariant;
   tone?: TextTone;
-  as?: "p" | "span" | "div" | "dt" | "dd";
+  as?: "p" | "span" | "div" | "dt" | "dd" | "time";
   children: ReactNode;
 }
 
