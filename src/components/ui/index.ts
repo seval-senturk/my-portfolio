@@ -1,1 +1,9 @@
-// UI primitives will be added in upcoming phases.
+export { Badge } from "@/components/ui/badge";
+export { Button } from "@/components/ui/button";
+export { Card } from "@/components/ui/card";
+export { Container } from "@/components/ui/container";
+export { Heading } from "@/components/ui/heading";
+export { Icon } from "@/components/ui/icon";
+export { Link } from "@/components/ui/link";
+export { Section } from "@/components/ui/section";
+export { Text } from "@/components/ui/text";
