@@ -1,25 +1,31 @@
+import { Container } from "@/components/ui/container";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { A11Y } from "@/lib/accessibility";
 import { siteConfig } from "@/config/site.config";
 
 export default function HomePage() {
   return (
-    <main
-      id={A11Y.mainContentId}
-      className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16"
-    >
-      <p className="text-sm font-medium uppercase tracking-wide text-foreground/70">
-        Phase 1 Foundation
-      </p>
-      <h1 className="mt-4 text-4xl font-semibold tracking-tight">
-        {siteConfig.author.name}
-      </h1>
-      <p className="mt-4 text-lg text-foreground/80">
-        {siteConfig.author.jobTitle}
-      </p>
-      <p className="mt-6 max-w-prose text-base leading-relaxed text-foreground/70">
-        Architecture, SEO, and performance foundation is in place. Visual design
-        and content sections will be implemented in upcoming phases.
-      </p>
+    <main id={A11Y.mainContentId} className="flex min-h-screen items-center">
+      <Container size="narrow">
+        <Text
+          variant="caption"
+          tone="muted"
+          className="uppercase tracking-wide"
+        >
+          Phase 1 Foundation
+        </Text>
+        <Heading as="h1" className="mt-4">
+          {siteConfig.author.name}
+        </Heading>
+        <Text variant="body-large" tone="muted" className="mt-4">
+          {siteConfig.author.jobTitle}
+        </Text>
+        <Text tone="muted" className="mt-6 max-w-prose">
+          Architecture, SEO, and performance foundation is in place. Visual
+          design and content sections will be implemented in upcoming phases.
+        </Text>
+      </Container>
     </main>
   );
 }
