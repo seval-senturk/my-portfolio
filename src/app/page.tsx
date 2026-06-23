@@ -1,19 +1,21 @@
 import { Container } from "@/components/ui/container";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
-import { A11Y } from "@/lib/accessibility";
 import { siteConfig } from "@/config/site.config";
 
 export default function HomePage() {
   return (
-    <main id={A11Y.mainContentId} className="flex min-h-screen items-center">
-      <Container size="narrow">
+    <Container
+      size="narrow"
+      className="flex flex-1 items-center py-16 md:py-24"
+    >
+      <div>
         <Text
           variant="caption"
           tone="muted"
           className="uppercase tracking-wide"
         >
-          Phase 1 Foundation
+          Portfolio
         </Text>
         <Heading as="h1" className="mt-4">
           {siteConfig.author.name}
@@ -22,10 +24,10 @@ export default function HomePage() {
           {siteConfig.author.jobTitle}
         </Text>
         <Text tone="muted" className="mt-6 max-w-prose">
-          Architecture, SEO, and performance foundation is in place. Visual
-          design and content sections will be implemented in upcoming phases.
+          Professional portfolio and career site. Content sections will be
+          developed in upcoming phases.
         </Text>
-      </Container>
-    </main>
+      </div>
+    </Container>
   );
 }

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 
 import { SkipLink } from "@/components/shared/skip-link";
 import { siteConfig } from "@/config/site.config";
+import { SiteShell } from "@/features/layout";
 import { rootMetadata } from "@/seo/metadata";
 import { JsonLd } from "@/seo/json-ld";
 import { createPersonSchema, createWebSiteSchema } from "@/seo/structured-data";
@@ -26,10 +27,10 @@ export default function RootLayout({
 
   return (
     <html lang={siteConfig.language} className={`${inter.variable} h-full`}>
-      <body className="min-h-full bg-background text-foreground antialiased">
+      <body className="flex min-h-full flex-col bg-background text-foreground antialiased">
         <SkipLink />
         <JsonLd data={structuredData} />
-        {children}
+        <SiteShell>{children}</SiteShell>
       </body>
     </html>
   );
