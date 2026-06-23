@@ -20,10 +20,10 @@ const TONE_CLASSES: Record<TextTone, string> = {
   error: "text-error",
 };
 
-interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
+interface TextProps extends HTMLAttributes<HTMLElement> {
   variant?: TextVariant;
   tone?: TextTone;
-  as?: "p" | "span" | "div";
+  as?: "p" | "span" | "div" | "dt" | "dd";
   children: ReactNode;
 }
 

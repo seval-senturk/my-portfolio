@@ -1,2 +1,3 @@
-// Feature modules will be added in upcoming phases.
+// Feature modules
 export { SiteShell, Header, Footer, PagePlaceholder } from "@/features/layout";
+export { HeroSection } from "@/features/hero";
