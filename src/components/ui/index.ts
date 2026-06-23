@@ -1,5 +1,6 @@
 export { Badge } from "@/components/ui/badge";
 export { Button } from "@/components/ui/button";
+export { ButtonLink } from "@/components/ui/button-link";
 export { Card } from "@/components/ui/card";
 export { Container } from "@/components/ui/container";
 export { Heading } from "@/components/ui/heading";
