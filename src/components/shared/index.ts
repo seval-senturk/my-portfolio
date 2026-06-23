@@ -7,3 +7,4 @@ export {
   ExperienceTimeline,
   ExperienceTimelineItem,
 } from "@/components/shared/experience-timeline";
+export { ProjectCard } from "@/components/shared/project-card";
