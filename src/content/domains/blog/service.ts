@@ -1,17 +1,17 @@
 import type { ContentQueryOptions } from "@/content/shared/types";
 
-import { staticBlogRepository } from "@/content/domains/blog/static.repository";
+import { blogService } from "@/services/content/blog.service";
 import type { BlogContent, BlogPost } from "@/types/blog";
 
 export const blogContentService = {
   get(options?: ContentQueryOptions): Promise<BlogContent> {
-    return staticBlogRepository.get(options);
+    return blogService.get(options);
   },
 
   getPostBySlug(
     slug: string,
     options?: ContentQueryOptions,
   ): Promise<BlogPost | null> {
-    return staticBlogRepository.getPostBySlug(slug, options);
+    return blogService.getPostBySlug(slug, options);
   },
 };

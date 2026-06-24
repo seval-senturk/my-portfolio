@@ -1,17 +1,17 @@
 import type { ContentQueryOptions } from "@/content/shared/types";
 
-import { staticExperienceRepository } from "@/content/domains/experience/static.repository";
+import { experienceService } from "@/services/content/experience.service";
 import type { ExperienceContent, ExperienceEntry } from "@/types/experience";
 
 export const experienceContentService = {
   get(options?: ContentQueryOptions): Promise<ExperienceContent> {
-    return staticExperienceRepository.get(options);
+    return experienceService.get(options);
   },
 
   getEntryById(
     id: string,
     options?: ContentQueryOptions,
   ): Promise<ExperienceEntry | null> {
-    return staticExperienceRepository.getEntryById(id, options);
+    return experienceService.getEntryById(id, options);
   },
 };

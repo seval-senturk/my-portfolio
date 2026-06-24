@@ -1,0 +1,10 @@
+export { prismaAboutRepository } from "@/repositories/prisma/about.repository";
+export { prismaBlogRepository } from "@/repositories/prisma/blog.repository";
+export { prismaContactMessageRepository } from "@/repositories/prisma/contact-message.repository";
+export { prismaContactRepository } from "@/repositories/prisma/contact.repository";
+export { prismaExperienceRepository } from "@/repositories/prisma/experience.repository";
+export { prismaHeroRepository } from "@/repositories/prisma/hero.repository";
+export { prismaProjectsRepository } from "@/repositories/prisma/projects.repository";
+export { prismaResumeRepository } from "@/repositories/prisma/resume.repository";
+export { prismaSiteRepository } from "@/repositories/prisma/site.repository";
+export { prismaSkillsRepository } from "@/repositories/prisma/skills.repository";
