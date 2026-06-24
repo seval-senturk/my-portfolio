@@ -4,3 +4,4 @@ export { HeroSection } from "@/features/hero";
 export { AboutSection } from "@/features/about";
 export { ExperienceSection } from "@/features/experience";
 export { ProjectsSection } from "@/features/projects";
+export { SkillsSection } from "@/features/skills";
