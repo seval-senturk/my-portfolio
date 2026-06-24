@@ -5,3 +5,4 @@ export { AboutSection } from "@/features/about";
 export { ExperienceSection } from "@/features/experience";
 export { ProjectsSection } from "@/features/projects";
 export { SkillsSection } from "@/features/skills";
+export { ResumeSection } from "@/features/resume";
