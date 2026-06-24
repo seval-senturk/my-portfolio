@@ -1,20 +1,18 @@
 import type { SkillsContent } from "@/types/skills";
 import type { HeadingLevel } from "@/types/ui";
 
-import { skillsContent } from "@/data/skills.data";
-
 import { FeaturedExpertiseView } from "@/features/skills/components/featured-expertise-view";
 import { SkillsCategoriesView } from "@/features/skills/components/skills-categories-view";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 
 interface SkillsSectionProps {
-  content?: SkillsContent;
+  content: SkillsContent;
   titleAs?: HeadingLevel;
 }
 
 export function SkillsSection({
-  content = skillsContent,
+  content,
   titleAs = "h2",
 }: SkillsSectionProps) {
   const { section, featuredExpertise, categories, entries } = content;

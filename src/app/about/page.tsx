@@ -1,14 +1,20 @@
-import { aboutContent } from "@/data/about.data";
+import { aboutContentService } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { AboutSection } from "@/features/about";
 import { createPageMetadata } from "@/seo/metadata";
 
-export const metadata = createPageMetadata({
-  title: "About",
-  description: aboutContent.section.description,
-  pathname: ROUTES.about,
-});
+export async function generateMetadata() {
+  const about = await aboutContentService.get();
 
-export default function AboutPage() {
-  return <AboutSection content={aboutContent} titleAs="h1" />;
+  return createPageMetadata({
+    title: "About",
+    description: about.section.description,
+    pathname: ROUTES.about,
+  });
+}
+
+export default async function AboutPage() {
+  const about = await aboutContentService.get();
+
+  return <AboutSection content={about} titleAs="h1" />;
 }

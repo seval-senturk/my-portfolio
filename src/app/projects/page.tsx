@@ -1,14 +1,20 @@
-import { projectsContent } from "@/data/projects.data";
+import { projectsContentService } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { ProjectsSection } from "@/features/projects";
 import { createPageMetadata } from "@/seo/metadata";
 
-export const metadata = createPageMetadata({
-  title: "Projects",
-  description: projectsContent.section.description,
-  pathname: ROUTES.projects,
-});
+export async function generateMetadata() {
+  const projects = await projectsContentService.get();
 
-export default function ProjectsPage() {
-  return <ProjectsSection content={projectsContent} titleAs="h1" />;
+  return createPageMetadata({
+    title: "Projects",
+    description: projects.section.description,
+    pathname: ROUTES.projects,
+  });
+}
+
+export default async function ProjectsPage() {
+  const projects = await projectsContentService.get();
+
+  return <ProjectsSection content={projects} titleAs="h1" />;
 }

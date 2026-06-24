@@ -1,19 +1,17 @@
 import type { ExperienceContent } from "@/types/experience";
 import type { HeadingLevel } from "@/types/ui";
 
-import { experienceContent } from "@/data/experience.data";
-
 import { ExperienceTimelineView } from "@/features/experience/components/experience-timeline-view";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 
 interface ExperienceSectionProps {
-  content?: ExperienceContent;
+  content: ExperienceContent;
   titleAs?: HeadingLevel;
 }
 
 export function ExperienceSection({
-  content = experienceContent,
+  content,
   titleAs = "h2",
 }: ExperienceSectionProps) {
   const { section, entries } = content;

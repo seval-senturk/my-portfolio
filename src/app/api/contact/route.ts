@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { contactContent } from "@/data/contact.data";
+import { contactContentService } from "@/content";
 import { submitContactForm } from "@/services/contact.service";
 import type { ContactFormInput } from "@/types/contact";
 
@@ -16,8 +16,10 @@ export async function POST(request: Request) {
     );
   }
 
+  const contact = await contactContentService.get();
+
   const result = await submitContactForm(body, {
-    recipientEmail: contactContent.information.email,
+    recipientEmail: contact.information.email,
   });
 
   if (!result.success) {

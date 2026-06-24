@@ -1,22 +1,34 @@
-import { experienceContent } from "@/data/experience.data";
-import { resumeContent } from "@/data/resume.data";
-import { skillsContent } from "@/data/skills.data";
+import {
+  experienceContentService,
+  resumeContentService,
+  skillsContentService,
+} from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { ResumeSection } from "@/features/resume";
 import { createPageMetadata } from "@/seo/metadata";
 
-export const metadata = createPageMetadata({
-  title: "Resume",
-  description: resumeContent.section.description,
-  pathname: ROUTES.resume,
-});
+export async function generateMetadata() {
+  const resume = await resumeContentService.get();
 
-export default function ResumePage() {
+  return createPageMetadata({
+    title: "Resume",
+    description: resume.section.description,
+    pathname: ROUTES.resume,
+  });
+}
+
+export default async function ResumePage() {
+  const [resume, experience, skills] = await Promise.all([
+    resumeContentService.get(),
+    experienceContentService.get(),
+    skillsContentService.get(),
+  ]);
+
   return (
     <ResumeSection
-      content={resumeContent}
-      experience={experienceContent}
-      skills={skillsContent}
+      content={resume}
+      experience={experience}
+      skills={skills}
       titleAs="h1"
     />
   );

@@ -1,10 +1,13 @@
-import { aboutContent } from "@/data/about.data";
-import { contactContent } from "@/data/contact.data";
-import { experienceContent } from "@/data/experience.data";
-import { heroContent } from "@/data/hero.data";
-import { projectsContent } from "@/data/projects.data";
-import { resumeContent } from "@/data/resume.data";
-import { skillsContent } from "@/data/skills.data";
+import {
+  aboutContentService,
+  contactContentService,
+  experienceContentService,
+  heroContentService,
+  projectsContentService,
+  resumeContentService,
+  siteContentService,
+  skillsContentService,
+} from "@/content";
 import { AboutSection } from "@/features/about";
 import { ContactSection } from "@/features/contact";
 import { ExperienceSection } from "@/features/experience";
@@ -15,25 +18,52 @@ import { SkillsSection } from "@/features/skills";
 import { createPageMetadata } from "@/seo/metadata";
 import { ROUTES } from "@/constants/routes";
 
-export const metadata = createPageMetadata({
-  description: heroContent.summary,
-  pathname: ROUTES.home,
-});
+export async function generateMetadata() {
+  const hero = await heroContentService.get();
 
-export default function HomePage() {
+  return createPageMetadata({
+    description: hero.summary,
+    pathname: ROUTES.home,
+  });
+}
+
+export default async function HomePage() {
+  const [
+    hero,
+    about,
+    experience,
+    projects,
+    skills,
+    resume,
+    contact,
+    professionalHighlights,
+  ] = await Promise.all([
+    heroContentService.get(),
+    aboutContentService.get(),
+    experienceContentService.get(),
+    projectsContentService.get(),
+    skillsContentService.get(),
+    resumeContentService.get(),
+    contactContentService.get(),
+    siteContentService.getProfessionalHighlights(),
+  ]);
+
   return (
     <>
-      <HeroSection content={heroContent} />
-      <AboutSection content={aboutContent} />
-      <ExperienceSection content={experienceContent} />
-      <ProjectsSection content={projectsContent} />
-      <SkillsSection content={skillsContent} />
-      <ResumeSection
-        content={resumeContent}
-        experience={experienceContent}
-        skills={skillsContent}
+      <HeroSection
+        content={hero}
+        professionalHighlights={professionalHighlights}
       />
-      <ContactSection content={contactContent} />
+      <AboutSection content={about} />
+      <ExperienceSection content={experience} />
+      <ProjectsSection content={projects} />
+      <SkillsSection content={skills} />
+      <ResumeSection
+        content={resume}
+        experience={experience}
+        skills={skills}
+      />
+      <ContactSection content={contact} />
     </>
   );
 }

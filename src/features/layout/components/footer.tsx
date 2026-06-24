@@ -1,6 +1,6 @@
 import { footerNavigation } from "@/config/navigation.config";
 import { siteConfig } from "@/config/site.config";
-import { footerContent } from "@/data/footer.data";
+import { siteContentService } from "@/content";
 import { cn } from "@/lib/cn";
 
 import { SocialLinks } from "@/features/layout/components/social-links";
@@ -13,7 +13,8 @@ interface FooterProps {
   className?: string;
 }
 
-export function Footer({ className }: FooterProps) {
+export async function Footer({ className }: FooterProps) {
+  const footerContent = await siteContentService.getFooter();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -38,12 +39,7 @@ export function Footer({ className }: FooterProps) {
               <ul className="grid grid-cols-2 gap-x-4 gap-y-2 sm:grid-cols-1">
                 {footerNavigation.map((item) => (
                   <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      variant="muted"
-                      showExternalIcon={false}
-                      className="text-small no-underline hover:underline"
-                    >
+                    <Link href={item.href} variant="muted">
                       {item.label}
                     </Link>
                   </li>
@@ -52,33 +48,29 @@ export function Footer({ className }: FooterProps) {
             </nav>
           </div>
 
-          <div className="md:col-span-2 lg:col-span-1">
+          <div>
             <Heading as="h3" variant="h4">
               {footerContent.columns.connect}
             </Heading>
-            <ul className="mt-4 space-y-2">
+            <div className="mt-4 space-y-2">
               {siteConfig.author.email && (
-                <li>
+                <Text as="p" variant="small">
                   <Link
                     href={`mailto:${siteConfig.author.email}`}
-                    variant="muted"
-                    showExternalIcon={false}
-                    className="text-small no-underline hover:underline"
+                    variant="accent"
                   >
                     {siteConfig.author.email}
                   </Link>
-                </li>
+                </Text>
               )}
-            </ul>
+            </div>
           </div>
         </div>
 
-        <div className="mt-12 border-t border-border pt-8">
-          <Text variant="small" tone="muted">
-            &copy; {currentYear} {siteConfig.author.name}.{" "}
-            {footerContent.copyrightSuffix}
-          </Text>
-        </div>
+        <Text as="p" variant="small" tone="muted" className="mt-10">
+          &copy; {currentYear} {siteConfig.author.name}.{" "}
+          {footerContent.copyrightSuffix}
+        </Text>
       </Container>
     </footer>
   );

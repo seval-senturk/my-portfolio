@@ -1,14 +1,20 @@
-import { contactContent } from "@/data/contact.data";
+import { contactContentService } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { ContactSection } from "@/features/contact";
 import { createPageMetadata } from "@/seo/metadata";
 
-export const metadata = createPageMetadata({
-  title: "Contact",
-  description: contactContent.section.description,
-  pathname: ROUTES.contact,
-});
+export async function generateMetadata() {
+  const contact = await contactContentService.get();
 
-export default function ContactPage() {
-  return <ContactSection content={contactContent} titleAs="h1" />;
+  return createPageMetadata({
+    title: "Contact",
+    description: contact.section.description,
+    pathname: ROUTES.contact,
+  });
+}
+
+export default async function ContactPage() {
+  const contact = await contactContentService.get();
+
+  return <ContactSection content={contact} titleAs="h1" />;
 }

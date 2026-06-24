@@ -1,6 +1,5 @@
-import { heroContent } from "@/data/hero.data";
-import { professionalHighlights } from "@/data/professional-highlights.data";
 import type { HeroContent } from "@/types/hero";
+import type { IdentifiedStatItem } from "@/types/stats";
 import { selectStats } from "@/lib/content";
 
 import { HeroContentBlock } from "@/features/hero/components/hero-content";
@@ -12,10 +11,14 @@ import { Section } from "@/components/ui/section";
 const HERO_SOCIAL_PROOF_LIMIT = 3;
 
 interface HeroSectionProps {
-  content?: HeroContent;
+  content: HeroContent;
+  professionalHighlights: readonly IdentifiedStatItem[];
 }
 
-export function HeroSection({ content = heroContent }: HeroSectionProps) {
+export function HeroSection({
+  content,
+  professionalHighlights,
+}: HeroSectionProps) {
   const socialProof = selectStats(
     professionalHighlights,
     HERO_SOCIAL_PROOF_LIMIT,

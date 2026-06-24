@@ -1,8 +1,6 @@
 import type { AboutContent } from "@/types/about";
 import type { HeadingLevel } from "@/types/ui";
 
-import { aboutContent } from "@/data/about.data";
-
 import { AboutExpertise } from "@/features/about/components/about-expertise";
 import { AboutHighlights } from "@/features/about/components/about-highlights";
 import { AboutIntroduction } from "@/features/about/components/about-introduction";
@@ -13,12 +11,12 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 
 interface AboutSectionProps {
-  content?: AboutContent;
+  content: AboutContent;
   titleAs?: HeadingLevel;
 }
 
 export function AboutSection({
-  content = aboutContent,
+  content,
   titleAs = "h2",
 }: AboutSectionProps) {
   const {

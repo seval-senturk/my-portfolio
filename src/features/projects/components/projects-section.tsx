@@ -1,7 +1,5 @@
 import type { ProjectsContent } from "@/types/project";
 import type { HeadingLevel } from "@/types/ui";
-
-import { projectsContent } from "@/data/projects.data";
 import { partitionFeaturedProjects } from "@/lib/projects";
 
 import { ProjectsFeaturedView } from "@/features/projects/components/projects-featured-view";
@@ -9,13 +7,13 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 
 interface ProjectsSectionProps {
-  content?: ProjectsContent;
+  content: ProjectsContent;
   titleAs?: HeadingLevel;
   showCaseStudyLink?: boolean;
 }
 
 export function ProjectsSection({
-  content = projectsContent,
+  content,
   titleAs = "h2",
   showCaseStudyLink = false,
 }: ProjectsSectionProps) {
