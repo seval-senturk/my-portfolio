@@ -57,6 +57,10 @@ export function createPageMetadata({
     title: resolvedTitle,
     description: resolvedDescription,
     keywords: resolvedKeywords,
+    icons: {
+      icon: seoConfig.faviconPath,
+      shortcut: seoConfig.faviconPath,
+    },
     authors: [{ name: siteConfig.author.name, url: absoluteUrl() }],
     creator: siteConfig.author.name,
     alternates: {
