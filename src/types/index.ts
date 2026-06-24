@@ -77,3 +77,18 @@ export type {
   ResumeStructuredDataInput,
   ResumeTitledBlock,
 } from "@/types/resume";
+export type {
+  AvailabilityStatus,
+  ContactContent,
+  ContactFormConfig,
+  ContactFormInput,
+  ContactFormMessages,
+  ContactFormValidationError,
+  ContactInformation,
+  ContactLeadRecord,
+  ContactProjectTypeOption,
+  ContactSectionHeader,
+  ContactSocialLink,
+  ContactSubmissionResult,
+  LeadStatus,
+} from "@/types/contact";
