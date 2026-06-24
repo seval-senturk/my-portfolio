@@ -3,6 +3,8 @@ import { ROUTES } from "@/constants/routes";
 import { AboutSection } from "@/features/about";
 import { createPageMetadata } from "@/seo/metadata";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata() {
   const about = await aboutContentService.get();
 

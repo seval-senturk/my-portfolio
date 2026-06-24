@@ -18,6 +18,8 @@ import { SkillsSection } from "@/features/skills";
 import { createPageMetadata } from "@/seo/metadata";
 import { ROUTES } from "@/constants/routes";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata() {
   const hero = await heroContentService.get();
 

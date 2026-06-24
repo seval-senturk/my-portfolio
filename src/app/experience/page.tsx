@@ -3,6 +3,8 @@ import { ROUTES } from "@/constants/routes";
 import { ExperienceSection } from "@/features/experience";
 import { createPageMetadata } from "@/seo/metadata";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata() {
   const experience = await experienceContentService.get();
 

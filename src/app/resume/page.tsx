@@ -7,6 +7,8 @@ import { ROUTES } from "@/constants/routes";
 import { ResumeSection } from "@/features/resume";
 import { createPageMetadata } from "@/seo/metadata";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata() {
   const resume = await resumeContentService.get();
 
