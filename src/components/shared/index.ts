@@ -8,3 +8,4 @@ export {
   ExperienceTimelineItem,
 } from "@/components/shared/experience-timeline";
 export { ProjectCard } from "@/components/shared/project-card";
+export { SkillItem } from "@/components/shared/skill-item";
