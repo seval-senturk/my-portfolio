@@ -8,3 +8,7 @@ export { Icon } from "@/components/ui/icon";
 export { Link } from "@/components/ui/link";
 export { Section } from "@/components/ui/section";
 export { Text } from "@/components/ui/text";
+export { Input } from "@/components/ui/input";
+export { Textarea } from "@/components/ui/textarea";
+export { Label } from "@/components/ui/label";
+export { FieldError } from "@/components/ui/field-error";
