@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ─── Auth ───────────────────────────────────────────────────────────────────
+
 enum UserRole {
   ADMIN
   EDITOR
@@ -44,6 +46,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -52,6 +55,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -60,4 +65,473 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// ─── Shared enums ───────────────────────────────────────────────────────────
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MediaProvider {
+  LOCAL
+  CLOUDINARY
+  EXTERNAL
+}
+
+enum ContactMessageStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+enum CategoryType {
+  BLOG
+  PROJECT
+}
+
+// ─── SEO (polymorphic) ──────────────────────────────────────────────────────
+
+model SeoMetadata {
+  id              String         @id @default(cuid())
+  entityType      String
+  entityId        String
+  metaTitle       String?
+  metaDescription String?        @db.Text
+  canonicalUrl    String?
+  ogImageUrl      String?
+  ogImageAlt      String?
+  ogImageProvider MediaProvider?
+  ogImagePublicId String?
+  keywords        String[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@unique([entityType, entityId])
+  @@index([entityType])
+}
+
+// ─── Site ───────────────────────────────────────────────────────────────────
+
+model SiteSettings {
+  id                    String       @id @default("default")
+  locale                String       @default("en")
+  siteName              String
+  siteTitle             String
+  siteDescription       String       @db.Text
+  authorName            String
+  authorJobTitle        String
+  authorEmail           String
+  footerTagline         String       @db.Text
+  footerQuickLinksLabel String
+  footerConnectLabel    String
+  footerCopyrightSuffix String
+  professionalHighlights Json
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+  socialLinks           SocialLink[]
+
+  @@unique([locale])
+}
+
+model SocialLink {
+  id             String       @id @default(cuid())
+  siteSettingsId String
+  platform       String
+  label          String
+  href           String
+  visible        Boolean      @default(true)
+  sortOrder      Int          @default(0)
+  siteSettings   SiteSettings @relation(fields: [siteSettingsId], references: [id], onDelete: Cascade)
+
+  @@index([siteSettingsId, sortOrder])
+}
+
+// ─── Hero ───────────────────────────────────────────────────────────────────
+
+model Hero {
+  id                        String        @id @default(cuid())
+  locale                    String        @default("en")
+  eyebrow                   String
+  headline                  String
+  summary                   String        @db.Text
+  technologyHighlightsTitle String
+  technologyHighlights      Json
+  primaryCtaLabel           String
+  primaryCtaHref            String
+  secondaryCtaLabel         String
+  secondaryCtaHref          String
+  profileImageUrl           String?
+  profileImageAlt           String
+  profileInitials           String
+  status                    ContentStatus @default(PUBLISHED)
+  createdAt                 DateTime      @default(now())
+  updatedAt                 DateTime      @updatedAt
+
+  @@unique([locale])
+  @@index([status])
+}
+
+// ─── About ──────────────────────────────────────────────────────────────────
+
+model About {
+  id                     String        @id @default(cuid())
+  locale                 String        @default("en")
+  sectionTitle           String
+  sectionDescription     String        @db.Text
+  introduction           Json
+  story                  Json
+  coreExpertise          Json
+  workingPrinciples      Json
+  professionalHighlights Json
+  personalValues         Json
+  status                 ContentStatus @default(PUBLISHED)
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  @@unique([locale])
+  @@index([status])
+}
+
+// ─── Experience ─────────────────────────────────────────────────────────────
+
+model ExperiencePageConfig {
+  id                 String @id @default("default")
+  locale             String @default("en")
+  sectionTitle       String
+  sectionDescription String @db.Text
+
+  @@unique([locale])
+}
+
+model Experience {
+  id               String                 @id
+  company          String
+  position         String
+  employmentType   String
+  location         String
+  startMonth       Int
+  startYear        Int
+  endMonth         Int?
+  endYear          Int?
+  current          Boolean                @default(false)
+  summary          String                 @db.Text
+  responsibilities String[]
+  achievements     String[]
+  sortOrder        Int                    @default(0)
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  technologies     ExperienceTechnology[]
+
+  @@index([sortOrder])
+}
+
+model Technology {
+  id          String                 @id @default(cuid())
+  name        String                 @unique
+  slug        String                 @unique
+  experiences ExperienceTechnology[]
+  projects    ProjectTechnology[]
+  skills      Skill[]
+
+  @@index([slug])
+}
+
+model ExperienceTechnology {
+  experienceId String
+  technologyId String
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  technology   Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
+
+  @@id([experienceId, technologyId])
+  @@index([technologyId])
+}
+
+// ─── Projects ───────────────────────────────────────────────────────────────
+
+model ProjectsPageConfig {
+  id                 String @id @default("default")
+  locale             String @default("en")
+  sectionTitle       String
+  sectionDescription String @db.Text
+  featuredTitle      String
+  additionalTitle    String
+
+  @@unique([locale])
+}
+
+model Project {
+  id               String              @id
+  slug             String              @unique
+  title            String
+  shortDescription String              @db.Text
+  longDescription  String              @db.Text
+  category         String
+  status           String?
+  client           String?
+  role             String
+  featured         Boolean             @default(false)
+  coverImageUrl    String?
+  gallery          Json?
+  startMonth       Int?
+  startYear        Int?
+  endMonth         Int?
+  endYear          Int?
+  highlights       String[]
+  githubUrl        String?
+  liveUrl          String?
+  caseStudy        Json?
+  metrics          Json?
+  sortOrder        Int                 @default(0)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  technologies     ProjectTechnology[]
+
+  @@index([featured, sortOrder])
+  @@index([category])
+}
+
+model ProjectTechnology {
+  projectId    String
+  technologyId String
+  project      Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  technology   Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, technologyId])
+  @@index([technologyId])
+}
+
+// ─── Skills ─────────────────────────────────────────────────────────────────
+
+model SkillsPageConfig {
+  id                 String @id @default("default")
+  locale             String @default("en")
+  sectionTitle       String
+  sectionDescription String @db.Text
+  featuredTitle      String
+  categoriesTitle    String
+  featuredExpertise  Json
+
+  @@unique([locale])
+}
+
+model Skill {
+  id                String      @id
+  name              String
+  category          String
+  description       String?     @db.Text
+  featured          Boolean     @default(false)
+  yearsOfExperience Int?
+  proficiencyLevel  String?
+  technologyId      String?
+  technology        Technology? @relation(fields: [technologyId], references: [id], onDelete: SetNull)
+  sortOrder         Int         @default(0)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@index([category, sortOrder])
+  @@index([featured])
+  @@index([technologyId])
+}
+
+// ─── Resume ─────────────────────────────────────────────────────────────────
+
+model Resume {
+  id                   String            @id @default("default")
+  locale               String            @default("en")
+  sectionTitle         String
+  sectionDescription   String            @db.Text
+  profile              Json
+  professionalSummary  Json
+  quickFacts           Json
+  experienceSnapshot   Json
+  skillsSnapshot       Json
+  actions              Json
+  educationTitle       String            @default("Education")
+  certificationsTitle  String            @default("Certifications")
+  languagesTitle       String            @default("Languages")
+  contentUpdatedAt     String
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  files                ResumeFile[]
+  educations           Education[]
+  certifications       Certification[]
+  languages            ResumeLanguage[]
+
+  @@unique([locale])
+}
+
+model ResumeFile {
+  id        String  @id
+  resumeId  String
+  locale    String
+  label     String
+  filePath  String
+  fileName  String
+  mimeType  String
+  isDefault Boolean @default(false)
+  sortOrder Int     @default(0)
+  resume    Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId, sortOrder])
+}
+
+model Education {
+  id            String  @id
+  resumeId      String
+  institution   String
+  degree        String
+  fieldOfStudy  String?
+  startMonth    Int?
+  startYear     Int?
+  endMonth      Int?
+  endYear       Int?
+  description   String? @db.Text
+  sortOrder     Int     @default(0)
+  resume        Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId, sortOrder])
+}
+
+model Certification {
+  id             String  @id
+  resumeId       String
+  title          String
+  organization   String
+  issueMonth     Int?
+  issueYear      Int?
+  credentialUrl  String?
+  sortOrder      Int     @default(0)
+  resume         Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId, sortOrder])
+}
+
+model ResumeLanguage {
+  id          String @id
+  resumeId    String
+  name        String
+  proficiency String
+  sortOrder   Int    @default(0)
+  resume      Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId, sortOrder])
+}
+
+// ─── Contact ────────────────────────────────────────────────────────────────
+
+model ContactPageConfig {
+  id                 String  @id @default("default")
+  locale             String  @default("en")
+  sectionTitle       String
+  sectionDescription String  @db.Text
+  email              String
+  phone              String?
+  location           String
+  website            String
+  linkedin           String
+  github             String
+  availabilityStatus String
+  responseTime       String
+  calendarUrl        String?
+  resumeHref         String
+  resumeLabel        String
+  formConfig         Json
+  messagesConfig     Json
+
+  @@unique([locale])
+}
+
+model ContactMessage {
+  id          String               @id @default(cuid())
+  name        String
+  email       String
+  subject     String
+  message     String               @db.Text
+  company     String?
+  projectType String?
+  status      ContactMessageStatus @default(NEW)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+}
+
+// ─── Blog ───────────────────────────────────────────────────────────────────
+
+model BlogPageConfig {
+  id                 String @id @default("default")
+  locale             String @default("en")
+  sectionTitle       String
+  sectionDescription String @db.Text
+
+  @@unique([locale])
+}
+
+model Category {
+  id          String             @id @default(cuid())
+  name        String
+  slug        String             @unique
+  type        CategoryType
+  description String?            @db.Text
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  posts       BlogPostCategory[]
+
+  @@index([type])
+}
+
+model Tag {
+  id        String        @id @default(cuid())
+  name      String
+  slug      String        @unique
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  posts     BlogPostTag[]
+
+  @@index([slug])
+}
+
+model BlogPost {
+  id            String             @id @default(cuid())
+  slug          String             @unique
+  title         String
+  excerpt       String             @db.Text
+  content       String             @db.Text
+  coverImageUrl String?
+  locale        String             @default("en")
+  status        ContentStatus      @default(DRAFT)
+  publishedAt   DateTime?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  categories    BlogPostCategory[]
+  tags          BlogPostTag[]
+
+  @@index([status, publishedAt])
+  @@index([locale])
+}
+
+model BlogPostCategory {
+  blogPostId String
+  categoryId String
+  blogPost   BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([blogPostId, categoryId])
+  @@index([categoryId])
+}
+
+model BlogPostTag {
+  blogPostId String
+  tagId      String
+  blogPost   BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([blogPostId, tagId])
+  @@index([tagId])
 }
