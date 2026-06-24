@@ -1,10 +1,12 @@
 import { aboutContent } from "@/data/about.data";
+import { contactContent } from "@/data/contact.data";
 import { experienceContent } from "@/data/experience.data";
 import { heroContent } from "@/data/hero.data";
 import { projectsContent } from "@/data/projects.data";
 import { resumeContent } from "@/data/resume.data";
 import { skillsContent } from "@/data/skills.data";
 import { AboutSection } from "@/features/about";
+import { ContactSection } from "@/features/contact";
 import { ExperienceSection } from "@/features/experience";
 import { HeroSection } from "@/features/hero";
 import { ProjectsSection } from "@/features/projects";
@@ -31,6 +33,7 @@ export default function HomePage() {
         experience={experienceContent}
         skills={skillsContent}
       />
+      <ContactSection content={contactContent} />
     </>
   );
 }
