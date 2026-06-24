@@ -1,3 +1,9 @@
+export type {
+  AuthErrorCode,
+  AuthErrorContent,
+  AuthUser,
+  UserRole,
+} from "@/types/auth";
 export type { SiteAuthor, SiteConfig } from "@/types/site";
 export type {
   BlogCategory,
