@@ -14,4 +14,11 @@ export {
   getProjectsByCategory,
   partitionFeaturedProjects,
 } from "@/lib/projects";
+export {
+  filterSkillsByQuery,
+  getFeaturedSkills,
+  getSkillsByCategory,
+  groupSkillsByCategory,
+  SKILL_CATEGORY_ORDER,
+} from "@/lib/skills";
 export { A11Y, FOCUS_RING_CLASS } from "@/lib/accessibility";

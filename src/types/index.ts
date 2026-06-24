@@ -49,3 +49,13 @@ export type {
   ProjectsSubsectionHeader,
   ProjectStatus,
 } from "@/types/project";
+export type {
+  FeaturedExpertiseEntry,
+  ProficiencyLevel,
+  SkillCategory,
+  SkillCategoryGroup,
+  SkillEntry,
+  SkillsContent,
+  SkillsSectionHeader,
+  SkillsSubsectionHeader,
+} from "@/types/skills";
