@@ -41,4 +41,34 @@ export interface ArticleSchema extends JsonLdBase {
   };
 }
 
-export type StructuredDataSchema = PersonSchema | WebSiteSchema | ArticleSchema;
+export type StructuredDataSchema =
+  | PersonSchema
+  | WebSiteSchema
+  | ArticleSchema
+  | ProfilePageSchema
+  | ResumeSchema;
+
+/** Future schema — generator not implemented yet. */
+export interface ProfilePageSchema extends JsonLdBase {
+  "@type": "ProfilePage";
+  name: string;
+  url: string;
+  description: string;
+  mainEntity: {
+    "@type": "Person";
+    name: string;
+    jobTitle: string;
+  };
+}
+
+/** Future schema — generator not implemented yet. */
+export interface ResumeSchema extends JsonLdBase {
+  "@type": "Resume";
+  name: string;
+  url: string;
+  dateModified: string;
+  author: {
+    "@type": "Person";
+    name: string;
+  };
+}

@@ -4,6 +4,8 @@ export type {
   ArticleSchema,
   PageMetadataInput,
   PersonSchema,
+  ProfilePageSchema,
+  ResumeSchema,
   StructuredDataSchema,
   WebSiteSchema,
 } from "@/types/seo";
@@ -59,3 +61,19 @@ export type {
   SkillsSectionHeader,
   SkillsSubsectionHeader,
 } from "@/types/skills";
+export type {
+  ResumeActions,
+  ResumeCertification,
+  ResumeContent,
+  ResumeEducation,
+  ResumeExperienceSnapshotConfig,
+  ResumeFile,
+  ResumeFileLocale,
+  ResumeLanguage,
+  ResumeProfile,
+  ResumeQuickFact,
+  ResumeSectionHeader,
+  ResumeSkillsSnapshotConfig,
+  ResumeStructuredDataInput,
+  ResumeTitledBlock,
+} from "@/types/resume";

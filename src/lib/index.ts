@@ -21,4 +21,11 @@ export {
   groupSkillsByCategory,
   SKILL_CATEGORY_ORDER,
 } from "@/lib/skills";
+export {
+  getDefaultResumeFile,
+  getResumeFileByLocale,
+  resolveExperienceSnapshot,
+  resolveSkillsSnapshot,
+  toResumeStructuredDataInput,
+} from "@/lib/resume";
 export { A11Y, FOCUS_RING_CLASS } from "@/lib/accessibility";
