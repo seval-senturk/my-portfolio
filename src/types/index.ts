@@ -1,4 +1,11 @@
 export type { SiteAuthor, SiteConfig } from "@/types/site";
+export type {
+  BlogCategory,
+  BlogContent,
+  BlogPost,
+  BlogSectionHeader,
+  BlogTag,
+} from "@/types/blog";
 export type { NavigationItem } from "@/types/navigation";
 export type {
   ArticleSchema,

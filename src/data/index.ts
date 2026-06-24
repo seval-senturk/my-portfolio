@@ -5,5 +5,6 @@ export { projectsContent } from "@/data/projects.data";
 export { skillsContent } from "@/data/skills.data";
 export { resumeContent } from "@/data/resume.data";
 export { contactContent } from "@/data/contact.data";
+export { blogContent } from "@/data/blog.data";
 export { footerContent } from "@/data/footer.data";
 export { professionalHighlights } from "@/data/professional-highlights.data";
