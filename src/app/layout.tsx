@@ -1,12 +1,11 @@
 import type { ReactNode } from "react";
 import { Inter } from "next/font/google";
-
 import { SkipLink } from "@/components/shared/skip-link";
 import { siteConfig } from "@/config/site.config";
-import { SiteShell } from "@/features/layout";
-import { rootMetadata } from "@/seo/metadata";
 import { JsonLd } from "@/seo/json-ld";
-import { createPersonSchema, createWebSiteSchema } from "@/seo/structured-data";
+import { buildGlobalStructuredData } from "@/services/seo/seo-structured-data.service";
+import { buildPageMetadata } from "@/services/seo/seo-resolver.service";
+import { SEO_PAGE_KEYS } from "@/constants/seo-pages";
 
 import "./globals.css";
 
@@ -16,21 +15,27 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const metadata = rootMetadata;
+export async function generateMetadata() {
+  return buildPageMetadata(SEO_PAGE_KEYS.HOME);
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const structuredData = [createPersonSchema(), createWebSiteSchema()] as const;
+  const structuredData = await buildGlobalStructuredData();
 
   return (
-    <html lang={siteConfig.language} className={`${inter.variable} h-full`}>
+    <html
+      lang={siteConfig.language}
+      className={`${inter.variable} h-full`}
+      suppressHydrationWarning
+    >
       <body className="flex min-h-full flex-col bg-background text-foreground antialiased">
         <SkipLink />
         <JsonLd data={structuredData} />
-        <SiteShell>{children}</SiteShell>
+        {children}
       </body>
     </html>
   );

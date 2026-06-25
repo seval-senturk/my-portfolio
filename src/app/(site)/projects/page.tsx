@@ -1,14 +1,15 @@
 import { projectsContentService } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { ProjectsSection } from "@/features/projects";
-import { createPageMetadata } from "@/seo/metadata";
+import { SEO_PAGE_KEYS } from "@/constants/seo-pages";
+import { buildPageMetadata } from "@/services/seo/seo-resolver.service";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const projects = await projectsContentService.get();
 
-  return createPageMetadata({
+  return buildPageMetadata(SEO_PAGE_KEYS.PROJECTS, {
     title: "Projects",
     description: projects.section.description,
     pathname: ROUTES.projects,

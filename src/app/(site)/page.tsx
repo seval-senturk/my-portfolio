@@ -15,7 +15,8 @@ import { HeroSection } from "@/features/hero";
 import { ProjectsSection } from "@/features/projects";
 import { ResumeSection } from "@/features/resume";
 import { SkillsSection } from "@/features/skills";
-import { createPageMetadata } from "@/seo/metadata";
+import { buildPageMetadata } from "@/services/seo/seo-resolver.service";
+import { SEO_PAGE_KEYS } from "@/constants/seo-pages";
 import { ROUTES } from "@/constants/routes";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +24,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata() {
   const hero = await heroContentService.get();
 
-  return createPageMetadata({
+  return buildPageMetadata(SEO_PAGE_KEYS.HOME, {
     description: hero.summary,
     pathname: ROUTES.home,
   });

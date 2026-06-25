@@ -1,14 +1,15 @@
 import { skillsContentService } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { SkillsSection } from "@/features/skills";
-import { createPageMetadata } from "@/seo/metadata";
+import { SEO_PAGE_KEYS } from "@/constants/seo-pages";
+import { buildPageMetadata } from "@/services/seo/seo-resolver.service";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const skills = await skillsContentService.get();
 
-  return createPageMetadata({
+  return buildPageMetadata(SEO_PAGE_KEYS.SKILLS, {
     title: "Skills",
     description: skills.section.description,
     pathname: ROUTES.skills,

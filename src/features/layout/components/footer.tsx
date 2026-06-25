@@ -68,8 +68,9 @@ export async function Footer({ className }: FooterProps) {
         </div>
 
         <Text as="p" variant="small" tone="muted" className="mt-10">
-          &copy; {currentYear} {siteConfig.author.name}.{" "}
-          {footerContent.copyrightSuffix}
+          &copy;{" "}
+          <span suppressHydrationWarning>{currentYear}</span>{" "}
+          {siteConfig.author.name}. {footerContent.copyrightSuffix}
         </Text>
       </Container>
     </footer>

@@ -5,14 +5,15 @@ import {
 } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { ResumeSection } from "@/features/resume";
-import { createPageMetadata } from "@/seo/metadata";
+import { SEO_PAGE_KEYS } from "@/constants/seo-pages";
+import { buildPageMetadata } from "@/services/seo/seo-resolver.service";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const resume = await resumeContentService.get();
 
-  return createPageMetadata({
+  return buildPageMetadata(SEO_PAGE_KEYS.RESUME, {
     title: "Resume",
     description: resume.section.description,
     pathname: ROUTES.resume,

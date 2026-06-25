@@ -1,25 +1,15 @@
-"use client";
-
 import type { ReactNode } from "react";
-import { usePathname } from "next/navigation";
 
 import { A11Y } from "@/lib/accessibility";
 
 import { Footer } from "@/features/layout/components/footer";
 import { Header } from "@/features/layout/components/header";
 
-interface SiteShellProps {
+interface SiteLayoutProps {
   children: ReactNode;
 }
 
-export function SiteShell({ children }: SiteShellProps) {
-  const pathname = usePathname();
-  const isAdminRoute = pathname.startsWith("/admin");
-
-  if (isAdminRoute) {
-    return <>{children}</>;
-  }
-
+export default function SiteLayout({ children }: SiteLayoutProps) {
   return (
     <>
       <Header />
