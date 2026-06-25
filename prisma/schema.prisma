@@ -82,6 +82,30 @@ enum MediaProvider {
   EXTERNAL
 }
 
+enum MediaAssetType {
+  IMAGE
+  PDF
+  SVG
+  ICON
+  LOGO
+  DOCUMENT
+  VIDEO
+  OTHER
+}
+
+enum MediaUsageEntityType {
+  HERO
+  BLOG_POST
+  PROJECT
+  RESUME
+  SEO
+  SEO_GLOBAL
+  SEO_PAGE
+  BRAND
+  AI_CAREER
+  OTHER
+}
+
 enum ContactMessageStatus {
   NEW
   READ
@@ -662,4 +686,121 @@ model BlogPostTag {
 
   @@id([blogPostId, tagId])
   @@index([tagId])
+}
+
+// ─── Digital Asset Management (Phase 18) ───────────────────────────────────
+
+model MediaFolder {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assets MediaAsset[]
+
+  @@index([sortOrder])
+}
+
+model MediaAsset {
+  id              String         @id @default(cuid())
+  filename        String
+  originalName    String
+  mimeType        String
+  assetType       MediaAssetType @default(OTHER)
+  size            Int
+  width           Int?
+  height          Int?
+  storageProvider MediaProvider  @default(LOCAL)
+  storageKey      String
+  publicUrl       String
+  folderId        String?
+  folder          MediaFolder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  category        String?
+  title           String?
+  altText         String?
+  caption         String?
+  description     String?
+  tags            String[]       @default([])
+  version         Int            @default(1)
+  parentAssetId   String?
+  parentAsset     MediaAsset?    @relation("MediaAssetVersions", fields: [parentAssetId], references: [id], onDelete: SetNull)
+  versions        MediaAsset[]   @relation("MediaAssetVersions")
+  isLatest        Boolean        @default(true)
+  uploadedById    String?
+  uploadedAt      DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  usages MediaUsage[]
+
+  @@index([folderId])
+  @@index([category])
+  @@index([assetType])
+  @@index([uploadedAt])
+  @@index([parentAssetId])
+  @@index([isLatest])
+  @@index([filename])
+}
+
+model MediaUsage {
+  id         String               @id @default(cuid())
+  mediaId    String
+  media      MediaAsset           @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  entityType MediaUsageEntityType
+  entityId   String
+  fieldName  String
+  label      String?
+  createdAt  DateTime             @default(now())
+
+  @@unique([mediaId, entityType, entityId, fieldName])
+  @@index([mediaId])
+  @@index([entityType, entityId])
+}
+
+// ─── Platform Services (Phase 19) ───────────────────────────────────────────
+
+enum AuditActionCategory {
+  CONTENT
+  SEO
+  MEDIA
+  AUTH
+  SETTINGS
+  SYSTEM
+}
+
+model ApplicationSettings {
+  id                 String   @id @default("default")
+  locale             String   @default("en")
+  maintenanceMode    Boolean  @default(false)
+  maintenanceMessage String?  @db.Text
+  featureFlags       Json     @default("{}")
+  branding           Json     @default("{}")
+  notificationPrefs  Json     @default("{}")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([locale])
+}
+
+model AuditLog {
+  id         String              @id @default(cuid())
+  userId     String?
+  userEmail  String?
+  action     String
+  category   AuditActionCategory @default(SYSTEM)
+  entityType String?
+  entityId   String?
+  summary    String
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime            @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([category])
+  @@index([entityType, entityId])
+  @@index([createdAt])
 }
