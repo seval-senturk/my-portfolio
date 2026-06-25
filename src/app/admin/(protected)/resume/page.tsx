@@ -1,12 +1,27 @@
 export const dynamic = "force-dynamic";
 
-import { AdminPlaceholderPage } from "@/features/admin/components/admin-placeholder-page";
+import {
+  getResumeRecord,
+  serializeResumeForForm,
+} from "@/services/admin";
+import { ResumeAdminView } from "@/features/admin/components/resume-admin-view";
 
-export default function AdminResumePage() {
+export default async function AdminResumePage() {
+  const record = await getResumeRecord();
+  const initial = serializeResumeForForm(record);
+
   return (
-    <AdminPlaceholderPage
-      title="Resume"
-      description="Resume files, education, and certification management will be added in a future phase."
+    <ResumeAdminView
+      initial={
+        initial ?? {
+          sectionTitle: "",
+          sectionDescription: "",
+          profileSummary: "",
+          profileTitle: "",
+          profileLocation: "",
+          contentUpdatedAt: new Date().toISOString().slice(0, 10),
+        }
+      }
     />
   );
 }

@@ -3,17 +3,17 @@ export const dynamic = "force-dynamic";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
 import { Text } from "@/components/ui/text";
 
-export default function AdminBlogPage() {
+export default function AdminSeoPage() {
   return (
     <div>
       <AdminPageHeader
-        title="Blog"
-        description="Blog CMS with rich text editing — next phase."
+        title="SEO"
+        description="Manage SEO metadata for pages, blog posts, and projects."
       />
       <div className="admin-surface p-6">
         <Text tone="muted">
-          Blog data models and read layer are ready. Full blog CRUD will extend
-          the generic table and form systems built in this phase.
+          SEO metadata is stored in the database via the SeoMetadata model. A
+          dedicated SEO manager UI will connect here in a future phase.
         </Text>
       </div>
     </div>

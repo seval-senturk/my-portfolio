@@ -1,59 +1,69 @@
-import {
-  blogContentService,
-  experienceContentService,
-  projectsContentService,
-} from "@/content";
+import Link from "next/link";
 
+import { adminQuickActions } from "@/config/admin-navigation.config";
+import { getDashboardStats } from "@/services/admin";
+
+import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
 import { DashboardStatCard } from "@/features/admin/components/dashboard-stat-card";
-import { Heading } from "@/components/ui/heading";
+import { Badge } from "@/components/ui/badge";
 import { Text } from "@/components/ui/text";
 
 export async function AdminDashboardView() {
-  const [projects, experience, blog] = await Promise.all([
-    projectsContentService.get(),
-    experienceContentService.get(),
-    blogContentService.get(),
-  ]);
+  const stats = await getDashboardStats();
 
-  const stats = [
+  const statCards = [
     {
       id: "projects",
       label: "Total Projects",
-      value: projects.entries.length,
+      value: stats.projects,
       description: "Published in project showcase",
-    },
-    {
-      id: "experience",
-      label: "Experience Entries",
-      value: experience.entries.length,
-      description: "Work history records",
     },
     {
       id: "blog",
       label: "Blog Posts",
-      value: blog.posts.length,
+      value: stats.blogPosts,
       description: "Draft and published posts",
+    },
+    {
+      id: "experience",
+      label: "Experience Entries",
+      value: stats.experienceEntries,
+      description: "Work history records",
+    },
+    {
+      id: "skills",
+      label: "Skills",
+      value: stats.skills,
+      description: "Skills and expertise items",
     },
     {
       id: "contact",
       label: "Contact Messages",
-      value: 0,
-      description: "Inbound leads (database integration pending)",
+      value: stats.contactMessages,
+      description: "Inbound leads in database",
+    },
+    {
+      id: "resume",
+      label: "Resume Status",
+      value: stats.resumeUpdatedAt ?? "Not set",
+      description: "Last content update date",
     },
   ] as const;
 
   return (
     <div className="space-y-8">
-      <header className="space-y-2">
-        <Heading as="h1">Dashboard</Heading>
-        <Text tone="muted">
-          Foundation overview for upcoming CMS and content management
-          workflows.
-        </Text>
-      </header>
+      <AdminPageHeader
+        title="Dashboard"
+        description="Your content management hub — monitor site data and jump into quick actions."
+        actions={
+          <Badge variant="accent">
+            Site {stats.siteStatus}
+          </Badge>
+        }
+      />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map((stat) => (
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {statCards.map((stat) => (
           <DashboardStatCard
             key={stat.id}
             label={stat.label}
@@ -62,6 +72,29 @@ export async function AdminDashboardView() {
           />
         ))}
       </div>
+
+      <section className="admin-surface p-6">
+        <div className="mb-4">
+          <h2 className="text-h4 font-semibold">Quick Actions</h2>
+          <Text tone="muted" className="mt-1">
+            Common workflows to keep your portfolio up to date.
+          </Text>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {adminQuickActions.map((action) => (
+            <Link
+              key={action.id}
+              href={action.href}
+              className="rounded-xl border border-border bg-background p-4 transition-base hover:border-foreground/20 hover:bg-muted/40"
+            >
+              <p className="text-small font-medium text-foreground">{action.label}</p>
+              <p className="mt-1 text-caption text-muted-foreground">
+                {action.description}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

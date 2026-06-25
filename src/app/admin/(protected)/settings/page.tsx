@@ -1,12 +1,21 @@
 export const dynamic = "force-dynamic";
 
-import { AdminPlaceholderPage } from "@/features/admin/components/admin-placeholder-page";
+import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { Text } from "@/components/ui/text";
 
 export default function AdminSettingsPage() {
   return (
-    <AdminPlaceholderPage
-      title="Settings"
-      description="Site settings, SEO defaults, and admin configuration will be managed here."
-    />
+    <div>
+      <AdminPageHeader
+        title="Settings"
+        description="Site configuration, social links, and admin preferences."
+      />
+      <div className="admin-surface p-6">
+        <Text tone="muted">
+          Site settings are stored in the database. A settings editor for footer,
+          social links, and site metadata will be added here.
+        </Text>
+      </div>
+    </div>
   );
 }

@@ -1,12 +1,22 @@
 export const dynamic = "force-dynamic";
 
-import { AdminPlaceholderPage } from "@/features/admin/components/admin-placeholder-page";
+import { listSkillEntries } from "@/services/admin";
+import { SkillsAdminView } from "@/features/admin/components/skills-admin-view";
 
-export default function AdminSkillsPage() {
+export default async function AdminSkillsPage() {
+  const entries = await listSkillEntries();
+
   return (
-    <AdminPlaceholderPage
-      title="Skills"
-      description="Skills and expertise management UI will be added in a future CMS phase."
+    <SkillsAdminView
+      entries={entries.map((entry) => ({
+        id: entry.id,
+        name: entry.name,
+        category: entry.category,
+        description: entry.description,
+        featured: entry.featured,
+        yearsOfExperience: entry.yearsOfExperience,
+        proficiencyLevel: entry.proficiencyLevel,
+      }))}
     />
   );
 }
