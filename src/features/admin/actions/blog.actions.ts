@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 import { adminError, adminSuccess } from "@/lib/admin/action-result";
+import { AuditActions, recordAudit } from "@/lib/platform/audit";
 import { getOptionalString, getString, validateRequired } from "@/lib/admin/validation";
 import { requireAdminUser } from "@/lib/auth/session";
 import { parseCommaList } from "@/services/admin/project.admin.service";
@@ -97,7 +98,7 @@ function parseBlogPostForm(formData: FormData): BlogPostInput | { error: string 
 
 export async function saveBlogPostAction(formData: FormData) {
   try {
-    await requireAdminUser();
+    const user = await requireAdminUser();
     const parsed = parseBlogPostForm(formData);
 
     if ("error" in parsed) {
@@ -110,6 +111,14 @@ export async function saveBlogPostAction(formData: FormData) {
       : await createBlogPost(parsed);
 
     revalidateBlogPaths(post.slug);
+    await recordAudit({
+      user,
+      action: AuditActions.BLOG_POST_SAVED,
+      category: "CONTENT",
+      entityType: "blog_post",
+      entityId: post.id,
+      summary: `Blog post saved: ${post.slug}`,
+    });
     return adminSuccess({ id: post.id, slug: post.slug });
   } catch {
     return adminError("Failed to save blog post.");
@@ -118,12 +127,20 @@ export async function saveBlogPostAction(formData: FormData) {
 
 export async function deleteBlogPostAction(formData: FormData) {
   try {
-    await requireAdminUser();
+    const user = await requireAdminUser();
     const id = getString(formData, "id");
     if (!id) return adminError("Post id is required.");
 
     await deleteBlogPost(id);
     revalidateBlogPaths();
+    await recordAudit({
+      user,
+      action: AuditActions.BLOG_POST_DELETED,
+      category: "CONTENT",
+      entityType: "blog_post",
+      entityId: id,
+      summary: "Blog post deleted",
+    });
     return adminSuccess();
   } catch {
     return adminError("Failed to delete blog post.");

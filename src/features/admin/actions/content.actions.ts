@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { adminError, adminSuccess } from "@/lib/admin/action-result";
+import { AuditActions, recordAudit } from "@/lib/platform/audit";
 import {
   getOptionalString,
   getString,
@@ -38,7 +39,7 @@ function revalidatePublicContent() {
 
 export async function saveHeroAction(formData: FormData) {
   try {
-    await requireAdminUser();
+    const user = await requireAdminUser();
 
     const eyebrow = getString(formData, "eyebrow");
     const headline = getString(formData, "headline");
@@ -86,6 +87,12 @@ export async function saveHeroAction(formData: FormData) {
 
     revalidatePublicContent();
     revalidatePath("/admin/hero");
+    await recordAudit({
+      user,
+      action: AuditActions.HERO_UPDATED,
+      category: "CONTENT",
+      summary: "Hero section updated",
+    });
     return adminSuccess();
   } catch {
     return adminError("Failed to save hero content.");
@@ -94,7 +101,7 @@ export async function saveHeroAction(formData: FormData) {
 
 export async function saveAboutAction(formData: FormData) {
   try {
-    await requireAdminUser();
+    const user = await requireAdminUser();
 
     const sectionTitle = getString(formData, "sectionTitle");
     const sectionDescription = getString(formData, "sectionDescription");
@@ -128,6 +135,7 @@ export async function saveAboutAction(formData: FormData) {
 
     revalidatePublicContent();
     revalidatePath("/admin/about");
+    await recordAudit({ user, action: AuditActions.ABOUT_UPDATED, category: "CONTENT", summary: "About page updated" });
     return adminSuccess();
   } catch {
     return adminError("Failed to save about content.");
@@ -136,7 +144,7 @@ export async function saveAboutAction(formData: FormData) {
 
 export async function saveResumeAction(formData: FormData) {
   try {
-    await requireAdminUser();
+    const user = await requireAdminUser();
 
     await updateResume({
       sectionTitle: getString(formData, "sectionTitle"),
@@ -149,6 +157,7 @@ export async function saveResumeAction(formData: FormData) {
 
     revalidatePublicContent();
     revalidatePath("/admin/resume");
+    await recordAudit({ user, action: AuditActions.RESUME_UPDATED, category: "CONTENT", summary: "Resume content updated" });
     return adminSuccess();
   } catch {
     return adminError("Failed to save resume content.");
@@ -157,7 +166,7 @@ export async function saveResumeAction(formData: FormData) {
 
 export async function saveExperienceAction(formData: FormData) {
   try {
-    await requireAdminUser();
+    const user = await requireAdminUser();
 
     const id = getOptionalString(formData, "id");
     const input = {
@@ -188,6 +197,14 @@ export async function saveExperienceAction(formData: FormData) {
 
     revalidatePublicContent();
     revalidatePath("/admin/experience");
+    await recordAudit({
+      user,
+      action: id ? AuditActions.EXPERIENCE_UPDATED : AuditActions.EXPERIENCE_CREATED,
+      category: "CONTENT",
+      entityType: "experience",
+      entityId: id ?? undefined,
+      summary: id ? "Experience entry updated" : "Experience entry created",
+    });
     return adminSuccess();
   } catch {
     return adminError("Failed to save experience entry.");
@@ -196,10 +213,18 @@ export async function saveExperienceAction(formData: FormData) {
 
 export async function deleteExperienceAction(id: string) {
   try {
-    await requireAdminUser();
+    const user = await requireAdminUser();
     await deleteExperienceEntry(id);
     revalidatePublicContent();
     revalidatePath("/admin/experience");
+    await recordAudit({
+      user,
+      action: AuditActions.EXPERIENCE_DELETED,
+      category: "CONTENT",
+      entityType: "experience",
+      entityId: id,
+      summary: "Experience entry deleted",
+    });
     return adminSuccess();
   } catch {
     return adminError("Failed to delete experience entry.");
@@ -208,7 +233,7 @@ export async function deleteExperienceAction(id: string) {
 
 export async function saveProjectAction(formData: FormData) {
   try {
-    await requireAdminUser();
+    const user = await requireAdminUser();
 
     const id = getOptionalString(formData, "id");
     const input = {
@@ -236,6 +261,14 @@ export async function saveProjectAction(formData: FormData) {
 
     revalidatePublicContent();
     revalidatePath("/admin/projects");
+    await recordAudit({
+      user,
+      action: id ? AuditActions.PROJECT_UPDATED : AuditActions.PROJECT_CREATED,
+      category: "CONTENT",
+      entityType: "project",
+      entityId: id ?? undefined,
+      summary: id ? "Project updated" : "Project created",
+    });
     return adminSuccess();
   } catch {
     return adminError("Failed to save project.");
@@ -244,10 +277,18 @@ export async function saveProjectAction(formData: FormData) {
 
 export async function deleteProjectAction(id: string) {
   try {
-    await requireAdminUser();
+    const user = await requireAdminUser();
     await deleteProjectEntry(id);
     revalidatePublicContent();
     revalidatePath("/admin/projects");
+    await recordAudit({
+      user,
+      action: AuditActions.PROJECT_DELETED,
+      category: "CONTENT",
+      entityType: "project",
+      entityId: id,
+      summary: "Project deleted",
+    });
     return adminSuccess();
   } catch {
     return adminError("Failed to delete project.");
@@ -256,7 +297,7 @@ export async function deleteProjectAction(id: string) {
 
 export async function saveSkillAction(formData: FormData) {
   try {
-    await requireAdminUser();
+    const user = await requireAdminUser();
 
     const id = getOptionalString(formData, "id");
     const yearsRaw = getOptionalString(formData, "yearsOfExperience");
@@ -277,6 +318,14 @@ export async function saveSkillAction(formData: FormData) {
 
     revalidatePublicContent();
     revalidatePath("/admin/skills");
+    await recordAudit({
+      user,
+      action: id ? AuditActions.SKILL_UPDATED : AuditActions.SKILL_CREATED,
+      category: "CONTENT",
+      entityType: "skill",
+      entityId: id ?? undefined,
+      summary: id ? "Skill updated" : "Skill created",
+    });
     return adminSuccess();
   } catch {
     return adminError("Failed to save skill.");
@@ -285,10 +334,18 @@ export async function saveSkillAction(formData: FormData) {
 
 export async function deleteSkillAction(id: string) {
   try {
-    await requireAdminUser();
+    const user = await requireAdminUser();
     await deleteSkillEntry(id);
     revalidatePublicContent();
     revalidatePath("/admin/skills");
+    await recordAudit({
+      user,
+      action: AuditActions.SKILL_DELETED,
+      category: "CONTENT",
+      entityType: "skill",
+      entityId: id,
+      summary: "Skill deleted",
+    });
     return adminSuccess();
   } catch {
     return adminError("Failed to delete skill.");

@@ -6,6 +6,8 @@ import type { SeoRedirectStatusCode, TwitterCardType } from "@prisma/client";
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 import { SEO_ENTITY_TYPES } from "@/constants/seo-pages";
 import { adminError, adminSuccess, type AdminActionResult } from "@/lib/admin/action-result";
+import { AuditActions, recordAudit } from "@/lib/platform/audit";
+import { invalidateRedirectCache } from "@/lib/seo/redirect-middleware";
 import { requireAdminUser } from "@/lib/auth/session";
 import {
   deleteSeoRedirect,
@@ -42,7 +44,7 @@ function revalidateSeoPaths() {
 }
 
 export async function saveGlobalSeoAction(formData: FormData): Promise<AdminActionResult> {
-  await requireAdminUser();
+  const user = await requireAdminUser();
 
   try {
     await saveGlobalSeoSettings({
@@ -61,6 +63,12 @@ export async function saveGlobalSeoAction(formData: FormData): Promise<AdminActi
       defaultRobotsFollow: getBoolean(formData, "defaultRobotsFollow"),
     });
     revalidateSeoPaths();
+    await recordAudit({
+      user,
+      action: AuditActions.SEO_GLOBAL_UPDATED,
+      category: "SEO",
+      summary: "Global SEO settings updated",
+    });
     return adminSuccess();
   } catch (error) {
     return adminError(error instanceof Error ? error.message : "Failed to save global SEO.");
@@ -158,7 +166,7 @@ export async function saveStructuredDataRuleAction(formData: FormData): Promise<
 }
 
 export async function saveRedirectAction(formData: FormData): Promise<AdminActionResult> {
-  await requireAdminUser();
+  const user = await requireAdminUser();
 
   try {
     await saveSeoRedirect({
@@ -170,6 +178,13 @@ export async function saveRedirectAction(formData: FormData): Promise<AdminActio
       note: getString(formData, "note") || undefined,
     });
     revalidateSeoPaths();
+    invalidateRedirectCache();
+    await recordAudit({
+      user,
+      action: AuditActions.SEO_REDIRECT_SAVED,
+      category: "SEO",
+      summary: "SEO redirect saved",
+    });
     return adminSuccess();
   } catch (error) {
     return adminError(error instanceof Error ? error.message : "Failed to save redirect.");
@@ -177,13 +192,22 @@ export async function saveRedirectAction(formData: FormData): Promise<AdminActio
 }
 
 export async function deleteRedirectAction(formData: FormData): Promise<AdminActionResult> {
-  await requireAdminUser();
+  const user = await requireAdminUser();
   const id = getString(formData, "id");
   if (!id) return adminError("Redirect ID is required.");
 
   try {
     await deleteSeoRedirect(id);
     revalidateSeoPaths();
+    invalidateRedirectCache();
+    await recordAudit({
+      user,
+      action: AuditActions.SEO_REDIRECT_DELETED,
+      category: "SEO",
+      entityType: "seo_redirect",
+      entityId: id,
+      summary: "SEO redirect deleted",
+    });
     return adminSuccess();
   } catch (error) {
     return adminError(error instanceof Error ? error.message : "Failed to delete redirect.");

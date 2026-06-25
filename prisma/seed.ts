@@ -15,6 +15,8 @@ import { professionalHighlights } from "@/data/professional-highlights.data";
 import { projectsContent } from "@/data/projects.data";
 import { resumeContent } from "@/data/resume.data";
 import { skillsContent } from "@/data/skills.data";
+import { MEDIA_FOLDER_DEFINITIONS } from "@/constants/media-folders";
+import { DEFAULT_FEATURE_FLAGS } from "@/constants/feature-flags";
 import { slugify } from "@/repositories/shared/locale";
 import type { ContactContent } from "@/types/contact";
 import type { ExperienceEntry } from "@/types/experience";
@@ -779,6 +781,36 @@ async function seedSeoManagement() {
   }
 }
 
+async function seedMediaFolders() {
+  await Promise.all(
+    MEDIA_FOLDER_DEFINITIONS.map((folder) =>
+      prisma.mediaFolder.upsert({
+        where: { slug: folder.slug },
+        update: {
+          name: folder.name,
+          description: folder.description,
+          sortOrder: folder.sortOrder,
+        },
+        create: folder,
+      }),
+    ),
+  );
+}
+
+async function seedPlatformSettings() {
+  await prisma.applicationSettings.upsert({
+    where: { locale: LOCALE },
+    update: {},
+    create: {
+      id: "default",
+      locale: LOCALE,
+      featureFlags: DEFAULT_FEATURE_FLAGS,
+      branding: {},
+      notificationPrefs: {},
+    },
+  });
+}
+
 async function main() {
   await seedAdminUser();
   await seedSiteSettings();
@@ -791,6 +823,8 @@ async function main() {
   await seedContact();
   await seedBlog();
   await seedSeoManagement();
+  await seedMediaFolders();
+  await seedPlatformSettings();
 
   console.info("Database seed completed successfully.");
 }

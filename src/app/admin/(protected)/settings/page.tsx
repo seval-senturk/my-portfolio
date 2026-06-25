@@ -1,21 +1,16 @@
 export const dynamic = "force-dynamic";
 
-import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
-import { Text } from "@/components/ui/text";
+import { SettingsAdminView } from "@/features/admin/components/settings-admin-view";
+import {
+  getPlatformEnvironmentInfo,
+  getPlatformSettings,
+} from "@/services/platform/settings.service";
 
-export default function AdminSettingsPage() {
-  return (
-    <div>
-      <AdminPageHeader
-        title="Settings"
-        description="Site configuration, social links, and admin preferences."
-      />
-      <div className="admin-surface p-6">
-        <Text tone="muted">
-          Site settings are stored in the database. A settings editor for footer,
-          social links, and site metadata will be added here.
-        </Text>
-      </div>
-    </div>
-  );
+export default async function AdminSettingsPage() {
+  const [settings, environment] = await Promise.all([
+    getPlatformSettings(),
+    Promise.resolve(getPlatformEnvironmentInfo()),
+  ]);
+
+  return <SettingsAdminView settings={settings} environment={environment} />;
 }
