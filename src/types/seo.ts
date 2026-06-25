@@ -46,7 +46,13 @@ export type StructuredDataSchema =
   | WebSiteSchema
   | ArticleSchema
   | ProfilePageSchema
-  | ResumeSchema;
+  | ResumeSchema
+  | GenericStructuredDataSchema;
+
+export interface GenericStructuredDataSchema extends JsonLdBase {
+  "@type": string;
+  [key: string]: unknown;
+}
 
 /** Future schema — generator not implemented yet. */
 export interface ProfilePageSchema extends JsonLdBase {
