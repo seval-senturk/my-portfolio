@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, LogOut, Moon, Search, UserCircle2 } from "lucide-react";
+import { Bell, LogOut, Search, UserCircle2 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
 
@@ -26,13 +26,13 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
           <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search content, projects, messages…"
+            placeholder="İçerik, proje, mesaj ara…"
             className="pl-9"
-            aria-label="Search admin content"
+            aria-label="Admin içeriğinde ara"
             disabled
           />
           <span className="absolute top-1/2 right-3 -translate-y-1/2 text-caption text-muted-foreground">
-            Soon
+            Yakında
           </span>
         </div>
 
@@ -41,22 +41,11 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
             type="button"
             variant="ghost"
             size="sm"
-            aria-label="Notifications"
+            aria-label="Bildirimler"
             disabled
-            title="Notifications coming soon"
+            title="Bildirimler yakında"
           >
             <Bell className="h-4 w-4" />
-          </Button>
-
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            aria-label="Theme toggle"
-            disabled
-            title="Theme switching coming soon"
-          >
-            <Moon className="h-4 w-4" />
           </Button>
 
           <div className="relative">
@@ -72,7 +61,7 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
             >
               <UserCircle2 className="h-8 w-8 text-muted-foreground" />
               <div className="hidden sm:block">
-                <p className="text-small font-medium">{userName ?? "Admin User"}</p>
+                <p className="text-small font-medium">{userName ?? "Admin"}</p>
                 <p className="text-caption text-muted-foreground">{userEmail}</p>
               </div>
             </button>
@@ -83,7 +72,7 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
                 className="absolute right-0 mt-2 w-56 rounded-xl border border-border bg-surface p-2 shadow-lg"
               >
                 <div className="border-b border-border px-3 py-2">
-                  <p className="text-small font-medium">{userName ?? "Admin User"}</p>
+                  <p className="text-small font-medium">{userName ?? "Admin"}</p>
                   <p className="text-caption text-muted-foreground">{userEmail}</p>
                 </div>
                 <button
@@ -96,7 +85,7 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
                   }}
                 >
                   <LogOut className="h-4 w-4" />
-                  Sign out
+                  Çıkış yap
                 </button>
               </div>
             ) : null}

@@ -1,20 +1,21 @@
 "use client";
 
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 import { adminNavigation } from "@/config/admin-navigation.config";
+import { AdminBrandLogo } from "@/features/admin/components/admin-brand-logo";
 import { useAdminShell } from "@/features/admin/context";
 import { cn } from "@/lib/cn";
 import { FOCUS_RING_CLASS } from "@/lib/accessibility";
 import { siteConfig } from "@/config/site.config";
 
 import { Link } from "@/components/ui/link";
-import { usePathname } from "next/navigation";
 
 const SECTION_LABELS = {
-  main: "Overview",
-  content: "Content",
-  system: "System",
+  main: "Genel",
+  content: "İçerik",
+  system: "Sistem",
 } as const;
 
 export function AdminSidebar() {
@@ -26,18 +27,21 @@ export function AdminSidebar() {
   return (
     <aside
       className={cn(
-        "admin-shell flex w-full border-b border-border bg-surface lg:w-auto lg:flex-col lg:border-r lg:border-b-0",
+        "flex w-full border-b border-border bg-surface lg:w-auto lg:flex-col lg:border-r lg:border-b-0",
         isSidebarCollapsed ? "lg:w-[4.5rem]" : "lg:w-64",
       )}
     >
       <div className="flex items-center justify-between border-b border-border px-4 py-4">
         {!isSidebarCollapsed ? (
-          <div>
-            <p className="text-small font-semibold text-foreground">{siteConfig.name}</p>
-            <p className="text-caption text-muted-foreground">Admin Console</p>
+          <div className="flex items-center gap-3">
+            <AdminBrandLogo size="sm" />
+            <div>
+              <p className="text-small font-semibold text-foreground">{siteConfig.name}</p>
+              <p className="text-caption text-muted-foreground">Admin Console</p>
+            </div>
           </div>
         ) : (
-          <span className="mx-auto text-caption font-semibold">SS</span>
+          <AdminBrandLogo size="sm" className="mx-auto" />
         )}
         <button
           type="button"
@@ -46,7 +50,7 @@ export function AdminSidebar() {
             "rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground",
             FOCUS_RING_CLASS,
           )}
-          aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={isSidebarCollapsed ? "Kenar çubuğunu genişlet" : "Kenar çubuğunu daralt"}
         >
           {isSidebarCollapsed ? (
             <PanelLeftOpen className="h-4 w-4" />
@@ -56,7 +60,10 @@ export function AdminSidebar() {
         </button>
       </div>
 
-      <nav aria-label="Admin navigation" className="flex gap-2 overflow-x-auto p-3 lg:flex-1 lg:flex-col lg:overflow-visible lg:space-y-0">
+      <nav
+        aria-label="Admin navigation"
+        className="flex gap-2 overflow-x-auto p-3 lg:flex-1 lg:flex-col lg:overflow-visible"
+      >
         {sections.map((section) => {
           const items = adminNavigation.filter((item) => item.section === section);
 
@@ -82,7 +89,7 @@ export function AdminSidebar() {
                           "flex items-center gap-3 rounded-lg px-3 py-2.5 text-small no-underline transition-base",
                           FOCUS_RING_CLASS,
                           isActive
-                            ? "bg-foreground text-primary-foreground"
+                            ? "bg-[var(--admin-brand,#7c3aed)] text-white"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground",
                           isSidebarCollapsed && "justify-center px-2",
                         )}

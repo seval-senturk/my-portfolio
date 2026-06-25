@@ -1,23 +1,28 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
+
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 import {
-  isValidEmail,
   validateEmail,
   validatePassword,
 } from "@/lib/admin/validation";
+import { adminTr } from "@/features/admin/i18n/tr";
 
 import { Button } from "@/components/ui/button";
 import { FieldError } from "@/components/ui/field-error";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Text } from "@/components/ui/text";
 
 const REMEMBER_EMAIL_KEY = "admin-remember-email";
 
-export function AdminLoginForm() {
+interface AdminLoginFormProps {
+  enableGoogleAuth?: boolean;
+}
+
+export function AdminLoginForm({ enableGoogleAuth = false }: AdminLoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -25,6 +30,7 @@ export function AdminLoginForm() {
   const [error, setError] = useState<string | undefined>();
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | undefined>();
 
   useEffect(() => {
@@ -71,36 +77,33 @@ export function AdminLoginForm() {
     setIsLoading(false);
 
     if (!result || result.error) {
-      setError(
-        isValidEmail(email)
-          ? "Invalid email or password, or your account lacks admin access."
-          : "We couldn't sign you in. Check your credentials and try again.",
-      );
+      setError(adminTr.login.invalidCredentials);
       return;
     }
 
-    setSuccessMessage("Signed in successfully. Redirecting…");
+    setSuccessMessage(adminTr.login.success);
     window.location.href = result.url ?? ADMIN_ROUTES.dashboard;
   }
 
+  async function handleGoogleSignIn() {
+    setIsGoogleLoading(true);
+    setError(undefined);
+    await signIn("google", { callbackUrl: ADMIN_ROUTES.dashboard });
+  }
+
   return (
-    <div className="w-full max-w-md">
-      <div className="mb-8">
-        <p className="text-caption font-medium tracking-[0.2em] text-muted-foreground uppercase">
-          Portfolio CMS
+    <div className="w-full">
+      <div className="mb-6 text-center">
+        <h1 className="text-h3 font-semibold tracking-tight">{adminTr.login.welcome}</h1>
+        <p className="mt-2 text-small text-muted-foreground">
+          {adminTr.login.description}
         </p>
-        <h1 className="mt-3 text-h2 font-semibold tracking-tight text-foreground">
-          Welcome back
-        </h1>
-        <Text tone="muted" className="mt-2">
-          Sign in to manage your portfolio content, projects, and site settings.
-        </Text>
       </div>
 
       <form className="space-y-5" onSubmit={handleSubmit} noValidate>
         <div>
           <Label htmlFor="admin-email" required>
-            Email
+            {adminTr.login.email}
           </Label>
           <Input
             id="admin-email"
@@ -111,7 +114,7 @@ export function AdminLoginForm() {
             hasError={Boolean(fieldErrors.email)}
             onChange={(event) => setEmail(event.target.value)}
             className="mt-2"
-            placeholder="you@example.com"
+            placeholder="ornek@email.com"
           />
           <FieldError id="admin-email-error" message={fieldErrors.email} />
         </div>
@@ -119,14 +122,14 @@ export function AdminLoginForm() {
         <div>
           <div className="flex items-center justify-between gap-3">
             <Label htmlFor="admin-password" required>
-              Password
+              {adminTr.login.password}
             </Label>
             <button
               type="button"
-              className="text-caption text-accent hover:underline"
+              className="text-caption text-[var(--admin-brand,#7c3aed)] hover:underline"
               onClick={() => setShowPassword((current) => !current)}
             >
-              {showPassword ? "Hide" : "Show"} password
+              {showPassword ? adminTr.login.hidePassword : adminTr.login.showPassword}
             </button>
           </div>
           <Input
@@ -138,7 +141,6 @@ export function AdminLoginForm() {
             hasError={Boolean(fieldErrors.password)}
             onChange={(event) => setPassword(event.target.value)}
             className="mt-2"
-            placeholder="Enter your password"
           />
           <FieldError id="admin-password-error" message={fieldErrors.password} />
         </div>
@@ -151,14 +153,14 @@ export function AdminLoginForm() {
               onChange={(event) => setRememberMe(event.target.checked)}
               className="rounded border-border"
             />
-            Remember me
+            {adminTr.login.rememberMe}
           </label>
-          <a
-            href="mailto:hello@sevalsenturk.com?subject=Admin%20Password%20Reset"
-            className="text-caption text-accent hover:underline"
+          <Link
+            href={ADMIN_ROUTES.forgotPassword}
+            className="text-caption text-[var(--admin-brand,#7c3aed)] hover:underline"
           >
-            Forgot password?
-          </a>
+            {adminTr.login.forgotPassword}
+          </Link>
         </div>
 
         <FieldError id="admin-login-error" message={error} />
@@ -173,13 +175,34 @@ export function AdminLoginForm() {
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full"
+          className="w-full bg-[var(--admin-brand,#7c3aed)] text-white hover:bg-[var(--admin-brand-hover,#6d28d9)]"
           isLoading={isLoading}
-          disabled={isLoading}
+          disabled={isLoading || isGoogleLoading}
         >
-          Sign in to Dashboard
+          {adminTr.login.submit}
         </Button>
       </form>
+
+      {enableGoogleAuth ? (
+        <>
+          <div className="my-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-caption text-muted-foreground">veya</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="w-full"
+            isLoading={isGoogleLoading}
+            disabled={isLoading || isGoogleLoading}
+            onClick={handleGoogleSignIn}
+          >
+            {adminTr.login.google}
+          </Button>
+        </>
+      ) : null}
     </div>
   );
 }
