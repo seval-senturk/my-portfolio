@@ -1,6 +1,8 @@
 export const ADMIN_ROUTES = {
   root: "/admin",
   login: "/admin/login",
+  forgotPassword: "/admin/forgot-password",
+  resetPassword: "/admin/reset-password",
   unauthorized: "/admin/unauthorized",
   dashboard: "/admin/dashboard",
   hero: "/admin/hero",
@@ -14,6 +16,7 @@ export const ADMIN_ROUTES = {
   media: "/admin/media",
   seo: "/admin/seo",
   settings: "/admin/settings",
+  users: "/admin/users",
 } as const;
 
 export type AdminRouteKey = keyof typeof ADMIN_ROUTES;

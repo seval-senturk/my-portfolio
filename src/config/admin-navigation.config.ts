@@ -11,6 +11,7 @@ import {
   Settings,
   Sparkles,
   User,
+  Users,
   Wrench,
 } from "lucide-react";
 
@@ -120,6 +121,14 @@ export const adminNavigation: readonly AdminNavigationItem[] = [
     href: ADMIN_ROUTES.settings,
     description: "Site configuration",
     icon: Settings,
+    section: "system",
+  },
+  {
+    id: "users",
+    label: "Users",
+    href: ADMIN_ROUTES.users,
+    description: "Admin user management (coming soon)",
+    icon: Users,
     section: "system",
   },
 ] as const;
