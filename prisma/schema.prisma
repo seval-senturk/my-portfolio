@@ -72,6 +72,7 @@ model VerificationToken {
 enum ContentStatus {
   DRAFT
   PUBLISHED
+  SCHEDULED
   ARCHIVED
 }
 
@@ -93,25 +94,142 @@ enum CategoryType {
   PROJECT
 }
 
-// ─── SEO (polymorphic) ──────────────────────────────────────────────────────
+// ─── SEO (polymorphic + management) ─────────────────────────────────────────
+
+enum SeoRedirectStatusCode {
+  PERMANENT_301
+  TEMPORARY_302
+  TEMPORARY_307
+  PERMANENT_308
+}
+
+enum TwitterCardType {
+  SUMMARY
+  SUMMARY_LARGE_IMAGE
+}
+
+model SeoGlobalSettings {
+  id                     String          @id @default("default")
+  locale                 String          @default("en")
+  siteTitle              String
+  siteDescription        String          @db.Text
+  defaultKeywords        String[]
+  defaultAuthorName      String
+  siteUrlOverride        String?
+  defaultLanguage        String          @default("en")
+  defaultOgImageUrl      String?
+  defaultTwitterImageUrl String?
+  twitterHandle          String?
+  titleTemplate          String          @default("%s | %siteName%")
+  faviconPath            String          @default("/favicon.ico")
+  defaultRobotsIndex     Boolean         @default(true)
+  defaultRobotsFollow    Boolean         @default(true)
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+
+  @@unique([locale])
+}
+
+model SeoPage {
+  id              String          @id @default(cuid())
+  locale          String          @default("en")
+  pageKey         String
+  routePath       String
+  label           String
+  metaTitle       String?
+  metaDescription String?         @db.Text
+  canonicalUrl    String?
+  focusKeyword    String?
+  ogTitle         String?
+  ogDescription   String?         @db.Text
+  ogImageUrl      String?
+  ogImageAlt      String?
+  ogType          String          @default("website")
+  twitterCardType TwitterCardType @default(SUMMARY_LARGE_IMAGE)
+  twitterImageUrl String?
+  keywords        String[]
+  robotsIndex     Boolean?
+  robotsFollow    Boolean?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@unique([locale, pageKey])
+  @@index([routePath])
+}
 
 model SeoMetadata {
-  id              String         @id @default(cuid())
+  id              String          @id @default(cuid())
   entityType      String
   entityId        String
   metaTitle       String?
-  metaDescription String?        @db.Text
+  metaDescription String?         @db.Text
   canonicalUrl    String?
+  focusKeyword    String?
+  seoNotes        String?         @db.Text
+  ogTitle         String?
+  ogDescription   String?         @db.Text
   ogImageUrl      String?
   ogImageAlt      String?
   ogImageProvider MediaProvider?
   ogImagePublicId String?
+  ogType          String?
+  twitterImageUrl String?
+  twitterCardType TwitterCardType?
   keywords        String[]
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  robotsIndex     Boolean?
+  robotsFollow    Boolean?
+  structuredData  Json?
+  locale          String          @default("en")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
   @@unique([entityType, entityId])
   @@index([entityType])
+}
+
+model SeoRedirect {
+  id         String                @id @default(cuid())
+  fromPath   String                @unique
+  toPath     String
+  statusCode SeoRedirectStatusCode @default(PERMANENT_301)
+  isActive   Boolean               @default(true)
+  note       String?
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+
+  @@index([isActive])
+}
+
+model SeoStructuredDataRule {
+  id         String   @id @default(cuid())
+  schemaType String
+  label      String
+  enabled    Boolean  @default(true)
+  scope      String   @default("global")
+  configJson Json?
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([schemaType, scope])
+  @@index([enabled, sortOrder])
+}
+
+model SeoAiCareerSettings {
+  id                  String   @id @default("default")
+  locale              String   @default("en")
+  landingMetaTitle    String?
+  landingDescription  String?  @db.Text
+  toolMetaTitle       String?
+  toolDescription     String?  @db.Text
+  landingKeywords     String[]
+  faqSchemaJson       Json?
+  featureSchemaJson   Json?
+  ogImageUrl          String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@unique([locale])
 }
 
 // ─── Site ───────────────────────────────────────────────────────────────────
@@ -498,22 +616,32 @@ model Tag {
 }
 
 model BlogPost {
-  id            String             @id @default(cuid())
-  slug          String             @unique
-  title         String
-  excerpt       String             @db.Text
-  content       String             @db.Text
-  coverImageUrl String?
-  locale        String             @default("en")
-  status        ContentStatus      @default(DRAFT)
-  publishedAt   DateTime?
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-  categories    BlogPostCategory[]
-  tags          BlogPostTag[]
+  id                 String             @id @default(cuid())
+  slug               String             @unique
+  title              String
+  excerpt            String             @db.Text
+  content            String             @db.Text
+  contentJson        Json?
+  authorName         String?
+  readingTimeMinutes Int                @default(0)
+  featured           Boolean            @default(false)
+  coverImageUrl      String?
+  coverImageAlt      String?
+  searchText         String?            @db.Text
+  locale             String             @default("en")
+  status             ContentStatus      @default(DRAFT)
+  publishedAt        DateTime?
+  scheduledAt        DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  categories         BlogPostCategory[]
+  tags               BlogPostTag[]
 
   @@index([status, publishedAt])
   @@index([locale])
+  @@index([featured])
+  @@index([scheduledAt])
+  @@index([createdAt])
 }
 
 model BlogPostCategory {
