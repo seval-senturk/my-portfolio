@@ -1,2 +1,3 @@
 export type { EmailProvider, EmailSendResult } from "@/services/email/types";
-export { createEmailProvider } from "@/services/email/stub-email.provider";
+export { createEmailProvider, resolveEmailProviderName } from "@/services/email/email-registry";
+export { StubEmailProvider } from "@/services/email/stub-email.provider";

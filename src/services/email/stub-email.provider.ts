@@ -1,19 +1,21 @@
 import type { EmailProvider, EmailSendResult } from "@/services/email/types";
 import type { ContactFormInput } from "@/types/contact";
+import { logger } from "@/services/platform/logger.service";
 
 export class StubEmailProvider implements EmailProvider {
   async sendContactNotification(
     input: ContactFormInput,
     recipientEmail: string,
   ): Promise<EmailSendResult> {
-    if (process.env.NODE_ENV === "development") {
-      console.info("[StubEmailProvider] Contact notification", {
+    logger.info("Contact notification (stub email)", {
+      context: "email",
+      metadata: {
         recipientEmail,
         subject: input.subject,
         from: input.email,
         name: input.name,
-      });
-    }
+      },
+    });
 
     return {
       success: true,
@@ -25,20 +27,14 @@ export class StubEmailProvider implements EmailProvider {
     recipientEmail: string,
     resetUrl: string,
   ): Promise<EmailSendResult> {
-    if (process.env.NODE_ENV === "development") {
-      console.info("[StubEmailProvider] Password reset email", {
-        recipientEmail,
-        resetUrl,
-      });
-    }
+    logger.info("Password reset email (stub email)", {
+      context: "email",
+      metadata: { recipientEmail, resetUrl },
+    });
 
     return {
       success: true,
       messageId: `stub-reset-${Date.now()}`,
     };
   }
-}
-
-export function createEmailProvider(): EmailProvider {
-  return new StubEmailProvider();
 }
