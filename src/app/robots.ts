@@ -1,17 +1,9 @@
 import type { MetadataRoute } from "next";
 
-import { env } from "@/lib/env";
+import { buildDynamicRobots } from "@/services/seo/seo-sitemap.service";
 
-export default function robots(): MetadataRoute.Robots {
-  const disallowPaths = env.isProduction ? [] : ["/"];
+export const dynamic = "force-dynamic";
 
-  return {
-    rules: {
-      userAgent: "*",
-      allow: env.isProduction ? "/" : undefined,
-      disallow: disallowPaths,
-    },
-    sitemap: `${env.siteUrl}/sitemap.xml`,
-    host: env.siteUrl,
-  };
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  return buildDynamicRobots();
 }

@@ -1,11 +1,18 @@
 import NextAuth from "next-auth";
+import type { NextRequest } from "next/server";
 
 import { authConfig } from "@/auth.config";
+import { applySeoRedirect } from "@/lib/seo/redirect-middleware";
 
-const { auth: middlewareAuth } = NextAuth(authConfig);
+const { auth } = NextAuth(authConfig);
 
-export default middlewareAuth;
+export default auth(async (request: NextRequest) => {
+  const redirectResponse = await applySeoRedirect(request);
+  if (redirectResponse) {
+    return redirectResponse;
+  }
+});
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };

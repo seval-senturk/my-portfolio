@@ -1,15 +1,9 @@
 import type { MetadataRoute } from "next";
 
-import { SITEMAP_ROUTES } from "@/constants/routes";
-import { env } from "@/lib/env";
+import { buildDynamicSitemap } from "@/services/seo/seo-sitemap.service";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
+export const dynamic = "force-dynamic";
 
-  return SITEMAP_ROUTES.map((route) => ({
-    url: `${env.siteUrl}${route.path}`,
-    lastModified,
-    changeFrequency: route.changeFrequency,
-    priority: route.priority,
-  }));
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  return buildDynamicSitemap();
 }

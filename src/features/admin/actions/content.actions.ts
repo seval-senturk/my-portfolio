@@ -33,6 +33,7 @@ function revalidatePublicContent() {
   revalidatePath("/projects");
   revalidatePath("/skills");
   revalidatePath("/resume");
+  revalidatePath("/blog");
 }
 
 export async function saveHeroAction(formData: FormData) {

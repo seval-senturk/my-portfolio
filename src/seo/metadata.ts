@@ -35,6 +35,9 @@ function resolveCanonicalUrl(pathname = "/"): string {
 
 function resolveOgImage(ogImagePath?: string): string {
   const imagePath = ogImagePath ?? seoConfig.ogImagePath;
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+    return imagePath;
+  }
   return absoluteUrl(imagePath);
 }
 
