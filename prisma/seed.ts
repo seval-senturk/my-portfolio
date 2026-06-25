@@ -2,6 +2,8 @@ import { hash } from "bcryptjs";
 import { Prisma, PrismaClient, UserRole } from "@prisma/client";
 
 import { siteConfig } from "@/config/site.config";
+import { seoConfig } from "@/config/seo.config";
+import { SEO_PAGE_DEFINITIONS } from "@/constants/seo-pages";
 import { socialLinks } from "@/config/social-links.config";
 import { aboutContent } from "@/data/about.data";
 import { blogContent } from "@/data/blog.data";
@@ -555,6 +557,226 @@ async function seedBlog() {
       sectionDescription: blogContent.section.description,
     },
   });
+
+  const categories = await Promise.all(
+    [
+      { name: "Technical Articles", slug: "technical-articles", description: "Deep dives into frontend and full stack engineering." },
+      { name: "Tutorials", slug: "tutorials", description: "Step-by-step guides for developers." },
+      { name: "Career Notes", slug: "career-notes", description: "Professional growth and portfolio insights." },
+      { name: "AI Articles", slug: "ai-articles", description: "AI integrations and practical workflows." },
+    ].map((item) =>
+      prisma.category.upsert({
+        where: { slug: item.slug },
+        update: { name: item.name, description: item.description, type: "BLOG" },
+        create: { ...item, type: "BLOG" },
+      }),
+    ),
+  );
+
+  const tags = await Promise.all(
+    ["Next.js", "React", "TypeScript", "PostgreSQL", "SEO", "AI"].map((name) =>
+      prisma.tag.upsert({
+        where: { slug: slugify(name) },
+        update: { name },
+        create: { name, slug: slugify(name) },
+      }),
+    ),
+  );
+
+  const samplePosts = [
+    {
+      slug: "building-production-blog-cms-with-nextjs",
+      title: "Building a Production Blog CMS with Next.js",
+      excerpt:
+        "How to design a scalable blog architecture with Prisma, Neon, and a TipTap editor.",
+      content:
+        "<h2>Architecture first</h2><p>A production blog CMS should separate content, presentation, and SEO concerns.</p><pre><code>UI → Service → Repository → Prisma</code></pre>",
+      featured: true,
+      categorySlug: "technical-articles",
+      tagSlugs: ["next-js", "typescript", "postgresql"],
+    },
+    {
+      slug: "seo-checklist-for-developer-blogs",
+      title: "SEO Checklist for Developer Blogs",
+      excerpt: "Practical SEO foundations for technical articles and case studies.",
+      content:
+        "<h2>Metadata matters</h2><p>Use dedicated SEO fields instead of mixing them into content models.</p>",
+      featured: false,
+      categorySlug: "ai-articles",
+      tagSlugs: ["seo", "next-js"],
+    },
+  ] as const;
+
+  for (const sample of samplePosts) {
+    const category = categories.find((item) => item.slug === sample.categorySlug);
+    const postTags = tags.filter((tag) =>
+      (sample.tagSlugs as readonly string[]).includes(tag.slug),
+    );
+
+    const post = await prisma.blogPost.upsert({
+      where: { slug: sample.slug },
+      update: {
+        title: sample.title,
+        excerpt: sample.excerpt,
+        content: sample.content,
+        authorName: siteConfig.author.name,
+        readingTimeMinutes: 4,
+        featured: sample.featured,
+        locale: LOCALE,
+        status: "PUBLISHED",
+        publishedAt: new Date(),
+        searchText: sample.excerpt,
+      },
+      create: {
+        slug: sample.slug,
+        title: sample.title,
+        excerpt: sample.excerpt,
+        content: sample.content,
+        authorName: siteConfig.author.name,
+        readingTimeMinutes: 4,
+        featured: sample.featured,
+        locale: LOCALE,
+        status: "PUBLISHED",
+        publishedAt: new Date(),
+        searchText: sample.excerpt,
+      },
+    });
+
+    await prisma.blogPostCategory.deleteMany({ where: { blogPostId: post.id } });
+    if (category) {
+      await prisma.blogPostCategory.create({
+        data: { blogPostId: post.id, categoryId: category.id },
+      });
+    }
+
+    await prisma.blogPostTag.deleteMany({ where: { blogPostId: post.id } });
+    for (const tag of postTags) {
+      await prisma.blogPostTag.create({
+        data: { blogPostId: post.id, tagId: tag.id },
+      });
+    }
+
+    await prisma.seoMetadata.upsert({
+      where: {
+        entityType_entityId: { entityType: "blog_post", entityId: post.id },
+      },
+      update: {
+        metaTitle: sample.title,
+        metaDescription: sample.excerpt,
+      },
+      create: {
+        entityType: "blog_post",
+        entityId: post.id,
+        metaTitle: sample.title,
+        metaDescription: sample.excerpt,
+        keywords: [...sample.tagSlugs],
+      },
+    });
+  }
+}
+
+async function seedSeoManagement() {
+  await prisma.seoGlobalSettings.upsert({
+    where: { locale: LOCALE },
+    update: {
+      siteTitle: siteConfig.title,
+      siteDescription: siteConfig.description,
+      defaultKeywords: [...seoConfig.defaultKeywords],
+      defaultAuthorName: siteConfig.author.name,
+      defaultLanguage: siteConfig.language,
+      defaultOgImageUrl: seoConfig.ogImagePath,
+      defaultTwitterImageUrl: seoConfig.ogImagePath,
+      twitterHandle: seoConfig.twitterHandle,
+      titleTemplate: seoConfig.titleTemplate,
+      faviconPath: seoConfig.faviconPath,
+    },
+    create: {
+      id: "default",
+      locale: LOCALE,
+      siteTitle: siteConfig.title,
+      siteDescription: siteConfig.description,
+      defaultKeywords: [...seoConfig.defaultKeywords],
+      defaultAuthorName: siteConfig.author.name,
+      defaultLanguage: siteConfig.language,
+      defaultOgImageUrl: seoConfig.ogImagePath,
+      defaultTwitterImageUrl: seoConfig.ogImagePath,
+      twitterHandle: seoConfig.twitterHandle,
+      titleTemplate: seoConfig.titleTemplate,
+      faviconPath: seoConfig.faviconPath,
+    },
+  });
+
+  for (const page of SEO_PAGE_DEFINITIONS) {
+    await prisma.seoPage.upsert({
+      where: { locale_pageKey: { locale: LOCALE, pageKey: page.pageKey } },
+      update: { routePath: page.routePath, label: page.label },
+      create: {
+        locale: LOCALE,
+        pageKey: page.pageKey,
+        routePath: page.routePath,
+        label: page.label,
+        keywords: [],
+      },
+    });
+  }
+
+  const schemaTypes = [
+    "Person",
+    "WebSite",
+    "Organization",
+    "ProfilePage",
+    "BlogPosting",
+    "BreadcrumbList",
+    "Article",
+    "FAQPage",
+    "WebPage",
+  ];
+
+  for (const [index, schemaType] of schemaTypes.entries()) {
+    await prisma.seoStructuredDataRule.upsert({
+      where: { schemaType_scope: { schemaType, scope: "global" } },
+      update: { label: schemaType, sortOrder: index },
+      create: {
+        schemaType,
+        label: schemaType,
+        enabled: ["Person", "WebSite", "BlogPosting", "BreadcrumbList", "WebPage"].includes(
+          schemaType,
+        ),
+        scope: "global",
+        sortOrder: index,
+      },
+    });
+  }
+
+  await prisma.seoAiCareerSettings.upsert({
+    where: { locale: LOCALE },
+    update: {},
+    create: {
+      id: "default",
+      locale: LOCALE,
+      landingKeywords: ["ai career", "resume builder", "ats cv"],
+    },
+  });
+
+  const resume = await prisma.resume.findUnique({ where: { locale: LOCALE } });
+  if (resume) {
+    await prisma.seoMetadata.upsert({
+      where: {
+        entityType_entityId: { entityType: "resume", entityId: resume.id },
+      },
+      update: {
+        metaTitle: "Resume — Seval Şentürk",
+        metaDescription: resumeContent.section.description,
+      },
+      create: {
+        entityType: "resume",
+        entityId: resume.id,
+        metaTitle: "Resume — Seval Şentürk",
+        metaDescription: resumeContent.section.description,
+        keywords: ["resume", "cv", "portfolio"],
+      },
+    });
+  }
 }
 
 async function main() {
@@ -568,6 +790,7 @@ async function main() {
   await seedResume();
   await seedContact();
   await seedBlog();
+  await seedSeoManagement();
 
   console.info("Database seed completed successfully.");
 }
