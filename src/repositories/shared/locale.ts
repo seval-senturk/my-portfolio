@@ -15,6 +15,8 @@ export function toPrismaContentStatus(
       return PrismaContentStatus.DRAFT;
     case "archived":
       return PrismaContentStatus.ARCHIVED;
+    case "scheduled":
+      return PrismaContentStatus.SCHEDULED;
     case "published":
     default:
       return PrismaContentStatus.PUBLISHED;

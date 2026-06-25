@@ -1,7 +1,7 @@
 import type { ContentQueryOptions } from "@/content/shared/types";
 
 import { blogService } from "@/services/content/blog.service";
-import type { BlogContent, BlogPost } from "@/types/blog";
+import type { BlogContent, BlogListFilters, BlogPost } from "@/types/blog";
 
 export const blogContentService = {
   get(options?: ContentQueryOptions): Promise<BlogContent> {
@@ -13,5 +13,17 @@ export const blogContentService = {
     options?: ContentQueryOptions,
   ): Promise<BlogPost | null> {
     return blogService.getPostBySlug(slug, options);
+  },
+
+  listPublishedPosts(filters?: BlogListFilters): Promise<BlogPost[]> {
+    return blogService.listPublishedPosts(filters);
+  },
+
+  getFeaturedPosts(locale?: string, limit?: number): Promise<BlogPost[]> {
+    return blogService.getFeaturedPosts(locale, limit);
+  },
+
+  getRelatedPosts(postId: string, limit?: number): Promise<BlogPost[]> {
+    return blogService.getRelatedPosts(postId, limit);
   },
 };

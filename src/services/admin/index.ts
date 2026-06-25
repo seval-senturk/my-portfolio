@@ -1,5 +1,16 @@
-export { getDashboardStats } from "@/services/admin/dashboard.service";
-export type { DashboardStats } from "@/services/admin/dashboard.service";
+export {
+  getDashboardStats,
+  getRecentContent,
+  buildContentDistribution,
+  buildSiteVisitSeries,
+  computeStatTrend,
+} from "@/services/admin/dashboard.service";
+export type {
+  DashboardStats,
+  RecentContentItem,
+  ContentDistributionSlice,
+  SiteVisitPoint,
+} from "@/services/admin/dashboard.service";
 
 export {
   getAboutRecord,
@@ -43,3 +54,27 @@ export {
   updateResume,
 } from "@/services/admin/resume.admin.service";
 export type { UpdateResumeInput } from "@/services/admin/resume.admin.service";
+
+export {
+  listBlogPostsAdmin,
+  getBlogPostAdmin,
+  createBlogPost,
+  updateBlogPost,
+  deleteBlogPost,
+  serializeBlogPostForForm,
+} from "@/services/admin/blog.admin.service";
+export type { BlogPostInput, BlogSeoInput } from "@/services/admin/blog.admin.service";
+
+export {
+  listBlogCategoriesAdmin,
+  createBlogCategory,
+  updateBlogCategory,
+  deleteBlogCategory,
+} from "@/services/admin/blog-category.admin.service";
+
+export {
+  listBlogTagsAdmin,
+  createBlogTag,
+  updateBlogTag,
+  deleteBlogTag,
+} from "@/services/admin/blog-tag.admin.service";

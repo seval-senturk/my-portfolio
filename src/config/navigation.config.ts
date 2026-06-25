@@ -25,6 +25,11 @@ export const mainNavigation: readonly NavigationItem[] = [
     description: "Selected projects and case studies",
   },
   {
+    label: "Blog",
+    href: ROUTES.blog,
+    description: "Technical articles, tutorials, and insights",
+  },
+  {
     label: "Skills",
     href: ROUTES.skills,
     description: "Technical skills and expertise",

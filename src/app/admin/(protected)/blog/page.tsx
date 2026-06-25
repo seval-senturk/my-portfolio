@@ -1,21 +1,21 @@
 export const dynamic = "force-dynamic";
 
-import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
-import { Text } from "@/components/ui/text";
+import { listBlogPostsAdmin } from "@/services/admin/blog.admin.service";
+import { BlogAdminView } from "@/features/admin/blog/components/blog-admin-view";
 
-export default function AdminBlogPage() {
-  return (
-    <div>
-      <AdminPageHeader
-        title="Blog"
-        description="Blog CMS with rich text editing — next phase."
-      />
-      <div className="admin-surface p-6">
-        <Text tone="muted">
-          Blog data models and read layer are ready. Full blog CRUD will extend
-          the generic table and form systems built in this phase.
-        </Text>
-      </div>
-    </div>
-  );
+export default async function AdminBlogPage() {
+  const posts = await listBlogPostsAdmin();
+
+  const entries = posts.map((post) => ({
+    id: post.id,
+    title: post.title,
+    slug: post.slug,
+    status: post.status.toLowerCase(),
+    featured: post.featured,
+    readingTimeMinutes: post.readingTimeMinutes,
+    updatedAt: post.updatedAt.toISOString(),
+    categoryNames: post.categories.map((item) => item.category.name),
+  }));
+
+  return <BlogAdminView entries={entries} />;
 }

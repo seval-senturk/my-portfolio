@@ -1,4 +1,4 @@
-export type ContentStatus = "draft" | "published" | "archived";
+export type ContentStatus = "draft" | "published" | "scheduled" | "archived";
 
 export type ContentLocale = string;
 
