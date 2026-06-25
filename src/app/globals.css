@@ -218,3 +218,41 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ─── Admin panel ───────────────────────────────────────────────────────── */
+.admin-shell {
+  --admin-sidebar-width: 16rem;
+  --admin-sidebar-collapsed-width: 4.5rem;
+  background: var(--background);
+}
+
+.admin-login-pattern {
+  background-color: var(--foreground);
+  background-image:
+    radial-gradient(circle at 20% 20%, rgb(37 99 235 / 0.18) 0, transparent 45%),
+    radial-gradient(circle at 80% 0%, rgb(255 255 255 / 0.06) 0, transparent 35%),
+    linear-gradient(135deg, rgb(15 15 15) 0%, rgb(24 24 27) 100%);
+}
+
+.admin-login-grid {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.admin-surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-stat-gradient {
+  background: linear-gradient(
+    135deg,
+    rgb(255 255 255 / 0.95) 0%,
+    rgb(244 244 245 / 0.85) 100%
+  );
+}
+

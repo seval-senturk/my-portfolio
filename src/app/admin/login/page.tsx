@@ -5,8 +5,7 @@ import { auth } from "@/auth";
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 import { canAccessAdminArea } from "@/lib/auth/permissions";
 
-import { AdminLoginForm } from "@/features/admin/components/admin-login-form";
-import { Container } from "@/components/ui/container";
+import { AdminLoginLayout } from "@/features/admin/components/admin-login-layout";
 
 export const dynamic = "force-dynamic";
 
@@ -26,10 +25,6 @@ export default async function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center bg-background py-12">
-      <Container size="narrow" className="w-full max-w-md">
-        <AdminLoginForm />
-      </Container>
-    </div>
+    <AdminLoginLayout />
   );
 }
