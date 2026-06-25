@@ -1,4 +1,7 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 
 import { A11Y } from "@/lib/accessibility";
 
@@ -10,6 +13,13 @@ interface SiteShellProps {
 }
 
 export function SiteShell({ children }: SiteShellProps) {
+  const pathname = usePathname();
+  const isAdminRoute = pathname.startsWith("/admin");
+
+  if (isAdminRoute) {
+    return <>{children}</>;
+  }
+
   return (
     <>
       <Header />

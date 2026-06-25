@@ -12,7 +12,12 @@ function resolveAuthSecret(): string {
     return secret;
   }
 
-  if (process.env.NODE_ENV === "production") {
+  // Vercel/CI build loads auth routes during "Collecting page data" — env vars
+  // may be runtime-only. Defer the hard failure until the server actually runs.
+  const isProductionBuild =
+    process.env.NEXT_PHASE === "phase-production-build";
+
+  if (process.env.NODE_ENV === "production" && !isProductionBuild) {
     throw new Error("AUTH_SECRET environment variable is required in production.");
   }
 
