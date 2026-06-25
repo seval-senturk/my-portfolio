@@ -20,6 +20,23 @@ export class StubEmailProvider implements EmailProvider {
       messageId: `stub-${Date.now()}`,
     };
   }
+
+  async sendPasswordResetEmail(
+    recipientEmail: string,
+    resetUrl: string,
+  ): Promise<EmailSendResult> {
+    if (process.env.NODE_ENV === "development") {
+      console.info("[StubEmailProvider] Password reset email", {
+        recipientEmail,
+        resetUrl,
+      });
+    }
+
+    return {
+      success: true,
+      messageId: `stub-reset-${Date.now()}`,
+    };
+  }
 }
 
 export function createEmailProvider(): EmailProvider {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { auth } from "@/auth";
+import { auth, isGoogleOAuthConfigured } from "@/auth";
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 import { canAccessAdminArea } from "@/lib/auth/permissions";
 
@@ -10,7 +10,7 @@ import { AdminLoginLayout } from "@/features/admin/components/admin-login-layout
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Admin Sign In",
+  title: "Admin Giriş",
   robots: {
     index: false,
     follow: false,
@@ -24,7 +24,5 @@ export default async function AdminLoginPage() {
     redirect(ADMIN_ROUTES.dashboard);
   }
 
-  return (
-    <AdminLoginLayout />
-  );
+  return <AdminLoginLayout enableGoogleAuth={isGoogleOAuthConfigured()} />;
 }

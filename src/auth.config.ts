@@ -59,10 +59,15 @@ export const authConfig = {
     },
     authorized({ auth: session, request }) {
       const { pathname } = request.nextUrl;
-      const isLoginPage = pathname === ADMIN_ROUTES.login;
-      const isUnauthorizedPage = pathname === ADMIN_ROUTES.unauthorized;
+      const publicAdminRoutes: string[] = [
+        ADMIN_ROUTES.login,
+        ADMIN_ROUTES.unauthorized,
+        ADMIN_ROUTES.forgotPassword,
+        ADMIN_ROUTES.resetPassword,
+      ];
+      const isPublicAdminRoute = publicAdminRoutes.includes(pathname);
       const isProtectedAdminRoute =
-        pathname.startsWith("/admin") && !isLoginPage && !isUnauthorizedPage;
+        pathname.startsWith("/admin") && !isPublicAdminRoute;
 
       if (!isProtectedAdminRoute) {
         return true;

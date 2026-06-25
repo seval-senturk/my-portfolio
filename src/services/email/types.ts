@@ -11,4 +11,9 @@ export interface EmailProvider {
     input: ContactFormInput,
     recipientEmail: string,
   ): Promise<EmailSendResult>;
+
+  sendPasswordResetEmail(
+    recipientEmail: string,
+    resetUrl: string,
+  ): Promise<EmailSendResult>;
 }

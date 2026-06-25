@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { AdminSessionProvider } from "@/features/admin/components/admin-session-provider";
+
 export const metadata: Metadata = {
   robots: {
     index: false,
@@ -13,5 +15,5 @@ interface AdminRootLayoutProps {
 }
 
 export default function AdminRootLayout({ children }: AdminRootLayoutProps) {
-  return children;
+  return <AdminSessionProvider>{children}</AdminSessionProvider>;
 }
