@@ -40,3 +40,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local media uploads (development fallback storage)
+/public/uploads/*
+!/public/uploads/.gitkeep

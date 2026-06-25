@@ -1,21 +1,14 @@
 export const dynamic = "force-dynamic";
 
-import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
-import { Text } from "@/components/ui/text";
+import { MediaLibraryView } from "@/features/admin/media/components/media-library-view";
+import { getMediaLibraryOverview } from "@/services/admin/media.admin.service";
 
-export default function AdminMediaPage() {
-  return (
-    <div>
-      <AdminPageHeader
-        title="Media"
-        description="Media library and Cloudinary integration — coming in a future phase."
-      />
-      <div className="admin-surface p-6">
-        <Text tone="muted">
-          Upload fields across the admin panel are Cloudinary-ready. A dedicated
-          media manager with browsing, tagging, and reuse will be added here.
-        </Text>
-      </div>
-    </div>
-  );
+export default async function AdminMediaPage() {
+  const overview = await getMediaLibraryOverview({
+    pageSize: 48,
+    sortBy: "uploadedAt",
+    sortOrder: "desc",
+  });
+
+  return <MediaLibraryView initialData={overview} />;
 }
