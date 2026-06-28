@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { SeoAdminShell } from "@/features/admin/seo/components/seo-admin-shell";
 import { listBlogSeoEntries } from "@/services/admin/seo.admin.service";
 import { Badge } from "@/components/ui/badge";
@@ -11,20 +12,20 @@ export default async function SeoBlogAdminPage() {
 
   return (
     <div>
-      <AdminPageHeader title="SEO Management" description="Review blog post SEO coverage." />
+      <AdminPageHeader title={adminTr.seo.management} description={adminTr.seo.blog.pageDesc} />
       <SeoAdminShell
-        title="Blog SEO"
-        description="Edit full SEO fields inside each blog post editor. This view shows coverage status."
+        title={adminTr.seo.navTitles.blogSeo}
+        description={adminTr.seo.blog.shellDesc}
       >
         <div className="admin-surface overflow-hidden rounded-xl border">
           <table className="min-w-full text-left text-small">
             <thead className="bg-muted/40 text-caption uppercase tracking-wide text-muted-foreground">
               <tr>
-                <th className="px-5 py-3 font-medium">Title</th>
-                <th className="px-5 py-3 font-medium">Status</th>
+                <th className="px-5 py-3 font-medium">{adminTr.common.name}</th>
+                <th className="px-5 py-3 font-medium">{adminTr.common.status}</th>
                 <th className="px-5 py-3 font-medium">SEO Title</th>
                 <th className="px-5 py-3 font-medium">Description</th>
-                <th className="px-5 py-3 font-medium">Actions</th>
+                <th className="px-5 py-3 font-medium">{adminTr.common.actions}</th>
               </tr>
             </thead>
             <tbody>
@@ -47,7 +48,7 @@ export default async function SeoBlogAdminPage() {
                       href={`${ADMIN_ROUTES.blog}/${entry.id}/edit`}
                       className="text-accent hover:underline"
                     >
-                      Edit SEO
+                      {adminTr.common.edit} SEO
                     </Link>
                   </td>
                 </tr>

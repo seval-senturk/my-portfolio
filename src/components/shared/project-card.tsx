@@ -1,5 +1,5 @@
 import type { ProjectEntry } from "@/types/project";
-import { getProjectDetailPath } from "@/lib/projects";
+import { getProjectAnchorPath } from "@/lib/projects";
 import { formatTechnologyList } from "@/lib/content";
 import { cn } from "@/lib/cn";
 
@@ -25,7 +25,7 @@ export function ProjectCard({
     showCaseStudyLink && hasCaseStudy && project.caseStudy !== undefined;
 
   return (
-    <Card className={cn("flex h-full flex-col", className)} interactive>
+    <Card id={project.slug} className={cn("flex h-full flex-col scroll-mt-24", className)} interactive>
       <Card.Content className="flex flex-1 flex-col">
         <header className="space-y-2">
           <div className="flex flex-wrap items-center gap-2">
@@ -88,12 +88,12 @@ export function ProjectCard({
           )}
           {showCaseStudy && (
             <Link
-              href={getProjectDetailPath(project.slug)}
+              href={getProjectAnchorPath(project.slug)}
               variant="accent"
               className="text-small no-underline hover:underline"
               showExternalIcon={false}
             >
-              Case Study
+              View on page
             </Link>
           )}
         </div>

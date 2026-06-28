@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { AuditLogView } from "@/features/admin/components/audit-log-view";
 import { listAuditLogs } from "@/repositories/prisma/audit.repository";
 
@@ -8,3 +6,4 @@ export default async function AdminAuditLogPage() {
 
   return <AuditLogView logs={items} total={total} />;
 }
+

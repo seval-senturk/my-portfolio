@@ -7,8 +7,6 @@ import { canAccessAdminArea } from "@/lib/auth/permissions";
 
 import { AdminLoginLayout } from "@/features/admin/components/admin-login-layout";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Admin Giriş",
   robots: {
@@ -26,3 +24,4 @@ export default async function AdminLoginPage() {
 
   return <AdminLoginLayout enableGoogleAuth={isGoogleOAuthConfigured()} />;
 }
+

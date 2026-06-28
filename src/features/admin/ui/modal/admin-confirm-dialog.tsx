@@ -1,6 +1,7 @@
 "use client";
 
 import { AdminModal } from "@/features/admin/ui/modal/admin-modal";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { Button } from "@/components/ui/button";
 
 interface AdminConfirmDialogProps {
@@ -21,8 +22,8 @@ export function AdminConfirmDialog({
   onConfirm,
   title,
   description,
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
+  confirmLabel = adminTr.common.confirm,
+  cancelLabel = adminTr.common.cancel,
   isLoading = false,
   variant = "default",
 }: AdminConfirmDialogProps) {

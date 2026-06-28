@@ -152,7 +152,9 @@ export function ContactForm({ config, messages }: ContactFormProps) {
                 autoComplete="name"
                 maxLength={CONTACT_FIELD_LIMITS.name.max}
                 hasError={Boolean(getFieldErrorMessage(errors, "name"))}
-                aria-invalid={Boolean(getFieldErrorMessage(errors, "name"))}
+                aria-invalid={
+                  getFieldErrorMessage(errors, "name") ? true : undefined
+                }
                 aria-describedby={
                   getFieldErrorMessage(errors, "name")
                     ? "contact-name-error"
@@ -180,7 +182,9 @@ export function ContactForm({ config, messages }: ContactFormProps) {
                 autoComplete="email"
                 maxLength={CONTACT_FIELD_LIMITS.email.max}
                 hasError={Boolean(getFieldErrorMessage(errors, "email"))}
-                aria-invalid={Boolean(getFieldErrorMessage(errors, "email"))}
+                aria-invalid={
+                  getFieldErrorMessage(errors, "email") ? true : undefined
+                }
                 aria-describedby={
                   getFieldErrorMessage(errors, "email")
                     ? "contact-email-error"
@@ -206,7 +210,9 @@ export function ContactForm({ config, messages }: ContactFormProps) {
                 autoComplete="organization"
                 maxLength={CONTACT_FIELD_LIMITS.company.max}
                 hasError={Boolean(getFieldErrorMessage(errors, "company"))}
-                aria-invalid={Boolean(getFieldErrorMessage(errors, "company"))}
+                aria-invalid={
+                  getFieldErrorMessage(errors, "company") ? true : undefined
+                }
                 aria-describedby={
                   getFieldErrorMessage(errors, "company")
                     ? "contact-company-error"
@@ -260,7 +266,9 @@ export function ContactForm({ config, messages }: ContactFormProps) {
               required
               maxLength={CONTACT_FIELD_LIMITS.subject.max}
               hasError={Boolean(getFieldErrorMessage(errors, "subject"))}
-              aria-invalid={Boolean(getFieldErrorMessage(errors, "subject"))}
+              aria-invalid={
+                getFieldErrorMessage(errors, "subject") ? true : undefined
+              }
               aria-describedby={
                 getFieldErrorMessage(errors, "subject")
                   ? "contact-subject-error"
@@ -286,7 +294,9 @@ export function ContactForm({ config, messages }: ContactFormProps) {
               required
               maxLength={CONTACT_FIELD_LIMITS.message.max}
               hasError={Boolean(getFieldErrorMessage(errors, "message"))}
-              aria-invalid={Boolean(getFieldErrorMessage(errors, "message"))}
+              aria-invalid={
+                getFieldErrorMessage(errors, "message") ? true : undefined
+              }
               aria-describedby={
                 getFieldErrorMessage(errors, "message")
                   ? "contact-message-error"

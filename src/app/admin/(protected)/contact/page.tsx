@@ -1,21 +1,18 @@
-export const dynamic = "force-dynamic";
-
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { Text } from "@/components/ui/text";
 
 export default function AdminContactPage() {
   return (
     <div>
       <AdminPageHeader
-        title="Contact Messages"
-        description="Review and manage inbound contact form submissions."
+        title={adminTr.contact.title}
+        description={adminTr.contact.description}
       />
       <div className="admin-surface p-6">
-        <Text tone="muted">
-          Contact messages are saved to the database. Inbox list, filtering, and
-          status updates will be added using the reusable DataTable component.
-        </Text>
+        <Text tone="muted">{adminTr.contact.placeholder}</Text>
       </div>
     </div>
   );
 }
+

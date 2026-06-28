@@ -14,6 +14,7 @@ import { MEDIA_CATEGORIES } from "@/constants/media-categories";
 import { deleteMediaAction, updateMediaMetadataAction } from "@/features/admin/actions/media.actions";
 import { MediaAdminShell } from "@/features/admin/media/components/media-admin-shell";
 import { MediaUploadZone } from "@/features/admin/media/components/media-upload-zone";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { cn } from "@/lib/cn";
 import { describeUsageLocation } from "@/lib/media/describe-usage";
@@ -39,7 +40,7 @@ function isVisualAsset(asset: MediaAssetRecord): boolean {
 }
 
 function formatDate(value: Date | string): string {
-  return new Intl.DateTimeFormat("en", {
+  return new Intl.DateTimeFormat("tr-TR", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
@@ -82,11 +83,11 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
     const warnings: string[] = [];
 
     if (isVisualAsset(selected) && !selected.altText?.trim()) {
-      warnings.push("Alt text is empty — required for accessibility and SEO.");
+      warnings.push(adminTr.media.warnings.altEmpty);
     }
 
     if (!selected.title?.trim()) {
-      warnings.push("Title is empty — recommended for library search and SEO.");
+      warnings.push(adminTr.media.warnings.titleEmpty);
     }
 
     return warnings;
@@ -104,7 +105,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
 
     startTransition(async () => {
       const result = await updateMediaMetadataAction(formData);
-      setStatusMessage(result.success ? String(result.data ?? "Saved.") : result.error ?? null);
+      setStatusMessage(result.success ? String(result.data ?? adminTr.common.saved) : result.error ?? null);
       await refreshAssets();
       const response = await fetch(`/api/admin/media/${selected.id}`);
       const payload = (await response.json()) as { asset: MediaAssetRecord };
@@ -122,7 +123,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
 
     startTransition(async () => {
       const result = await deleteMediaAction(formData);
-      setStatusMessage(result.success ? String(result.data ?? "Deleted.") : result.error ?? null);
+      setStatusMessage(result.success ? String(result.data ?? adminTr.common.deleted) : result.error ?? null);
 
       if (result.success) {
         setDeleteTarget(null);
@@ -136,8 +137,8 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
 
   return (
     <MediaAdminShell
-      title="Media Library"
-      description="Central digital asset management for portfolio, blog, resume, SEO, and brand assets."
+      title={adminTr.media.library}
+      description={adminTr.media.libraryDesc}
     >
       <MediaUploadZone category={category} folderSlug={folderSlug || undefined} onUploaded={() => void refreshAssets()} />
 
@@ -153,7 +154,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
                   void refreshAssets();
                 }
               }}
-              placeholder="Search by name, tag, category…"
+              placeholder={adminTr.media.search}
               className="pl-9"
             />
           </div>
@@ -161,12 +162,12 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
             value={category}
             onChange={(event) => setCategory(event.target.value)}
             className="rounded-lg border border-border bg-surface px-3 py-2 text-small"
-            aria-label="Filter by category"
+            aria-label={adminTr.media.filterByCategory}
           >
-            <option value="">All categories</option>
+            <option value="">{adminTr.media.allCategories}</option>
             {MEDIA_CATEGORIES.map((entry) => (
               <option key={entry} value={entry}>
-                {entry}
+                {adminTr.media.categoryNames[entry]}
               </option>
             ))}
           </select>
@@ -174,9 +175,9 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
             value={folderSlug}
             onChange={(event) => setFolderSlug(event.target.value)}
             className="rounded-lg border border-border bg-surface px-3 py-2 text-small"
-            aria-label="Filter by folder"
+            aria-label={adminTr.media.filterByFolder}
           >
-            <option value="">All folders</option>
+            <option value="">{adminTr.media.allFolders}</option>
             {folders.map((folder) => (
               <option key={folder.id} value={folder.slug}>
                 {folder.name}
@@ -187,14 +188,14 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
             value={sortBy}
             onChange={(event) => setSortBy(event.target.value as typeof sortBy)}
             className="rounded-lg border border-border bg-surface px-3 py-2 text-small"
-            aria-label="Sort by"
+            aria-label={adminTr.media.sortBy}
           >
-            <option value="uploadedAt">Upload date</option>
-            <option value="filename">File name</option>
-            <option value="size">File size</option>
+            <option value="uploadedAt">{adminTr.media.sortUploadDate}</option>
+            <option value="filename">{adminTr.media.sortFilename}</option>
+            <option value="size">{adminTr.media.sortSize}</option>
           </select>
           <Button type="button" variant="secondary" onClick={() => void refreshAssets()}>
-            Apply
+            {adminTr.media.apply}
           </Button>
           <div className="flex rounded-lg border border-border p-1">
             <button
@@ -204,7 +205,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
                 "rounded-md p-2",
                 viewMode === "grid" ? "bg-muted text-foreground" : "text-muted-foreground",
               )}
-              aria-label="Grid view"
+              aria-label={adminTr.media.grid}
               aria-pressed={viewMode === "grid"}
             >
               <Grid3X3 className="h-4 w-4" />
@@ -216,7 +217,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
                 "rounded-md p-2",
                 viewMode === "list" ? "bg-muted text-foreground" : "text-muted-foreground",
               )}
-              aria-label="List view"
+              aria-label={adminTr.media.list}
               aria-pressed={viewMode === "list"}
             >
               <LayoutList className="h-4 w-4" />
@@ -225,7 +226,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
         </div>
 
         <Text tone="muted" className="text-caption">
-          {total} asset{total === 1 ? "" : "s"}
+          {total} {adminTr.media.assetCount}
         </Text>
 
         {statusMessage ? (
@@ -237,9 +238,9 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
         {assets.length === 0 ? (
           <div className="py-12 text-center">
             <ImageIcon className="mx-auto h-10 w-10 text-muted-foreground" aria-hidden />
-            <Text className="mt-3 font-medium">No media assets yet</Text>
+            <Text className="mt-3 font-medium">{adminTr.media.emptyTitle}</Text>
             <Text tone="muted" className="text-caption">
-              Upload files using the drop zone above.
+              {adminTr.media.emptyDesc}
             </Text>
           </div>
         ) : viewMode === "grid" ? (
@@ -269,7 +270,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
                 </div>
                 <div className="space-y-1 p-3">
                   <p className="truncate text-small font-medium">{asset.title ?? asset.filename}</p>
-                  <p className="text-caption text-muted-foreground">{asset.category ?? asset.folder?.name ?? "Uncategorized"}</p>
+                  <p className="text-caption text-muted-foreground">{asset.category ?? asset.folder?.name ?? adminTr.media.uncategorized}</p>
                 </div>
               </button>
             ))}
@@ -279,11 +280,11 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
             <table className="w-full min-w-[640px] text-left text-small">
               <thead>
                 <tr className="border-b border-border text-caption text-muted-foreground">
-                  <th className="px-3 py-2">Preview</th>
-                  <th className="px-3 py-2">Name</th>
-                  <th className="px-3 py-2">Category</th>
-                  <th className="px-3 py-2">Type</th>
-                  <th className="px-3 py-2">Uploaded</th>
+                  <th className="px-3 py-2">{adminTr.media.columns.preview}</th>
+                  <th className="px-3 py-2">{adminTr.media.columns.name}</th>
+                  <th className="px-3 py-2">{adminTr.media.columns.category}</th>
+                  <th className="px-3 py-2">{adminTr.media.columns.type}</th>
+                  <th className="px-3 py-2">{adminTr.media.columns.uploaded}</th>
                 </tr>
               </thead>
               <tbody>
@@ -325,13 +326,13 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
         <aside className="admin-surface space-y-4 p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <Text className="font-semibold">Asset details</Text>
+              <Text className="font-semibold">{adminTr.media.assetDetails}</Text>
               <Text tone="muted" className="text-caption">
                 {selected.filename} · v{selected.version}
               </Text>
             </div>
             <Button type="button" variant="ghost" size="sm" onClick={() => setSelected(null)}>
-              Close
+              {adminTr.modal.close}
             </Button>
           </div>
 
@@ -352,7 +353,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
               className="inline-flex items-center gap-2 text-small text-[var(--admin-brand,#7c3aed)]"
             >
               <FileText className="h-4 w-4" />
-              Open file preview
+              {adminTr.media.openPreview}
             </a>
           )}
 
@@ -366,7 +367,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
 
           <form onSubmit={handleSaveMetadata} className="grid gap-3 md:grid-cols-2">
             <label className="space-y-1 text-small">
-              <span>Title</span>
+              <span>{adminTr.media.fields.title}</span>
               <input
                 name="title"
                 defaultValue={selected.title ?? ""}
@@ -374,22 +375,22 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
               />
             </label>
             <label className="space-y-1 text-small">
-              <span>Category</span>
+              <span>{adminTr.media.fields.category}</span>
               <select
                 name="category"
                 defaultValue={selected.category ?? ""}
                 className="w-full rounded-lg border border-border bg-surface px-3 py-2"
               >
-                <option value="">None</option>
+                <option value="">{adminTr.media.fields.none}</option>
                 {MEDIA_CATEGORIES.map((entry) => (
                   <option key={entry} value={entry}>
-                    {entry}
+                    {adminTr.media.categoryNames[entry]}
                   </option>
                 ))}
               </select>
             </label>
             <label className="space-y-1 text-small md:col-span-2">
-              <span>Alt text</span>
+              <span>{adminTr.media.fields.altText}</span>
               <input
                 name="altText"
                 defaultValue={selected.altText ?? ""}
@@ -397,7 +398,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
               />
             </label>
             <label className="space-y-1 text-small md:col-span-2">
-              <span>Caption</span>
+              <span>{adminTr.media.fields.caption}</span>
               <input
                 name="caption"
                 defaultValue={selected.caption ?? ""}
@@ -405,7 +406,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
               />
             </label>
             <label className="space-y-1 text-small md:col-span-2">
-              <span>Description</span>
+              <span>{adminTr.media.fields.description}</span>
               <textarea
                 name="description"
                 defaultValue={selected.description ?? ""}
@@ -414,7 +415,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
               />
             </label>
             <label className="space-y-1 text-small md:col-span-2">
-              <span>Tags (comma-separated)</span>
+              <span>{adminTr.media.fields.tags}</span>
               <input
                 name="tags"
                 defaultValue={selected.tags.join(", ")}
@@ -423,7 +424,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
             </label>
             <div className="flex flex-wrap gap-2 md:col-span-2">
               <Button type="submit" disabled={isPending}>
-                Save metadata
+                {adminTr.common.save}
               </Button>
               <Button
                 type="button"
@@ -433,14 +434,14 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
                 disabled={(selected.usages?.length ?? 0) > 0}
               >
                 <Trash2 className="h-4 w-4" />
-                Delete
+                {adminTr.common.delete}
               </Button>
             </div>
           </form>
 
           {(selected.usages?.length ?? 0) > 0 ? (
             <div>
-              <Text className="mb-2 font-medium">Used in</Text>
+              <Text className="mb-2 font-medium">{adminTr.media.usedIn}</Text>
               <ul className="space-y-1 text-small text-muted-foreground">
                 {selected.usages?.map((usage) => (
                   <li key={usage.id}>{describeUsageLocation(usage)}</li>
@@ -451,7 +452,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
 
           <div>
             <Text tone="muted" className="text-caption">
-              Public URL
+              {adminTr.media.publicUrl}
             </Text>
             <code className="mt-1 block overflow-x-auto rounded bg-muted px-2 py-1 text-caption">
               {selected.publicUrl}
@@ -464,9 +465,9 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
         isOpen={Boolean(deleteTarget)}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
-        title="Delete media asset?"
-        description="This action cannot be undone. The file will be removed from storage."
-        confirmLabel="Delete"
+        title={adminTr.media.deleteTitle}
+        description={adminTr.media.deleteDesc}
+        confirmLabel={adminTr.common.delete}
         variant="danger"
       />
     </MediaAdminShell>

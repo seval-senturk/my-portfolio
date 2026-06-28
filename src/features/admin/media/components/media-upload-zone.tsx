@@ -4,6 +4,7 @@ import { AlertTriangle, Loader2, RotateCcw, Upload, X } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 
 import { MEDIA_CATEGORIES } from "@/constants/media-categories";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { cn } from "@/lib/cn";
 
 import { Button } from "@/components/ui/button";
@@ -74,7 +75,7 @@ export function MediaUploadZone({
 
         if (!response.ok) {
           const payload = (await response.json()) as { error?: string };
-          throw new Error(payload.error ?? "Upload failed.");
+          throw new Error(payload.error ?? adminTr.media.upload.uploadFailed);
         }
 
         setItems((current) =>
@@ -100,7 +101,7 @@ export function MediaUploadZone({
                   ...entry,
                   status: "error",
                   progress: 0,
-                  error: error instanceof Error ? error.message : "Upload failed.",
+                  error: error instanceof Error ? error.message : adminTr.media.upload.uploadFailed,
                 }
               : entry,
           ),
@@ -157,9 +158,9 @@ export function MediaUploadZone({
             <Upload className="h-6 w-6" aria-hidden />
           </div>
           <div>
-            <Text className="font-medium">Drag & drop files here</Text>
+            <Text className="font-medium">{adminTr.media.upload.dragDrop}</Text>
             <Text tone="muted" className="text-caption">
-              Images, PDF, SVG — multiple files supported
+              {adminTr.media.upload.types}
             </Text>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -167,17 +168,17 @@ export function MediaUploadZone({
               value={uploadCategory}
               onChange={(event) => setUploadCategory(event.target.value)}
               className="rounded-lg border border-border bg-surface px-3 py-2 text-small"
-              aria-label="Upload category"
+              aria-label={adminTr.media.upload.uploadCategory}
             >
-              <option value="">No category</option>
+              <option value="">{adminTr.media.upload.noCategory}</option>
               {MEDIA_CATEGORIES.map((entry) => (
                 <option key={entry} value={entry}>
-                  {entry}
+                  {adminTr.media.categoryNames[entry]}
                 </option>
               ))}
             </select>
             <Button type="button" variant="secondary" onClick={() => inputRef.current?.click()}>
-              Browse files
+              {adminTr.media.upload.browseFiles}
             </Button>
             <input
               ref={inputRef}
@@ -197,7 +198,7 @@ export function MediaUploadZone({
       </div>
 
       {items.length > 0 ? (
-        <ul className="space-y-2" aria-label="Upload queue">
+        <ul className="space-y-2" aria-label={adminTr.media.upload.uploadQueue}>
           {items.map((item) => (
             <li
               key={item.id}
@@ -232,7 +233,7 @@ export function MediaUploadZone({
                       type="button"
                       variant="ghost"
                       size="sm"
-                      aria-label="Cancel upload"
+                      aria-label={adminTr.media.uploadCancel}
                       onClick={() => item.abortController?.abort()}
                     >
                       <X className="h-4 w-4" />

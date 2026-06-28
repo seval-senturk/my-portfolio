@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { listBlogCategoriesAdmin } from "@/services/admin/blog-category.admin.service";
 import { BlogCategoriesAdminView } from "@/features/admin/blog/components/blog-categories-admin-view";
 
@@ -18,3 +16,4 @@ export default async function AdminBlogCategoriesPage() {
     />
   );
 }
+

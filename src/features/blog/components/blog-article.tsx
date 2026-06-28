@@ -1,5 +1,10 @@
+import Link from "next/link";
+
+import { ROUTES } from "@/constants/routes";
 import type { BlogPost } from "@/types/blog";
-import { formatReadingTime } from "@/lib/blog";
+import { formatReadingTime } from "@/lib/blog/reading-time";
+import { sanitizeBlogHtml } from "@/lib/security/sanitize-html";
+import { BlogCoverImage } from "@/features/blog/components/blog-cover-image";
 import { Badge } from "@/components/ui/badge";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -16,9 +21,13 @@ export function BlogArticle({ post, preview = false }: BlogArticleProps) {
         <div className="flex flex-wrap gap-2">
           {post.featured ? <Badge variant="accent">Featured</Badge> : null}
           {post.categories?.map((category) => (
-            <Badge key={category.id} variant="outline">
-              {category.name}
-            </Badge>
+            <Link
+              key={category.id}
+              href={`${ROUTES.blog}?category=${category.slug}`}
+              className="no-underline"
+            >
+              <Badge variant="outline">{category.name}</Badge>
+            </Link>
           ))}
         </div>
         <Heading as="h1">{post.title}</Heading>
@@ -42,27 +51,29 @@ export function BlogArticle({ post, preview = false }: BlogArticleProps) {
       </header>
 
       {post.coverImage ? (
-        <div className="my-8 overflow-hidden rounded-xl bg-muted">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={post.coverImage}
-            alt={post.coverImageAlt ?? post.title}
-            className="h-auto w-full object-cover"
-          />
-        </div>
+        <BlogCoverImage
+          src={post.coverImage}
+          alt={post.coverImageAlt ?? post.title}
+          priority
+          className="my-8 aspect-[16/9] rounded-xl"
+        />
       ) : null}
 
       <div
         className="blog-article-content prose prose-neutral max-w-none"
-        dangerouslySetInnerHTML={{ __html: post.content }}
+        dangerouslySetInnerHTML={{ __html: sanitizeBlogHtml(post.content) }}
       />
 
       {post.tags && post.tags.length > 0 ? (
         <footer className="mt-10 flex flex-wrap gap-2 border-t border-border pt-6">
           {post.tags.map((tag) => (
-            <Badge key={tag.id} variant="secondary">
-              #{tag.name}
-            </Badge>
+            <Link
+              key={tag.id}
+              href={`${ROUTES.blog}?tag=${tag.slug}`}
+              className="no-underline"
+            >
+              <Badge variant="secondary">#{tag.name}</Badge>
+            </Link>
           ))}
         </footer>
       ) : null}

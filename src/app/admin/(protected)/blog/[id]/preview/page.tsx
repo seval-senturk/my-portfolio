@@ -1,7 +1,5 @@
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
 import { BlogArticle } from "@/features/blog/components/blog-article";
 import { mapBlogPostToContent } from "@/repositories/prisma/mappers/blog.mapper";
 import { getBlogPostAdmin } from "@/services/admin/blog.admin.service";

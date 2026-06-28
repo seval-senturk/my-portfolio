@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { adminTr } from "@/features/admin/i18n/tr";
 
 interface BlogEditorToolbarProps {
   editor: Editor | null;
@@ -154,7 +155,7 @@ export function BlogEditorToolbar({ editor }: BlogEditorToolbarProps) {
         <TableIcon className="h-4 w-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Add link"
+        label={adminTr.blog.toolbar.addLink}
         onClick={() => {
           const url = window.prompt("Link URL");
           if (!url) return;
@@ -164,7 +165,7 @@ export function BlogEditorToolbar({ editor }: BlogEditorToolbarProps) {
         <LinkIcon className="h-4 w-4" />
       </ToolbarButton>
       <ToolbarButton
-        label="Add image"
+        label={adminTr.blog.toolbar.addImage}
         onClick={() => {
           const url = window.prompt("Image URL");
           if (!url) return;

@@ -5,11 +5,12 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { cn } from "@/lib/cn";
 
 const MEDIA_NAV = [
-  { href: ADMIN_ROUTES.media, label: "Library", exact: true },
-  { href: `${ADMIN_ROUTES.media}/brand`, label: "Brand Assets" },
+  { href: ADMIN_ROUTES.media, label: adminTr.media.library, exact: true },
+  { href: `${ADMIN_ROUTES.media}/brand`, label: adminTr.media.brand },
 ] as const;
 
 interface MediaAdminShellProps {
@@ -28,7 +29,7 @@ export function MediaAdminShell({ title, description, children }: MediaAdminShel
         <p className="mt-2 text-small text-muted-foreground">{description}</p>
       </div>
 
-      <nav className="flex flex-wrap gap-2" aria-label="Media sections">
+      <nav className="flex flex-wrap gap-2" aria-label="Medya bölümleri">
         {MEDIA_NAV.map((item) => {
           const active =
             "exact" in item && item.exact

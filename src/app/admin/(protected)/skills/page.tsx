@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { listSkillEntries } from "@/services/admin";
 import { SkillsAdminView } from "@/features/admin/components/skills-admin-view";
 
@@ -20,3 +18,4 @@ export default async function AdminSkillsPage() {
     />
   );
 }
+

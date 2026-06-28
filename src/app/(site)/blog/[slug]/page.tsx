@@ -4,6 +4,7 @@ import { SEO_ENTITY_TYPES } from "@/constants/seo-pages";
 import { blogContentService } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { BlogArticle, BlogBreadcrumb, BlogRelatedPosts } from "@/features/blog";
+import { requestBlogPostBySlug } from "@/lib/cache/request-dedupe";
 import { JsonLd } from "@/seo/json-ld";
 import { buildEntityMetadata } from "@/services/seo/seo-resolver.service";
 import { buildBlogPostingStructuredData } from "@/services/seo/seo-structured-data.service";
@@ -11,7 +12,7 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { createPageMetadata } from "@/seo/metadata";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 interface BlogDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -19,7 +20,7 @@ interface BlogDetailPageProps {
 
 export async function generateMetadata({ params }: BlogDetailPageProps) {
   const { slug } = await params;
-  const post = await blogContentService.getPostBySlug(slug);
+  const post = await requestBlogPostBySlug(slug);
 
   if (!post) {
     return createPageMetadata({ title: "Article not found", noIndex: true });
@@ -31,12 +32,14 @@ export async function generateMetadata({ params }: BlogDetailPageProps) {
     pathname: `${ROUTES.blog}/${post.slug}`,
     ogImagePath: post.seo.ogImage?.url ?? post.coverImage,
     ogType: "article",
+    publishedTime: post.meta.publishedAt,
+    modifiedTime: post.meta.updatedAt,
   });
 }
 
 export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   const { slug } = await params;
-  const post = await blogContentService.getPostBySlug(slug);
+  const post = await requestBlogPostBySlug(slug);
 
   if (!post) {
     notFound();

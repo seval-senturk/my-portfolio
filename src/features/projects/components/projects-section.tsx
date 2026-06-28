@@ -1,8 +1,10 @@
 import type { ProjectsContent } from "@/types/project";
 import type { HeadingLevel } from "@/types/ui";
+import { ROUTES } from "@/constants/routes";
 import { partitionFeaturedProjects } from "@/lib/projects";
 
 import { ProjectsFeaturedView } from "@/features/projects/components/projects-featured-view";
+import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 
@@ -39,6 +41,11 @@ export function ProjectsSection({
           additionalHeader={additional}
           showCaseStudyLink={showCaseStudyLink}
         />
+        <div className="mt-8 border-t border-border pt-6">
+          <ButtonLink href={ROUTES.resume} variant="outline">
+            Download resume (PDF)
+          </ButtonLink>
+        </div>
       </Container>
     </Section>
   );

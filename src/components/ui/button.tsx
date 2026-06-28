@@ -38,7 +38,7 @@ export function Button({
     <button
       type={type}
       disabled={isDisabled}
-      aria-busy={isLoading}
+      aria-busy={isLoading ? true : undefined}
       className={cn(
         BUTTON_BASE_CLASSES,
         "disabled:pointer-events-none disabled:opacity-50",

@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { listProjectEntries } from "@/services/admin";
 import { ProjectsAdminView } from "@/features/admin/components/projects-admin-view";
 
@@ -28,3 +26,4 @@ export default async function AdminProjectsPage() {
     />
   );
 }
+

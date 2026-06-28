@@ -6,8 +6,6 @@ import { AdminLoginLayout } from "@/features/admin/components/admin-login-layout
 import { AdminResetPasswordForm } from "@/features/admin/components/admin-reset-password-form";
 import { adminTr } from "@/features/admin/i18n/tr";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Yeni Şifre Belirle",
   robots: { index: false, follow: false },
@@ -47,3 +45,4 @@ export default async function AdminResetPasswordPage({
     </AdminLoginLayout>
   );
 }
+

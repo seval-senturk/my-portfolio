@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import {
   getAboutRecord,
   serializeAboutForForm,
@@ -24,3 +22,4 @@ export default async function AdminAboutPage() {
     />
   );
 }
+

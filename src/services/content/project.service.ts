@@ -1,6 +1,7 @@
 import type { ContentQueryOptions } from "@/content/shared/types";
 import { validateSlug } from "@/content/shared/validation";
 import type { ProjectsRepository } from "@/content/domains/projects/repository";
+import { cacheContent } from "@/lib/cache/server";
 import { prismaProjectsRepository } from "@/repositories/prisma/projects.repository";
 import { resolveLocale } from "@/repositories/shared/locale";
 import type {
@@ -15,7 +16,10 @@ export class ProjectService {
   ) {}
 
   get(options?: ContentQueryOptions): Promise<ProjectsContent> {
-    return this.repository.get({ ...options, locale: resolveLocale(options) });
+    const locale = resolveLocale(options);
+    return cacheContent("projects", [locale], () =>
+      this.repository.get({ ...options, locale }),
+    );
   }
 
   getBySlug(

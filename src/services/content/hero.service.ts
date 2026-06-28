@@ -1,5 +1,6 @@
 import type { ContentQueryOptions } from "@/content/shared/types";
 import type { HeroRepository } from "@/content/domains/hero/repository";
+import { cacheContent } from "@/lib/cache/server";
 import { prismaHeroRepository } from "@/repositories/prisma/hero.repository";
 import { resolveLocale } from "@/repositories/shared/locale";
 import type { HeroContent } from "@/types/hero";
@@ -14,7 +15,9 @@ export class HeroService {
       throw new Error("Locale is required to load hero content.");
     }
 
-    return this.repository.get({ ...options, locale });
+    return cacheContent("hero", [locale], () =>
+      this.repository.get({ ...options, locale }),
+    );
   }
 }
 

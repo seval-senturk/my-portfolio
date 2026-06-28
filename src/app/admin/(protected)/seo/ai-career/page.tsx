@@ -1,4 +1,5 @@
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { SeoAdminShell } from "@/features/admin/seo/components/seo-admin-shell";
 import { SeoAiCareerForm } from "@/features/admin/seo/components/seo-ai-career-form";
 import { getAiCareerSeo } from "@/services/admin/seo.admin.service";
@@ -9,12 +10,12 @@ export default async function SeoAiCareerAdminPage() {
   return (
     <div>
       <AdminPageHeader
-        title="SEO Management"
-        description="Prepare SEO for the future AI Career Platform SaaS module."
+        title={adminTr.seo.management}
+        description={adminTr.seo.aiCareer.pageDesc}
       />
       <SeoAdminShell
-        title="AI Career SEO"
-        description="Landing page, tool SEO, FAQ schema, and feature schema settings for /career."
+        title={adminTr.seo.navTitles.aiCareerSeo}
+        description={adminTr.seo.aiCareer.shellDesc}
       >
         <SeoAiCareerForm initial={settings} />
       </SeoAdminShell>

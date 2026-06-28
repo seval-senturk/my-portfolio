@@ -6,17 +6,14 @@ import { usePathname } from "next/navigation";
 import { adminNavigation } from "@/config/admin-navigation.config";
 import { AdminBrandLogo } from "@/features/admin/components/admin-brand-logo";
 import { useAdminShell } from "@/features/admin/context";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { cn } from "@/lib/cn";
 import { FOCUS_RING_CLASS } from "@/lib/accessibility";
 import { siteConfig } from "@/config/site.config";
 
 import { Link } from "@/components/ui/link";
 
-const SECTION_LABELS = {
-  main: "Genel",
-  content: "İçerik",
-  system: "Sistem",
-} as const;
+const SECTION_LABELS = adminTr.sidebar.sections;
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -37,7 +34,7 @@ export function AdminSidebar() {
             <AdminBrandLogo size="sm" />
             <div>
               <p className="text-small font-semibold text-foreground">{siteConfig.name}</p>
-              <p className="text-caption text-muted-foreground">Admin Console</p>
+              <p className="text-caption text-muted-foreground">{adminTr.sidebar.console}</p>
             </div>
           </div>
         ) : (
@@ -50,7 +47,7 @@ export function AdminSidebar() {
             "rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground",
             FOCUS_RING_CLASS,
           )}
-          aria-label={isSidebarCollapsed ? "Kenar çubuğunu genişlet" : "Kenar çubuğunu daralt"}
+          aria-label={isSidebarCollapsed ? adminTr.sidebar.expand : adminTr.sidebar.collapse}
         >
           {isSidebarCollapsed ? (
             <PanelLeftOpen className="h-4 w-4" />

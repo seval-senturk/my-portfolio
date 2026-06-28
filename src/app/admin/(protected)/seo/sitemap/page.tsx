@@ -1,4 +1,5 @@
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { SeoAdminShell } from "@/features/admin/seo/components/seo-admin-shell";
 import { buildDynamicSitemap } from "@/services/seo/seo-sitemap.service";
 import { seoRepository } from "@/repositories/prisma/seo.repository";
@@ -13,10 +14,10 @@ export default async function SeoSitemapAdminPage() {
 
   return (
     <div>
-      <AdminPageHeader title="SEO Management" description="Dynamic XML sitemap preview." />
+      <AdminPageHeader title={adminTr.seo.management} description={adminTr.seo.sitemap.pageDesc} />
       <SeoAdminShell
-        title="XML Sitemap"
-        description="Sitemap is generated dynamically from pages, blog posts, projects, resume, and AI career routes."
+        title={adminTr.seo.sitemap.shellTitle}
+        description={adminTr.seo.sitemap.shellDesc}
       >
         <div className="admin-surface rounded-xl border p-5">
           <p className="text-small text-muted-foreground">

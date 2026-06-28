@@ -1,13 +1,13 @@
-import { experienceContentService } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { ExperienceSection } from "@/features/experience";
 import { SEO_PAGE_KEYS } from "@/constants/seo-pages";
+import { requestExperienceContent } from "@/lib/cache/request-dedupe";
 import { buildPageMetadata } from "@/services/seo/seo-resolver.service";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata() {
-  const experience = await experienceContentService.get();
+  const experience = await requestExperienceContent();
 
   return buildPageMetadata(SEO_PAGE_KEYS.EXPERIENCE, {
     title: "Experience",
@@ -17,7 +17,7 @@ export async function generateMetadata() {
 }
 
 export default async function ExperiencePage() {
-  const experience = await experienceContentService.get();
+  const experience = await requestExperienceContent();
 
   return <ExperienceSection content={experience} titleAs="h1" />;
 }

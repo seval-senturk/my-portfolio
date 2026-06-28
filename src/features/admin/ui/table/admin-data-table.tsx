@@ -5,6 +5,7 @@ import { ChevronDown, ChevronUp, Search } from "lucide-react";
 
 import { cn } from "@/lib/cn";
 
+import { adminTr } from "@/features/admin/i18n/tr";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
@@ -27,6 +28,7 @@ interface AdminDataTableProps<T extends { id: string }> {
   pageSize?: number;
   bulkActions?: ReactNode;
   rowActions?: (row: T) => ReactNode;
+  getRowProps?: (row: T) => React.HTMLAttributes<HTMLTableRowElement>;
 }
 
 type SortDirection = "asc" | "desc";
@@ -34,13 +36,14 @@ type SortDirection = "asc" | "desc";
 export function AdminDataTable<T extends { id: string }>({
   data,
   columns,
-  searchPlaceholder = "Search…",
+  searchPlaceholder = adminTr.table.search,
   searchFilter,
-  emptyTitle = "No records found",
-  emptyDescription = "Create your first entry to get started.",
+  emptyTitle = adminTr.table.emptyTitle,
+  emptyDescription = adminTr.table.emptyDescription,
   pageSize = 10,
   bulkActions,
   rowActions,
+  getRowProps,
 }: AdminDataTableProps<T>) {
   const [query, setQuery] = useState("");
   const [sortColumnId, setSortColumnId] = useState<string | null>(null);
@@ -164,7 +167,7 @@ export function AdminDataTable<T extends { id: string }>({
             }}
             placeholder={searchPlaceholder}
             className="pl-9"
-            aria-label="Search table"
+            aria-label={adminTr.table.searchTable}
           />
         </div>
         {bulkActions && selectedIds.size > 0 ? (
@@ -179,7 +182,7 @@ export function AdminDataTable<T extends { id: string }>({
               <th scope="col" className="w-10 px-4 py-3">
                 <input
                   type="checkbox"
-                  aria-label="Select all rows on this page"
+                  aria-label={adminTr.table.selectAll}
                   checked={allVisibleSelected}
                   onChange={toggleSelectAll}
                 />
@@ -212,14 +215,24 @@ export function AdminDataTable<T extends { id: string }>({
               ))}
               {rowActions ? (
                 <th scope="col" className="px-4 py-3 text-right font-medium text-muted-foreground">
-                  Actions
+                  {adminTr.common.actions}
                 </th>
               ) : null}
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map((row) => (
-              <tr key={row.id} className="border-b border-border last:border-b-0">
+            {paginatedData.map((row) => {
+              const rowProps = getRowProps?.(row);
+
+              return (
+              <tr
+                key={row.id}
+                {...rowProps}
+                className={cn(
+                  "border-b border-border last:border-b-0",
+                  rowProps?.className,
+                )}
+              >
                 <td className="px-4 py-3">
                   <input
                     type="checkbox"
@@ -237,14 +250,15 @@ export function AdminDataTable<T extends { id: string }>({
                   <td className="px-4 py-3 text-right">{rowActions(row)}</td>
                 ) : null}
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
 
       <div className="flex items-center justify-between border-t border-border px-4 py-3">
         <Text as="p" variant="small" tone="muted">
-          {sortedData.length} record{sortedData.length === 1 ? "" : "s"}
+          {sortedData.length} {adminTr.table.records}
         </Text>
         <div className="flex items-center gap-2">
           <Button
@@ -254,7 +268,7 @@ export function AdminDataTable<T extends { id: string }>({
             disabled={currentPage <= 1}
             onClick={() => setPage((current) => Math.max(1, current - 1))}
           >
-            Previous
+            {adminTr.table.previous}
           </Button>
           <Text as="span" variant="small" tone="muted">
             {currentPage} / {totalPages}
@@ -266,7 +280,7 @@ export function AdminDataTable<T extends { id: string }>({
             disabled={currentPage >= totalPages}
             onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
           >
-            Next
+            {adminTr.table.next}
           </Button>
         </div>
       </div>

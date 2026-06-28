@@ -6,6 +6,7 @@ import { signOut } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { cn } from "@/lib/cn";
 import { FOCUS_RING_CLASS } from "@/lib/accessibility";
 import type { SearchResultItem } from "@/types/platform";
@@ -61,9 +62,9 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
           <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Blog, proje, deneyim ara…"
+            placeholder={adminTr.topbar.searchPlaceholder}
             className="pl-9"
-            aria-label="Admin içeriğinde ara"
+            aria-label={adminTr.topbar.searchLabel}
             value={query}
             onChange={(event) => {
               setQuery(event.target.value);
@@ -78,9 +79,9 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
           {showResults && query.trim().length >= 2 ? (
             <div className="absolute top-full z-30 mt-2 w-full rounded-xl border border-border bg-surface shadow-lg">
               {isSearching ? (
-                <p className="px-4 py-3 text-caption text-muted-foreground">Searching…</p>
+                <p className="px-4 py-3 text-caption text-muted-foreground">{adminTr.common.searching}</p>
               ) : results.length === 0 ? (
-                <p className="px-4 py-3 text-caption text-muted-foreground">No results found.</p>
+                <p className="px-4 py-3 text-caption text-muted-foreground">{adminTr.common.noResults}</p>
               ) : (
                 <ul className="max-h-72 overflow-y-auto py-2">
                   {results.map((result) => (
@@ -108,9 +109,9 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
             type="button"
             variant="ghost"
             size="sm"
-            aria-label="Bildirimler"
+            aria-label={adminTr.topbar.notifications}
             disabled
-            title="In-app notifications — platform service ready"
+            title={adminTr.topbar.notificationsTitle}
           >
             <Bell className="h-4 w-4" />
           </Button>
@@ -128,7 +129,7 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
             >
               <UserCircle2 className="h-8 w-8 text-muted-foreground" />
               <div className="hidden sm:block">
-                <p className="text-small font-medium">{userName ?? "Admin"}</p>
+                <p className="text-small font-medium">{userName ?? adminTr.topbar.admin}</p>
                 <p className="text-caption text-muted-foreground">{userEmail}</p>
               </div>
             </button>
@@ -139,7 +140,7 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
                 className="absolute right-0 mt-2 w-56 rounded-xl border border-border bg-surface p-2 shadow-lg"
               >
                 <div className="border-b border-border px-3 py-2">
-                  <p className="text-small font-medium">{userName ?? "Admin"}</p>
+                  <p className="text-small font-medium">{userName ?? adminTr.topbar.admin}</p>
                   <p className="text-caption text-muted-foreground">{userEmail}</p>
                 </div>
                 <button
@@ -152,7 +153,7 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
                   }}
                 >
                   <LogOut className="h-4 w-4" />
-                  Çıkış yap
+                  {adminTr.topbar.logout}
                 </button>
               </div>
             ) : null}

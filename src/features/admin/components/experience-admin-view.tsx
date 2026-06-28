@@ -10,6 +10,7 @@ import {
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   AdminDataTable,
   type AdminTableColumn,
@@ -56,7 +57,7 @@ export function ExperienceAdminView({ entries }: ExperienceAdminViewProps) {
     () => [
       {
         id: "position",
-        header: "Role",
+        header: adminTr.experience.columns.role,
         sortValue: (row) => row.position,
         accessor: (row) => (
           <div>
@@ -67,21 +68,21 @@ export function ExperienceAdminView({ entries }: ExperienceAdminViewProps) {
       },
       {
         id: "location",
-        header: "Location",
+        header: adminTr.experience.columns.location,
         sortValue: (row) => row.location,
         accessor: (row) => row.location,
       },
       {
         id: "type",
-        header: "Type",
+        header: adminTr.experience.columns.type,
         accessor: (row) => row.employmentType,
       },
       {
         id: "status",
-        header: "Status",
+        header: adminTr.experience.columns.status,
         accessor: (row) => (
           <Badge variant={row.current ? "accent" : "outline"}>
-            {row.current ? "Current" : "Past"}
+            {row.current ? adminTr.experience.current : adminTr.experience.past}
           </Badge>
         ),
       },
@@ -107,11 +108,11 @@ export function ExperienceAdminView({ entries }: ExperienceAdminViewProps) {
   return (
     <div>
       <AdminPageHeader
-        title="Experience"
-        description="Manage work history entries shown on your portfolio."
+        title={adminTr.experience.title}
+        description={adminTr.experience.description}
         actions={
           <Button type="button" variant="primary" leftIcon={<Plus className="h-4 w-4" />} onClick={openCreate}>
-            Add Experience
+            {adminTr.experience.add}
           </Button>
         }
       />
@@ -121,7 +122,7 @@ export function ExperienceAdminView({ entries }: ExperienceAdminViewProps) {
       <AdminDataTable
         data={rows}
         columns={columns}
-        searchPlaceholder="Search experience…"
+        searchPlaceholder={adminTr.experience.search}
         searchFilter={(row, query) =>
           `${row.company} ${row.position} ${row.location}`.toLowerCase().includes(query)
         }
@@ -140,8 +141,8 @@ export function ExperienceAdminView({ entries }: ExperienceAdminViewProps) {
       <AdminModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selected ? "Edit Experience" : "Add Experience"}
-        description="Update role details, responsibilities, and technologies."
+        title={selected ? adminTr.experience.edit : adminTr.experience.add}
+        description={adminTr.experience.editDesc}
         size="lg"
         footer={
           <Button
@@ -150,7 +151,7 @@ export function ExperienceAdminView({ entries }: ExperienceAdminViewProps) {
             variant="primary"
             isLoading={isPending}
           >
-            Save Entry
+            {adminTr.experience.saveEntry}
           </Button>
         }
       >
@@ -163,7 +164,7 @@ export function ExperienceAdminView({ entries }: ExperienceAdminViewProps) {
               const result = await saveExperienceAction(formData);
               if (result.success) {
                 setIsModalOpen(false);
-                setStatus({ success: "Experience entry saved." });
+                setStatus({ success: adminTr.common.saved });
                 window.location.reload();
               } else {
                 setStatus({ error: result.error });
@@ -171,7 +172,7 @@ export function ExperienceAdminView({ entries }: ExperienceAdminViewProps) {
             });
           }}
         >
-          <AdminFormSection title="Role details">
+          <AdminFormSection title={adminTr.experience.sections.roleDetails}>
             <div className="grid gap-4 md:grid-cols-2">
               <AdminTextField id="company" name="company" label="Company" defaultValue={selected?.company} required />
               <AdminTextField id="position" name="position" label="Position" defaultValue={selected?.position} required />
@@ -215,16 +216,16 @@ export function ExperienceAdminView({ entries }: ExperienceAdminViewProps) {
             const result = await deleteExperienceAction(deleteId);
             if (result.success) {
               setRows((current) => current.filter((row) => row.id !== deleteId));
-              setStatus({ success: "Experience entry deleted." });
+              setStatus({ success: adminTr.common.deleted });
             } else {
               setStatus({ error: result.error });
             }
             setIsDeleteOpen(false);
           });
         }}
-        title="Delete experience entry?"
-        description="This action cannot be undone."
-        confirmLabel="Delete"
+        title={adminTr.experience.deleteTitle}
+        description={adminTr.experience.deleteDesc}
+        confirmLabel={adminTr.common.delete}
         variant="danger"
         isLoading={isPending}
       />

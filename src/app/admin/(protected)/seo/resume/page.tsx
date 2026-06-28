@@ -1,5 +1,6 @@
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
 import { saveResumeSeoAction } from "@/features/admin/actions/seo.actions";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { SeoAdminShell } from "@/features/admin/seo/components/seo-admin-shell";
 import {
   seoRecordToFormInitial,
@@ -12,10 +13,10 @@ export default async function SeoResumeAdminPage() {
 
   return (
     <div>
-      <AdminPageHeader title="SEO Management" description="Resume Center SEO settings." />
+      <AdminPageHeader title={adminTr.seo.management} description={adminTr.seo.resume.pageDesc} />
       <SeoAdminShell
-        title="Resume SEO"
-        description="ATS-friendly resume page metadata. Content remains factual; only presentation is optimized."
+        title={adminTr.seo.navTitles.resumeSeo}
+        description={adminTr.seo.resume.shellDesc}
       >
         <div className="admin-surface rounded-xl border p-6">
           <SeoFieldsForm action={saveResumeSeoAction} initial={seoRecordToFormInitial(seo ?? undefined)} />

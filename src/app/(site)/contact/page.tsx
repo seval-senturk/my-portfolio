@@ -1,13 +1,13 @@
-import { contactContentService } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { ContactSection } from "@/features/contact";
 import { SEO_PAGE_KEYS } from "@/constants/seo-pages";
+import { requestContactContent } from "@/lib/cache/request-dedupe";
 import { buildPageMetadata } from "@/services/seo/seo-resolver.service";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata() {
-  const contact = await contactContentService.get();
+  const contact = await requestContactContent();
 
   return buildPageMetadata(SEO_PAGE_KEYS.CONTACT, {
     title: "Contact",
@@ -17,7 +17,7 @@ export async function generateMetadata() {
 }
 
 export default async function ContactPage() {
-  const contact = await contactContentService.get();
+  const contact = await requestContactContent();
 
   return <ContactSection content={contact} titleAs="h1" />;
 }

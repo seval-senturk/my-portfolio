@@ -1,9 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 import { adminError, adminSuccess } from "@/lib/admin/action-result";
+import { CACHE_TAGS } from "@/lib/cache/server";
 import { AuditActions, recordAudit } from "@/lib/platform/audit";
 import { requireAdminUser } from "@/lib/auth/session";
 import {
@@ -16,8 +17,11 @@ import { trackMediaUsage, untrackMediaUsage } from "@/services/media/media-usage
 import type { MediaUsageEntityType } from "@prisma/client";
 
 function revalidateMediaPaths() {
+  revalidateTag(CACHE_TAGS.content);
+  revalidateTag(CACHE_TAGS.seo);
   revalidatePath(ADMIN_ROUTES.media);
   revalidatePath(`${ADMIN_ROUTES.media}/brand`);
+  revalidatePath("/");
 }
 
 export async function updateMediaMetadataAction(formData: FormData) {

@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { MediaLibraryView } from "@/features/admin/media/components/media-library-view";
 import { getMediaLibraryOverview } from "@/services/admin/media.admin.service";
 
@@ -12,3 +10,4 @@ export default async function AdminMediaPage() {
 
   return <MediaLibraryView initialData={overview} />;
 }
+

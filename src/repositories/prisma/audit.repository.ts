@@ -1,7 +1,17 @@
+import type { Prisma } from "@prisma/client";
+
 import { prisma } from "@/lib/prisma";
 import type { AuditActionCategory as PrismaAuditActionCategory } from "@prisma/client";
 
 import type { AuditLogInput, AuditLogRecord } from "@/types/platform";
+
+function toJson(value: Record<string, unknown> | undefined): Prisma.InputJsonValue | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+}
 
 function mapRecord(record: {
   id: string;
@@ -39,7 +49,7 @@ export async function createAuditLog(input: AuditLogInput): Promise<AuditLogReco
       entityType: input.entityType ?? null,
       entityId: input.entityId ?? null,
       summary: input.summary,
-      metadata: input.metadata ?? undefined,
+      metadata: toJson(input.metadata),
       ipAddress: input.ipAddress ?? null,
       userAgent: input.userAgent ?? null,
     },

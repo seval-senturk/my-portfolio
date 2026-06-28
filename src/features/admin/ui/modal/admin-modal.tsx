@@ -11,6 +11,7 @@ import { X } from "lucide-react";
 
 import { FOCUS_RING_CLASS } from "@/lib/accessibility";
 import { cn } from "@/lib/cn";
+import { adminTr } from "@/features/admin/i18n/tr";
 
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
@@ -97,7 +98,7 @@ export function AdminModal({
           type="button"
           variant="ghost"
           size="sm"
-          aria-label="Close dialog"
+          aria-label={adminTr.modal.close}
           onClick={handleClose}
         >
           <X className="h-4 w-4" />

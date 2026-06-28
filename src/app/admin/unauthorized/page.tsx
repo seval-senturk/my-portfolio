@@ -4,7 +4,7 @@ import { AuthErrorAlert } from "@/features/admin/components/auth-error-alert";
 import { Container } from "@/components/ui/container";
 
 export const metadata: Metadata = {
-  title: "Access Denied",
+  title: "Erişim Reddedildi",
   robots: {
     index: false,
     follow: false,

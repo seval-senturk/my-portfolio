@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { listExperienceEntries } from "@/services/admin";
 import { ExperienceAdminView } from "@/features/admin/components/experience-admin-view";
 
@@ -27,3 +25,4 @@ export default async function AdminExperiencePage() {
     />
   );
 }
+

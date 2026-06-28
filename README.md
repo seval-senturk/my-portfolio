@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Seval Şentürk — Portfolio
 
-## Getting Started
+Production-ready personal portfolio built with Next.js, featuring a full admin CMS, blog, SEO management, digital asset management, and platform services.
 
-First, run the development server:
+**Live stack:** Vercel · Neon PostgreSQL · Cloudinary · Resend · Auth.js
+
+## Features
+
+- **Public website** — Portfolio, resume, projects, experience, skills, contact, blog
+- **Admin panel** — Content management for all site sections
+- **Blog CMS** — TipTap rich-text editor with categories and tags
+- **Media library** — Central DAM with Cloudinary integration
+- **SEO system** — Metadata, sitemap, robots, redirects, structured data, health checks
+- **Platform services** — Logging, audit trail, feature flags, maintenance mode, search
+
+## Quick start
+
+### Prerequisites
+
+- Node.js 20+
+- Neon PostgreSQL database
+- (Optional) Cloudinary, Resend accounts for full production parity
+
+### Installation
 
 ```bash
+git clone https://github.com/seval-senturk/my-portfolio.git
+cd my-portfolio
+cp .env.example .env
+npm install
+npm run db:migrate
+npm run db:seed
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Default admin credentials (after seed): `admin@example.com` / `change-me`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Scripts
 
-## Learn More
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run typecheck` | TypeScript check |
+| `npm run lint` | ESLint |
+| `npm run release:check` | Full pre-deploy validation |
+| `npm run perf` | Local performance measurement (requires running server) |
+| `npm run db:migrate` | Run migrations (dev) |
+| `npm run db:migrate:deploy` | Run migrations (production) |
+| `npm run db:seed` | Seed database |
 
-To learn more about Next.js, take a look at the following resources:
+## Documentation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Guide | Description |
+|-------|-------------|
+| [Architecture](./docs/ARCHITECTURE.md) | System design and module overview |
+| [Development](./docs/DEVELOPMENT.md) | Local setup and daily workflow |
+| [Environment](./docs/ENVIRONMENT.md) | Environment variables reference |
+| [Deployment](./docs/DEPLOYMENT.md) | Vercel production deployment |
+| [Observability](./docs/OBSERVABILITY.md) | Logging, health checks, Sentry hooks |
+| [Backup](./docs/BACKUP.md) | Database and media backup strategy |
+| [Release Checklist](./docs/RELEASE-CHECKLIST.md) | Pre-launch quality gate |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project structure
 
-## Deploy on Vercel
+```
+src/
+├── app/(site)/       Public routes
+├── app/admin/        Admin panel
+├── app/api/          API routes (contact, health, media, search, seo)
+├── services/         Business logic layer
+├── repositories/     Prisma data access
+└── features/         Feature-specific UI components
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Production deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) for the full guide.
+
+Minimum steps:
+
+1. Configure Vercel environment variables
+2. Deploy to Vercel
+3. Run `npm run db:migrate:deploy`
+4. Verify `/api/health`
+
+## Health check
+
+```
+GET /api/health
+```
+
+Returns database, auth, Cloudinary, and email provider status.
+
+## License
+
+Private project — all rights reserved.

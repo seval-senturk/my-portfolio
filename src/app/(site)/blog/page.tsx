@@ -2,9 +2,11 @@ import { blogContentService } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { BlogListingSection } from "@/features/blog";
 import { SEO_PAGE_KEYS } from "@/constants/seo-pages";
+import { requestBlogContent } from "@/lib/cache/request-dedupe";
+import { absoluteUrl } from "@/lib/url";
 import { buildPageMetadata } from "@/services/seo/seo-resolver.service";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 interface BlogPageProps {
   searchParams: Promise<{
@@ -17,19 +19,52 @@ interface BlogPageProps {
   }>;
 }
 
-export async function generateMetadata() {
-  const blog = await blogContentService.get();
+function hasActiveFilters(params: {
+  category?: string;
+  tag?: string;
+  featured?: string;
+  year?: string;
+  month?: string;
+  q?: string;
+}): boolean {
+  return Boolean(
+    params.category ||
+      params.tag ||
+      params.featured ||
+      params.year ||
+      params.month ||
+      params.q,
+  );
+}
 
-  return buildPageMetadata(SEO_PAGE_KEYS.BLOG, {
+export async function generateMetadata({ searchParams }: BlogPageProps) {
+  const params = await searchParams;
+  const blog = await requestBlogContent();
+  const metadata = await buildPageMetadata(SEO_PAGE_KEYS.BLOG, {
     title: "Blog",
     description: blog.section.description,
     pathname: ROUTES.blog,
   });
+
+  if (!hasActiveFilters(params)) {
+    return metadata;
+  }
+
+  return {
+    ...metadata,
+    alternates: {
+      canonical: absoluteUrl(ROUTES.blog),
+    },
+    robots: {
+      index: false,
+      follow: true,
+    },
+  };
 }
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   const params = await searchParams;
-  const blog = await blogContentService.get();
+  const blog = await requestBlogContent();
   const posts = await blogContentService.listPublishedPosts({
     categorySlug: params.category,
     tagSlug: params.tag,

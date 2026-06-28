@@ -1,4 +1,5 @@
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { SeoAdminShell } from "@/features/admin/seo/components/seo-admin-shell";
 import { buildDynamicRobots } from "@/services/seo/seo-sitemap.service";
 import { getGlobalSeoSettings } from "@/services/admin/seo.admin.service";
@@ -13,19 +14,27 @@ export default async function SeoRobotsAdminPage() {
 
   return (
     <div>
-      <AdminPageHeader title="SEO Management" description="Robots.txt and indexing controls." />
+      <AdminPageHeader title={adminTr.seo.management} description={adminTr.seo.robots.pageDesc} />
       <SeoAdminShell
-        title="Robots Management"
-        description="Global robots defaults are managed in Global Settings. Page-level overrides are configured in Page SEO."
+        title={adminTr.seo.robots.shellTitle}
+        description={adminTr.seo.robots.shellDesc}
       >
         <div className="admin-surface rounded-xl border p-5 text-small">
           <p>
             Default index:{" "}
-            <strong>{globalSettings.defaultRobotsIndex ? "Index" : "No Index"}</strong>
+            <strong>
+              {globalSettings.defaultRobotsIndex
+                ? adminTr.seo.fields.index
+                : adminTr.seo.fields.noIndex}
+            </strong>
           </p>
           <p className="mt-2">
             Default follow:{" "}
-            <strong>{globalSettings.defaultRobotsFollow ? "Follow" : "No Follow"}</strong>
+            <strong>
+              {globalSettings.defaultRobotsFollow
+                ? adminTr.seo.fields.follow
+                : adminTr.seo.fields.noFollow}
+            </strong>
           </p>
           <p className="mt-4 text-caption text-muted-foreground">
             Public robots.txt:{" "}
@@ -46,8 +55,8 @@ export default async function SeoRobotsAdminPage() {
             <thead className="bg-muted/40 text-caption uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="px-5 py-3 font-medium">Page</th>
-                <th className="px-5 py-3 font-medium">Index</th>
-                <th className="px-5 py-3 font-medium">Follow</th>
+                <th className="px-5 py-3 font-medium">{adminTr.seo.fields.index}</th>
+                <th className="px-5 py-3 font-medium">{adminTr.seo.fields.follow}</th>
               </tr>
             </thead>
             <tbody>
@@ -56,17 +65,17 @@ export default async function SeoRobotsAdminPage() {
                   <td className="px-5 py-3">{page.label}</td>
                   <td className="px-5 py-3">
                     {page.robotsIndex == null
-                      ? "Inherit"
+                      ? adminTr.seo.fields.inheritGlobal
                       : page.robotsIndex
-                        ? "Index"
-                        : "No Index"}
+                        ? adminTr.seo.fields.index
+                        : adminTr.seo.fields.noIndex}
                   </td>
                   <td className="px-5 py-3">
                     {page.robotsFollow == null
-                      ? "Inherit"
+                      ? adminTr.seo.fields.inheritGlobal
                       : page.robotsFollow
-                        ? "Follow"
-                        : "No Follow"}
+                        ? adminTr.seo.fields.follow
+                        : adminTr.seo.fields.noFollow}
                   </td>
                 </tr>
               ))}

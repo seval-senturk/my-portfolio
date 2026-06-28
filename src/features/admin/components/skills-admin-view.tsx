@@ -10,6 +10,7 @@ import {
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   AdminDataTable,
   type AdminTableColumn,
@@ -47,14 +48,14 @@ export function SkillsAdminView({ entries }: SkillsAdminViewProps) {
 
   const columns = useMemo<AdminTableColumn<SkillAdminRow>[]>(
     () => [
-      { id: "name", header: "Skill", sortValue: (row) => row.name, accessor: (row) => row.name },
-      { id: "category", header: "Category", sortValue: (row) => row.category, accessor: (row) => row.category },
+      { id: "name", header: adminTr.skills.columns.skill, sortValue: (row) => row.name, accessor: (row) => row.name },
+      { id: "category", header: adminTr.skills.columns.category, sortValue: (row) => row.category, accessor: (row) => row.category },
       {
         id: "featured",
-        header: "Featured",
+        header: adminTr.skills.columns.featured,
         accessor: (row) => (
           <Badge variant={row.featured ? "accent" : "outline"}>
-            {row.featured ? "Yes" : "No"}
+            {row.featured ? adminTr.common.yes : adminTr.common.no}
           </Badge>
         ),
       },
@@ -65,11 +66,11 @@ export function SkillsAdminView({ entries }: SkillsAdminViewProps) {
   return (
     <div>
       <AdminPageHeader
-        title="Skills"
-        description="Manage skills, categories, and proficiency metadata."
+        title={adminTr.skills.title}
+        description={adminTr.skills.description}
         actions={
           <Button type="button" variant="primary" leftIcon={<Plus className="h-4 w-4" />} onClick={() => { setSelected(null); setIsModalOpen(true); }}>
-            Add Skill
+            {adminTr.skills.add}
           </Button>
         }
       />
@@ -97,11 +98,11 @@ export function SkillsAdminView({ entries }: SkillsAdminViewProps) {
       <AdminModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selected ? "Edit Skill" : "Add Skill"}
+        title={selected ? adminTr.skills.edit : adminTr.skills.add}
         size="lg"
         footer={
           <Button type="submit" form="skill-admin-form" variant="primary" isLoading={isPending}>
-            Save Skill
+            {adminTr.skills.saveSkill}
           </Button>
         }
       >
@@ -113,7 +114,7 @@ export function SkillsAdminView({ entries }: SkillsAdminViewProps) {
               const result = await saveSkillAction(formData);
               if (result.success) {
                 setIsModalOpen(false);
-                setStatus({ success: "Skill saved." });
+                setStatus({ success: adminTr.common.saved });
                 window.location.reload();
               } else {
                 setStatus({ error: result.error });
@@ -121,13 +122,13 @@ export function SkillsAdminView({ entries }: SkillsAdminViewProps) {
             });
           }}
         >
-          <AdminFormSection title="Skill details">
-            <AdminTextField id="name" name="name" label="Name" defaultValue={selected?.name} required />
-            <AdminTextField id="category" name="category" label="Category" defaultValue={selected?.category} required />
+          <AdminFormSection title={adminTr.skills.sections.details}>
+            <AdminTextField id="name" name="name" label={adminTr.common.name} defaultValue={selected?.name} required />
+            <AdminTextField id="category" name="category" label={adminTr.skills.columns.category} defaultValue={selected?.category} required />
             <AdminTextareaField id="description" name="description" label="Description" defaultValue={selected?.description ?? undefined} />
             <AdminTextField id="yearsOfExperience" name="yearsOfExperience" label="Years of experience" type="number" defaultValue={selected?.yearsOfExperience ?? undefined} />
             <AdminTextField id="proficiencyLevel" name="proficiencyLevel" label="Proficiency level" defaultValue={selected?.proficiencyLevel ?? undefined} />
-            <AdminSwitchField id="featured" name="featured" label="Featured skill" defaultChecked={selected?.featured ?? false} />
+            <AdminSwitchField id="featured" name="featured" label={adminTr.skills.featuredLabel} defaultChecked={selected?.featured ?? false} />
           </AdminFormSection>
         </form>
       </AdminModal>
@@ -141,16 +142,16 @@ export function SkillsAdminView({ entries }: SkillsAdminViewProps) {
             const result = await deleteSkillAction(deleteId);
             if (result.success) {
               setRows((current) => current.filter((row) => row.id !== deleteId));
-              setStatus({ success: "Skill deleted." });
+              setStatus({ success: adminTr.common.deleted });
             } else {
               setStatus({ error: result.error });
             }
             setIsDeleteOpen(false);
           });
         }}
-        title="Delete skill?"
-        description="This action cannot be undone."
-        confirmLabel="Delete"
+        title={adminTr.skills.deleteTitle}
+        description={adminTr.skills.deleteDesc}
+        confirmLabel={adminTr.common.delete}
         variant="danger"
         isLoading={isPending}
       />

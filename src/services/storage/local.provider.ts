@@ -3,8 +3,6 @@ import path from "node:path";
 
 import type { MediaProvider } from "@prisma/client";
 
-import { env } from "@/lib/env";
-
 import type { StorageProvider, StorageUploadInput, StorageUploadResult } from "./storage-provider.interface";
 
 const UPLOAD_ROOT = path.join(process.cwd(), "public", "uploads");
@@ -20,7 +18,7 @@ export class LocalStorageProvider implements StorageProvider {
     await writeFile(filePath, input.buffer);
 
     const storageKey = `${input.folder}/${input.filename}`;
-    const publicUrl = `${env.siteUrl}/uploads/${storageKey}`;
+    const publicUrl = `/uploads/${storageKey}`;
 
     return {
       storageKey,

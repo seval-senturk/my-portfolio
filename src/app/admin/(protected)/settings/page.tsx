@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { SettingsAdminView } from "@/features/admin/components/settings-admin-view";
 import {
   getPlatformEnvironmentInfo,
@@ -14,3 +12,4 @@ export default async function AdminSettingsPage() {
 
   return <SettingsAdminView settings={settings} environment={environment} />;
 }
+

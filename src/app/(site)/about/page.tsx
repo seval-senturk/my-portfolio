@@ -1,13 +1,13 @@
 import { SEO_PAGE_KEYS } from "@/constants/seo-pages";
-import { aboutContentService } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { AboutSection } from "@/features/about";
+import { requestAboutContent } from "@/lib/cache/request-dedupe";
 import { buildPageMetadata } from "@/services/seo/seo-resolver.service";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata() {
-  const about = await aboutContentService.get();
+  const about = await requestAboutContent();
 
   return buildPageMetadata(SEO_PAGE_KEYS.ABOUT, {
     title: "About",
@@ -17,7 +17,7 @@ export async function generateMetadata() {
 }
 
 export default async function AboutPage() {
-  const about = await aboutContentService.get();
+  const about = await requestAboutContent();
 
   return <AboutSection content={about} titleAs="h1" />;
 }

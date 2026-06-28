@@ -7,6 +7,7 @@ import {
   extractPlainTextFromHtml,
   generateSlugFromTitle,
 } from "@/lib/blog";
+import { resolveSanitizedBlogHtml } from "@/lib/blog/resolve-content-html";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/repositories/shared/locale";
 
@@ -149,7 +150,10 @@ function resolvePublishDates(input: BlogPostInput) {
 }
 
 function buildPostPayload(input: BlogPostInput, slug: string) {
-  const contentHtml = input.contentHtml.trim();
+  const contentHtml = resolveSanitizedBlogHtml({
+    contentHtml: input.contentHtml,
+    contentJson: input.contentJson,
+  });
   const contentJson = input.contentJson
     ? (input.contentJson as Prisma.InputJsonValue)
     : undefined;
@@ -236,7 +240,20 @@ export async function autosaveBlogPostDraft(id: string, input: Partial<BlogPostI
   const existing = await prisma.blogPost.findUnique({ where: { id } });
   if (!existing) return null;
 
-  const contentHtml = input.contentHtml ?? existing.content;
+  let contentHtml: string;
+
+  try {
+    contentHtml = resolveSanitizedBlogHtml({
+      contentHtml: input.contentHtml ?? existing.content,
+      contentJson:
+        input.contentJson ??
+        (existing.contentJson && typeof existing.contentJson === "object"
+          ? (existing.contentJson as Record<string, unknown>)
+          : undefined),
+    });
+  } catch {
+    contentHtml = existing.content;
+  }
   const contentJson = input.contentJson
     ? (input.contentJson as Prisma.InputJsonValue)
     : existing.contentJson

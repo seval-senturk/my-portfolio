@@ -30,55 +30,58 @@ export async function AdminDashboardView() {
   const statCards = [
     {
       id: "projects",
-      label: "Toplam Proje",
+      label: adminTr.dashboard.stats.projects.label,
       value: stats.projects,
-      description: "Proje vitrininde yayınlanan",
+      description: adminTr.dashboard.stats.projects.description,
       trend: computeStatTrend(stats.projects),
     },
     {
       id: "blog",
-      label: "Blog Yazıları",
+      label: adminTr.dashboard.stats.blog.label,
       value: stats.blogPosts,
-      description: "Taslak ve yayınlanmış yazılar",
+      description: adminTr.dashboard.stats.blog.description,
       trend: computeStatTrend(stats.blogPosts),
     },
     {
       id: "experience",
-      label: "Deneyim Kayıtları",
+      label: adminTr.dashboard.stats.experience.label,
       value: stats.experienceEntries,
-      description: "İş geçmişi girişleri",
+      description: adminTr.dashboard.stats.experience.description,
       trend: computeStatTrend(stats.experienceEntries),
     },
     {
       id: "skills",
-      label: "Yetenekler",
+      label: adminTr.dashboard.stats.skills.label,
       value: stats.skills,
-      description: "Beceri ve uzmanlık öğeleri",
+      description: adminTr.dashboard.stats.skills.description,
       trend: computeStatTrend(stats.skills),
     },
     {
       id: "contact",
-      label: "İletişim Mesajları",
+      label: adminTr.dashboard.stats.contact.label,
       value: stats.contactMessages,
-      description: "Veritabanındaki gelen talepler",
+      description: adminTr.dashboard.stats.contact.description,
       trend: computeStatTrend(stats.contactMessages),
     },
     {
       id: "resume",
-      label: "Özgeçmiş Durumu",
-      value: stats.resumeUpdatedAt ?? "Ayarlanmadı",
-      description: "Son içerik güncelleme tarihi",
+      label: adminTr.dashboard.stats.resume.label,
+      value: stats.resumeUpdatedAt ?? adminTr.dashboard.stats.resume.unset,
+      description: adminTr.dashboard.stats.resume.description,
     },
   ] as const;
 
   return (
     <div className="space-y-8">
       <AdminPageHeader
-        title="Dashboard"
-        description="İçerik yönetim merkeziniz — site verilerini izleyin ve hızlı işlemlere geçin."
+        title={adminTr.dashboard.title}
+        description={adminTr.dashboard.description}
         actions={
           <Badge variant="accent">
-            Site {stats.siteStatus === "published" ? "yayında" : "taslak"}
+            Site{" "}
+            {stats.siteStatus === "published"
+              ? adminTr.dashboard.siteStatus.published
+              : adminTr.dashboard.siteStatus.draft}
           </Badge>
         }
       />
@@ -107,9 +110,9 @@ export async function AdminDashboardView() {
 
       <section className="admin-surface p-6">
         <div className="mb-4">
-          <h2 className="text-h4 font-semibold">Hızlı İşlemler</h2>
+          <h2 className="text-h4 font-semibold">{adminTr.dashboard.quickActions}</h2>
           <Text tone="muted" className="mt-1">
-            Portfolyonuzu güncel tutmak için sık kullanılan iş akışları.
+            {adminTr.dashboard.quickActionsDescription}
           </Text>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">

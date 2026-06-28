@@ -1,8 +1,13 @@
 import { ROUTES } from "@/constants/routes";
 import type { ProjectEntry } from "@/types/project";
 
+export function getProjectAnchorPath(slug: string): string {
+  return `${ROUTES.projects}#${slug}`;
+}
+
+/** @deprecated Use getProjectAnchorPath — projects are listed on a single page. */
 export function getProjectDetailPath(slug: string): string {
-  return `${ROUTES.projects}/${slug}`;
+  return getProjectAnchorPath(slug);
 }
 
 export function partitionFeaturedProjects(

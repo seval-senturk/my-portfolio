@@ -1,7 +1,5 @@
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
 import { getBlogPostEditorInitial } from "@/features/admin/blog/blog-admin-data";
 import { BlogPostForm } from "@/features/admin/blog/components/blog-post-form";
 

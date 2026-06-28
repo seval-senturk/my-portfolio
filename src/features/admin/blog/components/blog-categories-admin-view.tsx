@@ -12,6 +12,7 @@ import {
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   AdminDataTable,
   AdminModal,
@@ -43,9 +44,9 @@ export function BlogCategoriesAdminView({ entries }: BlogCategoriesAdminViewProp
 
   const columns = useMemo<AdminTableColumn<BlogCategoryRow>[]>(
     () => [
-      { id: "name", header: "Name", sortValue: (row) => row.name, accessor: (row) => row.name },
-      { id: "slug", header: "Slug", sortValue: (row) => row.slug, accessor: (row) => row.slug },
-      { id: "posts", header: "Posts", accessor: (row) => row.postCount },
+      { id: "name", header: adminTr.common.name, sortValue: (row) => row.name, accessor: (row) => row.name },
+      { id: "slug", header: adminTr.common.slug, sortValue: (row) => row.slug, accessor: (row) => row.slug },
+      { id: "posts", header: adminTr.blog.categories.columns.posts, accessor: (row) => row.postCount },
     ],
     [],
   );
@@ -53,13 +54,13 @@ export function BlogCategoriesAdminView({ entries }: BlogCategoriesAdminViewProp
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Blog Categories"
-        description="Organize articles by topic for SEO and navigation."
+        title={adminTr.blog.categories.title}
+        description={adminTr.blog.categories.description}
         actions={
           <div className="flex gap-2">
             <Link href={ADMIN_ROUTES.blog}>
               <Button type="button" variant="ghost">
-                Back to posts
+                {adminTr.blog.backToPosts}
               </Button>
             </Link>
             <Button
@@ -71,7 +72,7 @@ export function BlogCategoriesAdminView({ entries }: BlogCategoriesAdminViewProp
                 setIsModalOpen(true);
               }}
             >
-              Add category
+              {adminTr.blog.categories.add}
             </Button>
           </div>
         }
@@ -108,7 +109,7 @@ export function BlogCategoriesAdminView({ entries }: BlogCategoriesAdminViewProp
       <AdminModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selected ? "Edit category" : "Add category"}
+        title={selected ? adminTr.blog.categories.edit : adminTr.blog.categories.add}
       >
         <form
           action={async (formData) => {
@@ -118,7 +119,7 @@ export function BlogCategoriesAdminView({ entries }: BlogCategoriesAdminViewProp
                 setStatus({ error: result.error });
                 return;
               }
-              setStatus({ success: "Category saved." });
+              setStatus({ success: adminTr.common.saved });
               setIsModalOpen(false);
               window.location.reload();
             });
@@ -129,26 +130,26 @@ export function BlogCategoriesAdminView({ entries }: BlogCategoriesAdminViewProp
           <AdminTextField
             id="name"
             name="name"
-            label="Name"
+            label={adminTr.common.name}
             required
             defaultValue={selected?.name ?? ""}
           />
           <AdminTextField
             id="slug"
             name="slug"
-            label="Slug"
-            hint="Leave blank to auto-generate."
+            label={adminTr.common.slug}
+            hint={adminTr.blog.slugHint}
             defaultValue={selected?.slug ?? ""}
           />
           <AdminTextareaField
             id="description"
             name="description"
-            label="Description"
+            label={adminTr.common.description}
             rows={3}
             defaultValue={selected?.description ?? ""}
           />
           <Button type="submit" variant="primary" isLoading={isPending}>
-            Save category
+            {adminTr.blog.saveCategory}
           </Button>
         </form>
       </AdminModal>
@@ -156,9 +157,9 @@ export function BlogCategoriesAdminView({ entries }: BlogCategoriesAdminViewProp
       <AdminConfirmDialog
         isOpen={Boolean(deleteId)}
         onClose={() => setDeleteId(null)}
-        title="Delete category"
-        description="Posts linked to this category will lose the association."
-        confirmLabel="Delete"
+        title={adminTr.blog.categories.deleteTitle}
+        description={adminTr.blog.categories.deleteDesc}
+        confirmLabel={adminTr.common.delete}
         variant="danger"
         isLoading={isPending}
         onConfirm={() => {
@@ -173,7 +174,7 @@ export function BlogCategoriesAdminView({ entries }: BlogCategoriesAdminViewProp
             }
             setRows((current) => current.filter((row) => row.id !== deleteId));
             setDeleteId(null);
-            setStatus({ success: "Category deleted." });
+            setStatus({ success: adminTr.common.deleted });
           });
         }}
       />

@@ -6,6 +6,7 @@ import { BRAND_ASSET_FIELDS } from "@/constants/media-categories";
 import { assignBrandAssetAction } from "@/features/admin/actions/media.actions";
 import { MediaAdminShell } from "@/features/admin/media/components/media-admin-shell";
 import { MediaPickerModal } from "@/features/admin/media/components/media-picker-modal";
+import { adminTr } from "@/features/admin/i18n/tr";
 import type { MediaAssetRecord, MediaUsageRecord } from "@/types/media-management";
 
 import { Button } from "@/components/ui/button";
@@ -49,7 +50,7 @@ export function BrandAssetsView({ assignments, assets }: BrandAssetsViewProps) {
 
     startTransition(async () => {
       const result = await assignBrandAssetAction(formData);
-      setStatusMessage(result.success ? String(result.data ?? "Assigned.") : result.error ?? null);
+      setStatusMessage(result.success ? String(result.data ?? adminTr.media.assigned) : result.error ?? null);
       setPickerField(null);
       window.location.reload();
     });
@@ -57,8 +58,8 @@ export function BrandAssetsView({ assignments, assets }: BrandAssetsViewProps) {
 
   return (
     <MediaAdminShell
-      title="Brand Assets"
-      description="Manage logos, favicons, PWA icons, and default Open Graph images from one place."
+      title={adminTr.media.brand}
+      description={adminTr.media.brandDesc}
     >
       {statusMessage ? (
         <p className="rounded-lg bg-muted px-3 py-2 text-small" role="status">
@@ -76,7 +77,7 @@ export function BrandAssetsView({ assignments, assets }: BrandAssetsViewProps) {
               <div>
                 <Text className="font-medium">{field.label}</Text>
                 <Text tone="muted" className="text-caption">
-                  Category: {field.category}
+                  {adminTr.media.categoryLabel}: {field.category}
                 </Text>
               </div>
 
@@ -95,7 +96,7 @@ export function BrandAssetsView({ assignments, assets }: BrandAssetsViewProps) {
                 </Text>
               ) : (
                 <Text tone="muted" className="text-caption">
-                  Not assigned
+                  {adminTr.media.notAssigned}
                 </Text>
               )}
 
@@ -106,7 +107,7 @@ export function BrandAssetsView({ assignments, assets }: BrandAssetsViewProps) {
                 disabled={isPending}
                 onClick={() => setPickerField(field)}
               >
-                {asset ? "Change asset" : "Select asset"}
+                {asset ? adminTr.media.changeAsset : adminTr.media.selectAsset}
               </Button>
             </article>
           );
@@ -118,7 +119,7 @@ export function BrandAssetsView({ assignments, assets }: BrandAssetsViewProps) {
         onClose={() => setPickerField(null)}
         onSelect={handleAssign}
         categoryFilter={pickerField?.category}
-        title={pickerField ? `Select ${pickerField.label}` : "Select asset"}
+        title={pickerField ? `${adminTr.media.selectAsset}: ${pickerField.label}` : adminTr.media.selectTitle}
       />
     </MediaAdminShell>
   );

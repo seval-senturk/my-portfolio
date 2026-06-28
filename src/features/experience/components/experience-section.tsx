@@ -1,7 +1,9 @@
 import type { ExperienceContent } from "@/types/experience";
 import type { HeadingLevel } from "@/types/ui";
+import { ROUTES } from "@/constants/routes";
 
 import { ExperienceTimelineView } from "@/features/experience/components/experience-timeline-view";
+import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 
@@ -28,6 +30,11 @@ export function ExperienceSection({
     >
       <Container size="default">
         <ExperienceTimelineView entries={entries} />
+        <div className="mt-8 border-t border-border pt-6">
+          <ButtonLink href={ROUTES.resume} variant="link">
+            View full resume and download CV
+          </ButtonLink>
+        </div>
       </Container>
     </Section>
   );

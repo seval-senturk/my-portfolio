@@ -1,12 +1,14 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 import { adminError, adminSuccess } from "@/lib/admin/action-result";
+import { CACHE_TAGS } from "@/lib/cache/server";
 import { AuditActions, recordAudit } from "@/lib/platform/audit";
 import { getOptionalString, getString, validateRequired } from "@/lib/admin/validation";
 import { requireAdminUser } from "@/lib/auth/session";
+import { resolveSanitizedBlogHtml } from "@/lib/blog/resolve-content-html";
 import { parseCommaList } from "@/services/admin/project.admin.service";
 import {
   autosaveBlogPostDraft,
@@ -27,6 +29,8 @@ import {
 } from "@/services/admin/blog-tag.admin.service";
 
 function revalidateBlogPaths(slug?: string) {
+  revalidateTag(CACHE_TAGS.content);
+  revalidateTag(CACHE_TAGS.seo);
   revalidatePath("/blog");
   revalidatePath(ADMIN_ROUTES.blog);
   if (slug) {
@@ -55,6 +59,12 @@ function parseBlogPostForm(formData: FormData): BlogPostInput | { error: string 
     } catch {
       return { error: "Invalid editor content." };
     }
+  }
+
+  try {
+    resolveSanitizedBlogHtml({ contentHtml, contentJson });
+  } catch {
+    return { error: "Blog content cannot be empty." };
   }
 
   const status = getString(formData, "status") as BlogPostInput["status"];
@@ -120,8 +130,9 @@ export async function saveBlogPostAction(formData: FormData) {
       summary: `Blog post saved: ${post.slug}`,
     });
     return adminSuccess({ id: post.id, slug: post.slug });
-  } catch {
-    return adminError("Failed to save blog post.");
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to save blog post.";
+    return adminError(message);
   }
 }
 

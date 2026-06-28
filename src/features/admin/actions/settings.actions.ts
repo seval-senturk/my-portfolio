@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 import {
@@ -9,12 +9,15 @@ import {
   type FeatureFlagKey,
 } from "@/constants/feature-flags";
 import { adminError, adminSuccess } from "@/lib/admin/action-result";
+import { CACHE_TAGS } from "@/lib/cache/server";
 import { AuditActions, recordAudit } from "@/lib/platform/audit";
 import { requireAdminUser } from "@/lib/auth/session";
 import { cacheDelete } from "@/services/platform/cache.service";
 import { savePlatformSettings } from "@/services/platform/settings.service";
 
 function revalidateSettingsPaths() {
+  revalidateTag(CACHE_TAGS.settings);
+  revalidateTag(CACHE_TAGS.content);
   revalidatePath(ADMIN_ROUTES.settings);
   revalidatePath("/");
 }

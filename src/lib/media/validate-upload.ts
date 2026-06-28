@@ -6,7 +6,6 @@ const IMAGE_MIMES = new Set([
   "image/webp",
   "image/gif",
   "image/avif",
-  "image/svg+xml",
 ]);
 
 const PDF_MIMES = new Set(["application/pdf"]);
@@ -41,7 +40,7 @@ export function resolveAssetType(mimeType: string, filename: string): MediaAsset
   const lower = filename.toLowerCase();
 
   if (mimeType === "image/svg+xml" || lower.endsWith(".svg")) {
-    return "SVG";
+    throw new Error("SVG uploads are disabled for security reasons.");
   }
 
   if (IMAGE_MIMES.has(mimeType)) {
@@ -79,20 +78,28 @@ export function validateUploadFile(
     errors.push(`File extension ${extension} is not allowed.`);
   }
 
-  const assetType = resolveAssetType(mimeType, filename);
+  if (mimeType === "image/svg+xml" || filename.toLowerCase().endsWith(".svg")) {
+    errors.push("SVG uploads are disabled for security reasons.");
+  }
+
   const allowed =
     IMAGE_MIMES.has(mimeType) ||
     PDF_MIMES.has(mimeType) ||
     mimeType.startsWith("video/");
 
-  if (!allowed) {
+  if (!allowed && errors.length === 0) {
     errors.push(`MIME type ${mimeType} is not supported.`);
+  }
+
+  let assetType: MediaAssetType = "DOCUMENT";
+  if (errors.length === 0) {
+    assetType = resolveAssetType(mimeType, filename);
   }
 
   let maxSize = MEDIA_SIZE_LIMITS.default;
 
   if (IMAGE_MIMES.has(mimeType)) {
-    maxSize = mimeType === "image/svg+xml" ? MEDIA_SIZE_LIMITS.svg : MEDIA_SIZE_LIMITS.image;
+    maxSize = MEDIA_SIZE_LIMITS.image;
   } else if (PDF_MIMES.has(mimeType)) {
     maxSize = MEDIA_SIZE_LIMITS.pdf;
   }

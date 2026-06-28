@@ -1,8 +1,9 @@
 import Link from "next/link";
 
 import { ROUTES } from "@/constants/routes";
-import { formatReadingTime } from "@/lib/blog";
+import { formatReadingTime } from "@/lib/blog/reading-time";
 import type { BlogPost } from "@/types/blog";
+import { BlogCoverImage } from "@/features/blog/components/blog-cover-image";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
@@ -16,23 +17,23 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
   return (
     <Card className="h-full overflow-hidden">
       {post.coverImage ? (
-        <div className="aspect-[16/9] overflow-hidden bg-muted">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={post.coverImage}
-            alt={post.coverImageAlt ?? post.title}
-            loading="lazy"
-            className="h-full w-full object-cover"
-          />
-        </div>
+        <BlogCoverImage
+          src={post.coverImage}
+          alt={post.coverImageAlt ?? post.title}
+          className="aspect-[16/9] rounded-t-xl"
+        />
       ) : null}
       <Card.Content className="space-y-3">
         <div className="flex flex-wrap gap-2">
           {post.featured ? <Badge variant="accent">Featured</Badge> : null}
           {post.categories?.slice(0, 2).map((category) => (
-            <Badge key={category.id} variant="outline">
-              {category.name}
-            </Badge>
+            <Link
+              key={category.id}
+              href={`${ROUTES.blog}?category=${category.slug}`}
+              className="no-underline"
+            >
+              <Badge variant="outline">{category.name}</Badge>
+            </Link>
           ))}
         </div>
         <Link href={`${ROUTES.blog}/${post.slug}`} className="block no-underline">

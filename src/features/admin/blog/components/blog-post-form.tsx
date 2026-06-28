@@ -8,6 +8,7 @@ import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 import { saveBlogPostAction } from "@/features/admin/actions/blog.actions";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { generateSlugFromTitle } from "@/lib/blog";
 import {
   AdminFormActions,
@@ -29,7 +30,7 @@ const BlogRichTextEditor = dynamic(
     ssr: false,
     loading: () => (
       <div className="min-h-[360px] rounded-xl border border-border bg-muted/30 p-6 text-small text-muted-foreground">
-        Loading editor…
+        {adminTr.blog.loadingEditor}
       </div>
     ),
   },
@@ -127,7 +128,7 @@ export function BlogPostForm({ initial, categories, tags, mode }: BlogPostFormPr
         return;
       }
 
-      setStatus({ success: "Blog post saved." });
+      setStatus({ success: adminTr.common.saved });
       if (mode === "create" && result.data?.id) {
         window.location.href = `${ADMIN_ROUTES.blog}/${result.data.id}/edit`;
       }
@@ -145,20 +146,20 @@ export function BlogPostForm({ initial, categories, tags, mode }: BlogPostFormPr
       />
 
       <AdminPageHeader
-        title={mode === "create" ? "New Blog Post" : "Edit Blog Post"}
-        description="Write SEO-focused articles with the rich text editor."
+        title={mode === "create" ? adminTr.blog.newPost : adminTr.blog.editPost}
+        description={adminTr.blog.editDesc}
         actions={
           <div className="flex gap-2">
             {previewHref ? (
               <Link href={previewHref}>
                 <Button type="button" variant="outline">
-                  Preview
+                  {adminTr.common.preview}
                 </Button>
               </Link>
             ) : null}
             <Link href={ADMIN_ROUTES.blog}>
               <Button type="button" variant="ghost">
-                Back to list
+                {adminTr.blog.backToList}
               </Button>
             </Link>
           </div>
@@ -167,7 +168,7 @@ export function BlogPostForm({ initial, categories, tags, mode }: BlogPostFormPr
 
       <AdminFormStatus error={status.error} success={status.success} />
 
-      <AdminFormSection title="Content">
+      <AdminFormSection title={adminTr.blog.sections.content}>
         <AdminTextField
           id="title"
           label="Title"
@@ -215,18 +216,18 @@ export function BlogPostForm({ initial, categories, tags, mode }: BlogPostFormPr
         </div>
       </AdminFormSection>
 
-      <AdminFormSection title="Publishing">
+      <AdminFormSection title={adminTr.blog.sections.publishing}>
         <AdminSelectField
           id="status"
-          label="Status"
+          label={adminTr.common.status}
           name="status"
           value={values.status}
           onChange={(value) => updateField("status", value as BlogPostFormValues["status"])}
           options={[
-            { label: "Draft", value: "draft" },
-            { label: "Published", value: "published" },
-            { label: "Scheduled", value: "scheduled" },
-            { label: "Archived", value: "archived" },
+            { label: adminTr.blog.status.draft, value: "draft" },
+            { label: adminTr.blog.status.published, value: "published" },
+            { label: adminTr.blog.status.scheduled, value: "scheduled" },
+            { label: adminTr.blog.status.archived, value: "archived" },
           ]}
         />
         {values.status === "scheduled" ? (
@@ -243,14 +244,14 @@ export function BlogPostForm({ initial, categories, tags, mode }: BlogPostFormPr
         ) : null}
         <AdminSwitchField
           id="featured"
-          label="Featured article"
+          label={adminTr.blog.featuredArticle}
           name="featured"
           checked={values.featured}
           onChange={(checked) => updateField("featured", checked)}
         />
       </AdminFormSection>
 
-      <AdminFormSection title="Media">
+      <AdminFormSection title={adminTr.blog.sections.media}>
         <AdminUploadField
           id="coverImageUrl"
           label="Cover image URL"
@@ -268,10 +269,10 @@ export function BlogPostForm({ initial, categories, tags, mode }: BlogPostFormPr
         />
       </AdminFormSection>
 
-      <AdminFormSection title="Taxonomy">
+      <AdminFormSection title={adminTr.blog.sections.taxonomy}>
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <p className="mb-2 text-small font-medium">Categories</p>
+            <p className="mb-2 text-small font-medium">{adminTr.blog.categoriesNav}</p>
             <div className="space-y-2 rounded-xl border border-border p-3">
               {categories.map((category) => (
                 <label key={category.id} className="flex items-center gap-2 text-small">
@@ -288,7 +289,7 @@ export function BlogPostForm({ initial, categories, tags, mode }: BlogPostFormPr
             </div>
           </div>
           <div>
-            <p className="mb-2 text-small font-medium">Tags</p>
+            <p className="mb-2 text-small font-medium">{adminTr.blog.tagsNav}</p>
             <div className="space-y-2 rounded-xl border border-border p-3">
               {tags.map((tag) => (
                 <label key={tag.id} className="flex items-center gap-2 text-small">
@@ -307,7 +308,7 @@ export function BlogPostForm({ initial, categories, tags, mode }: BlogPostFormPr
         </div>
       </AdminFormSection>
 
-      <AdminFormSection title="SEO">
+      <AdminFormSection title={adminTr.blog.sections.seo}>
         <AdminTextField
           id="seoMetaTitle"
           label="Meta title"
@@ -405,8 +406,8 @@ export function BlogPostForm({ initial, categories, tags, mode }: BlogPostFormPr
             }))
           }
           options={[
-            { value: "SUMMARY", label: "Summary" },
-            { value: "SUMMARY_LARGE_IMAGE", label: "Summary Large Image" },
+            { value: "SUMMARY", label: adminTr.seo.fields.summary },
+            { value: "SUMMARY_LARGE_IMAGE", label: adminTr.seo.fields.summaryLargeImage },
           ]}
         />
         <AdminTextField
@@ -424,7 +425,7 @@ export function BlogPostForm({ initial, categories, tags, mode }: BlogPostFormPr
         />
         <AdminTextareaField
           id="seoNotes"
-          label="SEO notes (internal)"
+          label={adminTr.seo.fields.seoNotes}
           name="seoNotes"
           rows={3}
           value={values.seo.seoNotes}
@@ -440,7 +441,7 @@ export function BlogPostForm({ initial, categories, tags, mode }: BlogPostFormPr
 
       <AdminFormActions>
         <Button type="submit" variant="primary" isLoading={isPending}>
-          {mode === "create" ? "Create post" : "Save changes"}
+          {mode === "create" ? adminTr.blog.createPost : adminTr.blog.saveChanges}
         </Button>
       </AdminFormActions>
     </form>

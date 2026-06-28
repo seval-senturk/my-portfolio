@@ -20,9 +20,9 @@ export const DEFAULT_FEATURE_FLAGS: Record<FeatureFlagKey, boolean> = {
 
 export const FEATURE_FLAG_LABELS: Record<FeatureFlagKey, string> = {
   blog: "Blog",
-  contactForm: "Contact Form",
-  newsletter: "Newsletter",
-  aiCareer: "AI Career Platform",
-  mediaLibrary: "Media Library",
-  seoManagement: "SEO Management",
+  contactForm: "İletişim Formu",
+  newsletter: "Bülten",
+  aiCareer: "AI Kariyer Platformu",
+  mediaLibrary: "Medya Kütüphanesi",
+  seoManagement: "SEO Yönetimi",
 };

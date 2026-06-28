@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import { listBlogTagsAdmin } from "@/services/admin/blog-tag.admin.service";
 import { BlogTagsAdminView } from "@/features/admin/blog/components/blog-tags-admin-view";
 
@@ -17,3 +15,4 @@ export default async function AdminBlogTagsPage() {
     />
   );
 }
+

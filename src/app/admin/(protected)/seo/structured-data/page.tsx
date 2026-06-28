@@ -1,4 +1,5 @@
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { SeoAdminShell } from "@/features/admin/seo/components/seo-admin-shell";
 import { SeoStructuredDataEditor } from "@/features/admin/seo/components/seo-structured-data-editor";
 import { listStructuredDataRules } from "@/services/admin/seo.admin.service";
@@ -8,10 +9,10 @@ export default async function SeoStructuredDataAdminPage() {
 
   return (
     <div>
-      <AdminPageHeader title="SEO Management" description="Manage JSON-LD schema generation." />
+      <AdminPageHeader title={adminTr.seo.management} description={adminTr.seo.structuredData.pageDesc} />
       <SeoAdminShell
-        title="Structured Data"
-        description="Enable or disable automatic JSON-LD schema types across the site."
+        title={adminTr.seo.navTitles.structuredData}
+        description={adminTr.seo.structuredData.shellDesc}
       >
         <SeoStructuredDataEditor rules={rules} />
       </SeoAdminShell>

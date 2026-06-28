@@ -10,6 +10,7 @@ import {
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   AdminDataTable,
   type AdminTableColumn,
@@ -58,7 +59,7 @@ export function ProjectsAdminView({ entries }: ProjectsAdminViewProps) {
     () => [
       {
         id: "title",
-        header: "Project",
+        header: adminTr.projects.columns.project,
         sortValue: (row) => row.title,
         accessor: (row) => (
           <div>
@@ -67,13 +68,13 @@ export function ProjectsAdminView({ entries }: ProjectsAdminViewProps) {
           </div>
         ),
       },
-      { id: "category", header: "Category", sortValue: (row) => row.category, accessor: (row) => row.category },
+      { id: "category", header: adminTr.projects.columns.category, sortValue: (row) => row.category, accessor: (row) => row.category },
       {
         id: "featured",
-        header: "Featured",
+        header: adminTr.projects.columns.featured,
         accessor: (row) => (
           <Badge variant={row.featured ? "accent" : "outline"}>
-            {row.featured ? "Yes" : "No"}
+            {row.featured ? adminTr.common.yes : adminTr.common.no}
           </Badge>
         ),
       },
@@ -84,11 +85,11 @@ export function ProjectsAdminView({ entries }: ProjectsAdminViewProps) {
   return (
     <div>
       <AdminPageHeader
-        title="Projects"
-        description="Create, edit, and organize portfolio project entries."
+        title={adminTr.projects.title}
+        description={adminTr.projects.description}
         actions={
           <Button type="button" variant="primary" leftIcon={<Plus className="h-4 w-4" />} onClick={() => { setSelected(null); setIsModalOpen(true); }}>
-            Add Project
+            {adminTr.projects.add}
           </Button>
         }
       />
@@ -116,11 +117,11 @@ export function ProjectsAdminView({ entries }: ProjectsAdminViewProps) {
       <AdminModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selected ? "Edit Project" : "Add Project"}
+        title={selected ? adminTr.projects.edit : adminTr.projects.add}
         size="xl"
         footer={
           <Button type="submit" form="project-admin-form" variant="primary" isLoading={isPending}>
-            Save Project
+            {adminTr.projects.saveProject}
           </Button>
         }
       >
@@ -133,7 +134,7 @@ export function ProjectsAdminView({ entries }: ProjectsAdminViewProps) {
               const result = await saveProjectAction(formData);
               if (result.success) {
                 setIsModalOpen(false);
-                setStatus({ success: "Project saved." });
+                setStatus({ success: adminTr.common.saved });
                 window.location.reload();
               } else {
                 setStatus({ error: result.error });
@@ -141,7 +142,7 @@ export function ProjectsAdminView({ entries }: ProjectsAdminViewProps) {
             });
           }}
         >
-          <AdminFormSection title="Project details">
+          <AdminFormSection title={adminTr.projects.sections.details}>
             <div className="grid gap-4 md:grid-cols-2">
               <AdminTextField id="title" name="title" label="Title" defaultValue={selected?.title} required />
               <AdminTextField id="slug" name="slug" label="Slug" defaultValue={selected?.slug} required />
@@ -150,7 +151,7 @@ export function ProjectsAdminView({ entries }: ProjectsAdminViewProps) {
               <AdminTextField id="role" name="role" label="Role" defaultValue={selected?.role} required />
               <AdminTextField id="client" name="client" label="Client" defaultValue={selected?.client ?? undefined} />
             </div>
-            <AdminSwitchField id="featured" name="featured" label="Featured project" defaultChecked={selected?.featured ?? false} />
+            <AdminSwitchField id="featured" name="featured" label={adminTr.projects.featuredLabel} defaultChecked={selected?.featured ?? false} />
             <AdminTextareaField id="shortDescription" name="shortDescription" label="Short description" defaultValue={selected?.shortDescription} required />
             <AdminTextareaField id="longDescription" name="longDescription" label="Long description" defaultValue={selected?.longDescription} required />
             <AdminUploadField id="coverImageUrl" name="coverImageUrl" label="Cover image URL" defaultValue={selected?.coverImageUrl ?? undefined} />
@@ -171,16 +172,16 @@ export function ProjectsAdminView({ entries }: ProjectsAdminViewProps) {
             const result = await deleteProjectAction(deleteId);
             if (result.success) {
               setRows((current) => current.filter((row) => row.id !== deleteId));
-              setStatus({ success: "Project deleted." });
+              setStatus({ success: adminTr.common.deleted });
             } else {
               setStatus({ error: result.error });
             }
             setIsDeleteOpen(false);
           });
         }}
-        title="Delete project?"
-        description="This action cannot be undone."
-        confirmLabel="Delete"
+        title={adminTr.projects.deleteTitle}
+        description={adminTr.projects.deleteDesc}
+        confirmLabel={adminTr.common.delete}
         variant="danger"
         isLoading={isPending}
       />

@@ -4,6 +4,7 @@ import { Loader2, Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { AdminModal } from "@/features/admin/ui/modal/admin-modal";
+import { adminTr } from "@/features/admin/i18n/tr";
 import type { MediaAssetRecord, MediaListResult } from "@/types/media-management";
 
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,7 @@ export function MediaPickerModal({
   isOpen,
   onClose,
   onSelect,
-  title = "Select from Media Library",
+  title = adminTr.media.selectTitle,
   categoryFilter,
 }: MediaPickerModalProps) {
   const [search, setSearch] = useState("");
@@ -58,11 +59,11 @@ export function MediaPickerModal({
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      description="Choose an existing asset from the central media library."
+      description={adminTr.media.pickerDesc}
       size="xl"
       footer={
         <Button type="button" variant="outline" onClick={onClose}>
-          Cancel
+          {adminTr.common.cancel}
         </Button>
       }
     >
@@ -77,7 +78,7 @@ export function MediaPickerModal({
                 void loadAssets();
               }
             }}
-            placeholder="Search media…"
+            placeholder={adminTr.media.pickerSearch}
             className="pl-9"
           />
         </div>
@@ -87,7 +88,7 @@ export function MediaPickerModal({
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : assets.length === 0 ? (
-          <Text tone="muted">No matching assets found.</Text>
+          <Text tone="muted">{adminTr.common.noResults}</Text>
         ) : (
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
             {assets.map((asset) => (

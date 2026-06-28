@@ -9,6 +9,7 @@ import { deleteBlogTagAction, saveBlogTagAction } from "@/features/admin/actions
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   AdminDataTable,
   AdminModal,
@@ -38,9 +39,9 @@ export function BlogTagsAdminView({ entries }: BlogTagsAdminViewProps) {
 
   const columns = useMemo<AdminTableColumn<BlogTagRow>[]>(
     () => [
-      { id: "name", header: "Name", sortValue: (row) => row.name, accessor: (row) => row.name },
-      { id: "slug", header: "Slug", sortValue: (row) => row.slug, accessor: (row) => row.slug },
-      { id: "posts", header: "Posts", accessor: (row) => row.postCount },
+      { id: "name", header: adminTr.common.name, sortValue: (row) => row.name, accessor: (row) => row.name },
+      { id: "slug", header: adminTr.common.slug, sortValue: (row) => row.slug, accessor: (row) => row.slug },
+      { id: "posts", header: adminTr.blog.categories.columns.posts, accessor: (row) => row.postCount },
     ],
     [],
   );
@@ -48,13 +49,13 @@ export function BlogTagsAdminView({ entries }: BlogTagsAdminViewProps) {
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Blog Tags"
-        description="Use tags for granular filtering and future search."
+        title={adminTr.blog.tags.title}
+        description={adminTr.blog.tags.description}
         actions={
           <div className="flex gap-2">
             <Link href={ADMIN_ROUTES.blog}>
               <Button type="button" variant="ghost">
-                Back to posts
+                {adminTr.blog.backToPosts}
               </Button>
             </Link>
             <Button
@@ -66,7 +67,7 @@ export function BlogTagsAdminView({ entries }: BlogTagsAdminViewProps) {
                 setIsModalOpen(true);
               }}
             >
-              Add tag
+              {adminTr.blog.tags.add}
             </Button>
           </div>
         }
@@ -103,7 +104,7 @@ export function BlogTagsAdminView({ entries }: BlogTagsAdminViewProps) {
       <AdminModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selected ? "Edit tag" : "Add tag"}
+        title={selected ? adminTr.blog.tags.edit : adminTr.blog.tags.add}
       >
         <form
           action={async (formData) => {
@@ -113,7 +114,7 @@ export function BlogTagsAdminView({ entries }: BlogTagsAdminViewProps) {
                 setStatus({ error: result.error });
                 return;
               }
-              setStatus({ success: "Tag saved." });
+              setStatus({ success: adminTr.common.saved });
               setIsModalOpen(false);
               window.location.reload();
             });
@@ -124,19 +125,19 @@ export function BlogTagsAdminView({ entries }: BlogTagsAdminViewProps) {
           <AdminTextField
             id="name"
             name="name"
-            label="Name"
+            label={adminTr.common.name}
             required
             defaultValue={selected?.name ?? ""}
           />
           <AdminTextField
             id="slug"
             name="slug"
-            label="Slug"
-            hint="Leave blank to auto-generate."
+            label={adminTr.common.slug}
+            hint={adminTr.blog.slugHint}
             defaultValue={selected?.slug ?? ""}
           />
           <Button type="submit" variant="primary" isLoading={isPending}>
-            Save tag
+            {adminTr.blog.saveTag}
           </Button>
         </form>
       </AdminModal>
@@ -144,9 +145,9 @@ export function BlogTagsAdminView({ entries }: BlogTagsAdminViewProps) {
       <AdminConfirmDialog
         isOpen={Boolean(deleteId)}
         onClose={() => setDeleteId(null)}
-        title="Delete tag"
-        description="Posts linked to this tag will lose the association."
-        confirmLabel="Delete"
+        title={adminTr.blog.tags.deleteTitle}
+        description={adminTr.blog.tags.deleteDesc}
+        confirmLabel={adminTr.common.delete}
         variant="danger"
         isLoading={isPending}
         onConfirm={() => {
@@ -161,7 +162,7 @@ export function BlogTagsAdminView({ entries }: BlogTagsAdminViewProps) {
             }
             setRows((current) => current.filter((row) => row.id !== deleteId));
             setDeleteId(null);
-            setStatus({ success: "Tag deleted." });
+            setStatus({ success: adminTr.common.deleted });
           });
         }}
       />

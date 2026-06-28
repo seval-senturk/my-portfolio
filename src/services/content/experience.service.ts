@@ -1,5 +1,6 @@
 import type { ContentQueryOptions } from "@/content/shared/types";
 import type { ExperienceRepository } from "@/content/domains/experience/repository";
+import { cacheContent } from "@/lib/cache/server";
 import { prismaExperienceRepository } from "@/repositories/prisma/experience.repository";
 import { resolveLocale } from "@/repositories/shared/locale";
 import type { ExperienceContent, ExperienceEntry } from "@/types/experience";
@@ -10,7 +11,10 @@ export class ExperienceService {
   ) {}
 
   get(options?: ContentQueryOptions): Promise<ExperienceContent> {
-    return this.repository.get({ ...options, locale: resolveLocale(options) });
+    const locale = resolveLocale(options);
+    return cacheContent("experience", [locale], () =>
+      this.repository.get({ ...options, locale }),
+    );
   }
 
   getEntryById(

@@ -9,6 +9,7 @@ import { deleteBlogPostAction } from "@/features/admin/actions/blog.actions";
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { AdminDataTable, type AdminTableColumn } from "@/features/admin/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,7 @@ export function BlogAdminView({ entries }: BlogAdminViewProps) {
     () => [
       {
         id: "title",
-        header: "Article",
+        header: adminTr.blog.columns.article,
         sortValue: (row) => row.title,
         accessor: (row) => (
           <div>
@@ -49,23 +50,23 @@ export function BlogAdminView({ entries }: BlogAdminViewProps) {
       },
       {
         id: "status",
-        header: "Status",
+        header: adminTr.common.status,
         sortValue: (row) => row.status,
         accessor: (row) => <Badge variant="outline">{row.status}</Badge>,
       },
       {
         id: "featured",
-        header: "Featured",
+        header: adminTr.common.featured,
         accessor: (row) => (
           <Badge variant={row.featured ? "accent" : "secondary"}>
-            {row.featured ? "Yes" : "No"}
+            {row.featured ? adminTr.common.yes : adminTr.common.no}
           </Badge>
         ),
       },
       {
         id: "readingTime",
-        header: "Read time",
-        accessor: (row) => `${row.readingTimeMinutes} min`,
+        header: adminTr.blog.columns.readTime,
+        accessor: (row) => `${row.readingTimeMinutes} ${adminTr.blog.minRead}`,
       },
     ],
     [],
@@ -74,23 +75,23 @@ export function BlogAdminView({ entries }: BlogAdminViewProps) {
   return (
     <div className="space-y-6">
       <AdminPageHeader
-        title="Blog"
-        description="Manage articles, categories, tags, and SEO metadata."
+        title={adminTr.blog.title}
+        description={adminTr.blog.description}
         actions={
           <div className="flex flex-wrap gap-2">
             <Link href={`${ADMIN_ROUTES.blog}/categories`}>
               <Button type="button" variant="outline">
-                Categories
+                {adminTr.blog.categoriesNav}
               </Button>
             </Link>
             <Link href={`${ADMIN_ROUTES.blog}/tags`}>
               <Button type="button" variant="outline">
-                Tags
+                {adminTr.blog.tagsNav}
               </Button>
             </Link>
             <Link href={`${ADMIN_ROUTES.blog}/new`}>
               <Button type="button" variant="primary" leftIcon={<Plus className="h-4 w-4" />}>
-                New post
+                {adminTr.blog.newPost}
               </Button>
             </Link>
           </div>
@@ -110,12 +111,12 @@ export function BlogAdminView({ entries }: BlogAdminViewProps) {
         rowActions={(row) => (
           <div className="flex justify-end gap-2">
             <Link href={`${ADMIN_ROUTES.blog}/${row.id}/preview`}>
-              <Button type="button" variant="ghost" size="sm" aria-label="Preview">
+              <Button type="button" variant="ghost" size="sm" aria-label={adminTr.common.preview}>
                 <Eye className="h-4 w-4" />
               </Button>
             </Link>
             <Link href={`${ADMIN_ROUTES.blog}/${row.id}/edit`}>
-              <Button type="button" variant="ghost" size="sm" aria-label="Edit">
+              <Button type="button" variant="ghost" size="sm" aria-label={adminTr.common.edit}>
                 <Pencil className="h-4 w-4" />
               </Button>
             </Link>
@@ -123,7 +124,7 @@ export function BlogAdminView({ entries }: BlogAdminViewProps) {
               type="button"
               variant="ghost"
               size="sm"
-              aria-label="Delete"
+              aria-label={adminTr.common.delete}
               onClick={() => setDeleteId(row.id)}
             >
               <Trash2 className="h-4 w-4 text-error" />
@@ -135,9 +136,9 @@ export function BlogAdminView({ entries }: BlogAdminViewProps) {
       <AdminConfirmDialog
         isOpen={Boolean(deleteId)}
         onClose={() => setDeleteId(null)}
-        title="Delete blog post"
-        description="This action cannot be undone."
-        confirmLabel="Delete"
+        title={adminTr.blog.deleteTitle}
+        description={adminTr.blog.deleteDesc}
+        confirmLabel={adminTr.common.delete}
         variant="danger"
         isLoading={isPending}
         onConfirm={() => {
@@ -152,7 +153,7 @@ export function BlogAdminView({ entries }: BlogAdminViewProps) {
             }
             setRows((current) => current.filter((row) => row.id !== deleteId));
             setDeleteId(null);
-            setStatus({ success: "Blog post deleted." });
+            setStatus({ success: adminTr.common.deleted });
           });
         }}
       />

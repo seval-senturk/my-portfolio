@@ -1,13 +1,13 @@
-import { skillsContentService } from "@/content";
 import { ROUTES } from "@/constants/routes";
 import { SkillsSection } from "@/features/skills";
 import { SEO_PAGE_KEYS } from "@/constants/seo-pages";
+import { requestSkillsContent } from "@/lib/cache/request-dedupe";
 import { buildPageMetadata } from "@/services/seo/seo-resolver.service";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata() {
-  const skills = await skillsContentService.get();
+  const skills = await requestSkillsContent();
 
   return buildPageMetadata(SEO_PAGE_KEYS.SKILLS, {
     title: "Skills",
@@ -17,7 +17,7 @@ export async function generateMetadata() {
 }
 
 export default async function SkillsPage() {
-  const skills = await skillsContentService.get();
+  const skills = await requestSkillsContent();
 
   return <SkillsSection content={skills} titleAs="h1" />;
 }

@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { saveAboutAction } from "@/features/admin/actions/content.actions";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   AdminFormActions,
   AdminFormSection,
@@ -29,10 +30,7 @@ export function AboutAdminView({ initial }: AboutAdminViewProps) {
 
   return (
     <div>
-      <AdminPageHeader
-        title="About"
-        description="Edit about page section content, introduction, and professional story."
-      />
+      <AdminPageHeader title={adminTr.about.title} description={adminTr.about.description} />
 
       <form
         action={(formData) => {
@@ -40,55 +38,55 @@ export function AboutAdminView({ initial }: AboutAdminViewProps) {
             const result = await saveAboutAction(formData);
             setStatus(
               result.success
-                ? { success: "About content saved successfully." }
+                ? { success: adminTr.common.saved }
                 : { error: result.error },
             );
           });
         }}
         className="space-y-6"
       >
-        <AdminFormSection title="Section">
+        <AdminFormSection title={adminTr.about.sections.section}>
           <AdminTextField
             id="sectionTitle"
             name="sectionTitle"
-            label="Section title"
+            label={adminTr.about.fields.sectionTitle}
             defaultValue={initial.sectionTitle}
             required
           />
           <AdminTextareaField
             id="sectionDescription"
             name="sectionDescription"
-            label="Section description"
+            label={adminTr.about.fields.sectionDescription}
             defaultValue={initial.sectionDescription}
             required
           />
         </AdminFormSection>
 
         <AdminFormSection
-          title="Introduction"
-          description="Separate paragraphs with a blank line."
+          title={adminTr.about.sections.introduction}
+          description={adminTr.about.sections.introductionDesc}
         >
           <AdminTextareaField
             id="introductionParagraphs"
             name="introductionParagraphs"
-            label="Introduction paragraphs"
+            label={adminTr.about.fields.introductionParagraphs}
             defaultValue={initial.introductionParagraphs}
             required
           />
         </AdminFormSection>
 
-        <AdminFormSection title="Professional story">
+        <AdminFormSection title={adminTr.about.sections.story}>
           <AdminTextField
             id="storyTitle"
             name="storyTitle"
-            label="Story title"
+            label={adminTr.about.fields.storyTitle}
             defaultValue={initial.storyTitle}
             required
           />
           <AdminTextareaField
             id="storyParagraphs"
             name="storyParagraphs"
-            label="Story paragraphs"
+            label={adminTr.about.fields.storyParagraphs}
             defaultValue={initial.storyParagraphs}
             required
           />
@@ -98,7 +96,7 @@ export function AboutAdminView({ initial }: AboutAdminViewProps) {
 
         <AdminFormActions>
           <Button type="submit" variant="primary" isLoading={isPending}>
-            Save About
+            {adminTr.about.save}
           </Button>
         </AdminFormActions>
       </form>
