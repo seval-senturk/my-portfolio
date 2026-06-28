@@ -1,28 +1,10 @@
 import type { NextAuthConfig } from "next-auth";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
+import { resolveAuthSecret } from "@/lib/auth/resolve-auth-secret";
 import { canAccessAdminArea } from "@/lib/auth/permissions";
 import { isUserRole } from "@/lib/auth/roles";
 import type { UserRole } from "@/types/auth";
-
-function resolveAuthSecret(): string {
-  const secret = process.env.AUTH_SECRET;
-
-  if (secret) {
-    return secret;
-  }
-
-  // Vercel/CI build loads auth routes during "Collecting page data" — env vars
-  // may be runtime-only. Defer the hard failure until the server actually runs.
-  const isProductionBuild =
-    process.env.NEXT_PHASE === "phase-production-build";
-
-  if (process.env.NODE_ENV === "production" && !isProductionBuild) {
-    throw new Error("AUTH_SECRET environment variable is required in production.");
-  }
-
-  return "development-auth-secret-change-before-production";
-}
 
 export const authConfig = {
   secret: resolveAuthSecret(),

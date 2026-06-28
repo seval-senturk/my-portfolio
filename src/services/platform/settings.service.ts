@@ -4,7 +4,8 @@ import {
   resolveFeatureFlags,
   updateApplicationSettings,
 } from "@/repositories/prisma/platform-settings.repository";
-import { cacheDelete, cacheGetOrSet } from "@/services/platform/cache.service";
+import { CACHE_TAGS, cachedQuery } from "@/lib/cache/server";
+import { cacheDelete } from "@/services/platform/cache.service";
 import type { FeatureFlagKey } from "@/constants/feature-flags";
 import type { ApplicationSettingsRecord, PlatformBranding, PlatformEnvironmentInfo, ResolvedFeatureFlags } from "@/types/platform";
 import { env } from "@/lib/env";
@@ -13,7 +14,11 @@ import { getCacheProvider } from "@/services/platform/cache.service";
 const SETTINGS_CACHE_KEY = "platform:application-settings";
 
 export async function getPlatformSettings(): Promise<ApplicationSettingsRecord> {
-  return cacheGetOrSet(SETTINGS_CACHE_KEY, () => getApplicationSettings(), 60_000);
+  return cachedQuery(
+    SETTINGS_CACHE_KEY,
+    [CACHE_TAGS.settings],
+    () => getApplicationSettings(),
+  );
 }
 
 export async function getFeatureFlags(): Promise<ResolvedFeatureFlags> {

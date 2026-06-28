@@ -48,10 +48,28 @@ function getCloudinaryConfig() {
   };
 }
 
+function getEmailConfig() {
+  const resendApiKey = process.env.RESEND_API_KEY?.trim();
+  const fromAddress = process.env.EMAIL_FROM?.trim() ?? "Portfolio <onboarding@resend.dev>";
+  const provider = process.env.EMAIL_PROVIDER?.trim().toLowerCase() ?? "stub";
+
+  return {
+    provider,
+    resendApiKey,
+    fromAddress,
+    configured:
+      provider === "stub" ||
+      (provider === "resend" && Boolean(resendApiKey)) ||
+      provider === "smtp" ||
+      provider === "sendgrid",
+  };
+}
+
 export const env = {
   siteUrl: getSiteUrl(),
   authSecret: getAuthSecret(),
   isProduction: process.env.NODE_ENV === "production",
   isDevelopment: process.env.NODE_ENV === "development",
   cloudinary: getCloudinaryConfig(),
+  email: getEmailConfig(),
 } as const;

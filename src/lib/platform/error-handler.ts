@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { getUserFacingErrorMessage, normalizeError, PlatformError } from "@/lib/platform/errors";
-import { logger } from "@/services/platform/logger.service";
+import { logger, observabilityHooks } from "@/services/platform/logger.service";
 
 export function handleApiError(error: unknown, context?: string): NextResponse {
   const platformError = normalizeError(error);
@@ -13,6 +13,11 @@ export function handleApiError(error: unknown, context?: string): NextResponse {
       ...platformError.metadata,
     },
     error: platformError,
+  });
+
+  observabilityHooks.captureException(platformError, {
+    context: context ?? "api",
+    code: platformError.code,
   });
 
   const body: Record<string, unknown> = {

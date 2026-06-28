@@ -3,23 +3,23 @@ import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 
 export const AUTH_ERROR_CONTENT: Record<AuthErrorCode, AuthErrorContent> = {
   unauthorized: {
-    title: "Sign in required",
+    title: "Giriş gerekli",
     description:
-      "You need to sign in with an authorized account to access the admin area.",
-    actionLabel: "Go to login",
+      "Admin alanına erişmek için yetkili bir hesapla giriş yapmanız gerekir.",
+    actionLabel: "Giriş sayfasına git",
     actionHref: ADMIN_ROUTES.login,
   },
   forbidden: {
-    title: "Access denied",
+    title: "Erişim reddedildi",
     description:
-      "Your account does not have permission to access this admin resource.",
-    actionLabel: "Back to dashboard",
+      "Hesabınızın bu admin kaynağına erişim izni yok.",
+    actionLabel: "Kontrol paneline dön",
     actionHref: ADMIN_ROUTES.dashboard,
   },
   session_expired: {
-    title: "Session expired",
-    description: "Your session has ended. Please sign in again to continue.",
-    actionLabel: "Sign in again",
+    title: "Oturum süresi doldu",
+    description: "Oturumunuz sona erdi. Devam etmek için tekrar giriş yapın.",
+    actionLabel: "Tekrar giriş yap",
     actionHref: ADMIN_ROUTES.login,
   },
 };

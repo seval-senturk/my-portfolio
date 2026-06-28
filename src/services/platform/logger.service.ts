@@ -51,6 +51,12 @@ export const logger = {
   },
   error(message: string, options?: Omit<PlatformLogEntry, "level" | "message">) {
     write("error", message, options);
+    if (options?.error instanceof Error) {
+      observabilityHooks.captureException(options.error, {
+        context: options.context,
+        ...(options.metadata ?? {}),
+      });
+    }
   },
   critical(message: string, options?: Omit<PlatformLogEntry, "level" | "message">) {
     write("critical", message, options);
@@ -60,6 +66,13 @@ export const logger = {
 /** Future: Sentry, OpenTelemetry, Better Stack adapters register here */
 export const observabilityHooks = {
   enabled: false,
-  captureException: (..._args: [Error, Record<string, unknown>?]) => undefined,
-  recordMetric: (..._args: [string, number, Record<string, string>?]) => undefined,
+  captureException(error: Error, context?: Record<string, unknown>) {
+    void error;
+    void context;
+  },
+  recordMetric(name: string, value: number, tags?: Record<string, string>) {
+    void name;
+    void value;
+    void tags;
+  },
 };

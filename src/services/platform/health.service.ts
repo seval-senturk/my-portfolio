@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { isAuthSecretConfigured } from "@/lib/auth/resolve-auth-secret";
 import { env } from "@/lib/env";
 import { isCloudinaryConfigured } from "@/lib/media/build-delivery-url";
 import type { HealthCheckResult } from "@/types/platform";
@@ -34,14 +35,14 @@ export async function runHealthChecks(): Promise<HealthCheckResult> {
 
   checks.push({
     name: "auth_secret",
-    status: env.authSecret ? "pass" : "warn",
-    message: env.authSecret ? undefined : "AUTH_SECRET is not configured",
+    status: isAuthSecretConfigured() ? "pass" : "warn",
+    message: isAuthSecretConfigured() ? undefined : "AUTH_SECRET is not configured",
   });
 
   checks.push({
     name: "site_url",
     status: env.siteUrl.startsWith("http") ? "pass" : "warn",
-    message: `Site URL: ${env.siteUrl}`,
+    message: env.isProduction ? undefined : `Site URL configured`,
   });
 
   checks.push({
@@ -54,7 +55,12 @@ export async function runHealthChecks(): Promise<HealthCheckResult> {
 
   checks.push({
     name: "email_provider",
-    status: envInfo.emailProvider === "stub" && env.isProduction ? "warn" : "pass",
+    status:
+      envInfo.emailProvider === "resend" && !env.email.configured
+        ? "fail"
+        : envInfo.emailProvider === "stub" && env.isProduction
+          ? "warn"
+          : "pass",
     message: `Provider: ${envInfo.emailProvider}`,
   });
 

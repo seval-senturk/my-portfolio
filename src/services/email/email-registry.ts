@@ -1,11 +1,8 @@
 import type { EmailProvider } from "@/services/email/types";
+import { ResendEmailProvider } from "@/services/email/resend-email.provider";
 import { StubEmailProvider } from "@/services/email/stub-email.provider";
 
 export type EmailProviderName = "stub" | "resend" | "smtp" | "sendgrid";
-
-class ResendEmailProviderStub extends StubEmailProvider {
-  readonly name = "resend";
-}
 
 class SmtpEmailProviderStub extends StubEmailProvider {
   readonly name = "smtp";
@@ -17,7 +14,7 @@ class SendGridEmailProviderStub extends StubEmailProvider {
 
 const providers: Record<EmailProviderName, () => EmailProvider> = {
   stub: () => new StubEmailProvider(),
-  resend: () => new ResendEmailProviderStub(),
+  resend: () => new ResendEmailProvider(),
   smtp: () => new SmtpEmailProviderStub(),
   sendgrid: () => new SendGridEmailProviderStub(),
 };
