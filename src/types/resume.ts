@@ -85,6 +85,7 @@ export interface ResumeActions {
 }
 
 export interface ResumeContent {
+  id: string;
   section: ResumeSectionHeader;
   profile: ResumeProfile;
   updatedAt: string;

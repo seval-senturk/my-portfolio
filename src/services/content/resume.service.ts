@@ -1,5 +1,6 @@
 import type { ContentQueryOptions } from "@/content/shared/types";
 import type { ResumeRepository } from "@/content/domains/resume/repository";
+import { cacheContent } from "@/lib/cache/server";
 import { prismaResumeRepository } from "@/repositories/prisma/resume.repository";
 import { resolveLocale } from "@/repositories/shared/locale";
 import type { ResumeContent, ResumeFile } from "@/types/resume";
@@ -10,7 +11,10 @@ export class ResumeService {
   ) {}
 
   get(options?: ContentQueryOptions): Promise<ResumeContent> {
-    return this.repository.get({ ...options, locale: resolveLocale(options) });
+    const locale = resolveLocale(options);
+    return cacheContent("resume", [locale], () =>
+      this.repository.get({ ...options, locale }),
+    );
   }
 
   getDefaultFile(options?: ContentQueryOptions): Promise<ResumeFile | null> {

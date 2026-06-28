@@ -70,6 +70,7 @@ function mapLanguage(language: ResumeLanguage): ResumeLanguageType {
 
 export function mapResumeToContent(resume: ResumeWithRelations): ResumeContent {
   return {
+    id: resume.id,
     section: {
       title: resume.sectionTitle,
       description: resume.sectionDescription,

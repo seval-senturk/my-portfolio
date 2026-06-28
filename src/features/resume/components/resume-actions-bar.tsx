@@ -24,7 +24,7 @@ export function ResumeActionsBar({
       aria-label="Resume actions"
       className="flex flex-col gap-3 sm:flex-row sm:flex-wrap"
     >
-      {resumeFile && (
+      {resumeFile ? (
         <>
           <a
             href={resumeFile.filePath}
@@ -52,6 +52,10 @@ export function ResumeActionsBar({
             {actions.viewLabel}
           </a>
         </>
+      ) : (
+        <p className="text-small text-muted-foreground" role="status">
+          Resume PDF is temporarily unavailable.
+        </p>
       )}
       <ButtonLink href={actions.contactHref} variant="outline" size="md">
         {actions.contactLabel}

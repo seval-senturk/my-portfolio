@@ -1,6 +1,7 @@
 import type { ExperienceContent } from "@/types/experience";
 import type { ResumeContent } from "@/types/resume";
 import type { SkillsContent } from "@/types/skills";
+import { ROUTES } from "@/constants/routes";
 import {
   getDefaultResumeFile,
   resolveExperienceSnapshot,
@@ -17,6 +18,7 @@ import { ResumeQuickFactsView } from "@/features/resume/components/resume-quick-
 import { ResumeSkillsSnapshotView } from "@/features/resume/components/resume-skills-snapshot-view";
 import { ResumeSubsection } from "@/features/resume/components/resume-subsection";
 import { ResumeSummaryView } from "@/features/resume/components/resume-summary-view";
+import { ButtonLink } from "@/components/ui/button-link";
 import { Text } from "@/components/ui/text";
 
 interface ResumeHubViewProps {
@@ -79,7 +81,10 @@ export function ResumeHubView({
         items={content.languages.items}
       />
 
-      <footer>
+      <footer className="space-y-4 border-t border-border pt-6">
+        <ButtonLink href={ROUTES.projects} variant="link">
+          View selected projects
+        </ButtonLink>
         <Text as="p" variant="small" tone="muted">
           Last updated:{" "}
           <time dateTime={content.updatedAt}>{content.updatedAt}</time>

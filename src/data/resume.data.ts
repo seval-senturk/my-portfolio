@@ -10,6 +10,7 @@ function getSocialHref(platform: "linkedin" | "github" | "email"): string {
 }
 
 export const resumeContent = {
+  id: "seed-resume",
   section: {
     title: "Resume Center",
     description:
