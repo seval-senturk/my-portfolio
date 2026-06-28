@@ -3,6 +3,7 @@ import {
   BookOpen,
   Briefcase,
   Code2,
+  Globe,
   Mail,
   type LucideIcon,
 } from "lucide-react";
@@ -11,7 +12,7 @@ import { socialLinks, type SocialPlatform } from "@/config/social-links.config";
 import { FOCUS_RING_CLASS } from "@/lib/accessibility";
 import { cn } from "@/lib/cn";
 
-const SOCIAL_ICONS: Record<SocialPlatform, LucideIcon> = {
+const SOCIAL_ICONS: Partial<Record<SocialPlatform, LucideIcon>> = {
   github: Code2,
   linkedin: Briefcase,
   email: Mail,
@@ -25,12 +26,12 @@ interface SocialLinksProps {
 }
 
 export function SocialLinks({ className, iconSize = "md" }: SocialLinksProps) {
-  const size = iconSize === "sm" ? 18 : 20;
+  const size = iconSize === "sm" ? 16 : 18;
 
   return (
-    <ul className={cn("flex flex-wrap items-center gap-3", className)}>
+    <ul className={cn("flex flex-wrap items-center gap-2.5", className)}>
       {socialLinks.map((link) => {
-        const IconComponent = SOCIAL_ICONS[link.platform];
+        const IconComponent = SOCIAL_ICONS[link.platform] ?? Globe;
         const isEmail = link.platform === "email";
 
         return (
@@ -38,7 +39,8 @@ export function SocialLinks({ className, iconSize = "md" }: SocialLinksProps) {
             <a
               href={link.href}
               className={cn(
-                "inline-flex items-center justify-center rounded-lg p-2 text-muted-foreground transition-base hover:bg-muted hover:text-foreground",
+                "inline-flex items-center justify-center rounded-full border border-border/60 bg-surface/40 text-muted-foreground transition-base hover:border-accent/40 hover:text-foreground",
+                iconSize === "sm" ? "h-9 w-9" : "h-11 w-11",
                 FOCUS_RING_CLASS,
               )}
               aria-label={link.label}

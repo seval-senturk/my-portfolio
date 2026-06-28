@@ -1,5 +1,6 @@
 import type { ContentQueryOptions, FooterContent } from "@/content/shared/types";
 import type { IdentifiedStatItem } from "@/types/stats";
+import type { SiteSocialLink } from "@/types/social";
 
 export interface SiteContent {
   footer: FooterContent;
@@ -12,6 +13,7 @@ export interface SiteRepository {
   getProfessionalHighlights(
     options?: ContentQueryOptions,
   ): Promise<readonly IdentifiedStatItem[]>;
+  getSocialLinks(options?: ContentQueryOptions): Promise<readonly SiteSocialLink[]>;
 }
 
 export type { ContentQueryOptions };

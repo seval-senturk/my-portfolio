@@ -1,4 +1,12 @@
-export type SocialPlatform = "github" | "linkedin" | "email" | "x" | "medium";
+export type SocialPlatform =
+  | "github"
+  | "linkedin"
+  | "email"
+  | "x"
+  | "instagram"
+  | "medium"
+  | "behance"
+  | "dribbble";
 
 export interface SocialLink {
   label: string;

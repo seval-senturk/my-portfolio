@@ -3,10 +3,9 @@ import { siteConfig } from "@/config/site.config";
 import type { HeroContent } from "@/types/hero";
 
 export const heroContent = {
-  eyebrow: "Frontend & Full Stack Developer",
-  headline: `${siteConfig.author.name} — ${siteConfig.author.jobTitle}`,
-  summary:
-    "Full Stack Developer with 5+ years of experience building scalable web applications. I specialize in React, Next.js, and TypeScript — delivering performant interfaces, reliable APIs, and AI-powered solutions that create measurable business value.",
+  eyebrow: "Hello! I'm",
+  headline: siteConfig.author.name,
+  summary: `${siteConfig.author.jobTitle} specializing in React, Next.js & AI-powered solutions.`,
   technologyHighlightsTitle: "Core Expertise",
   technologyHighlights: [
     {
@@ -27,12 +26,12 @@ export const heroContent = {
     },
   ],
   primaryCta: {
-    label: "Download Resume",
+    label: "Get Resume",
     href: ROUTES.resume,
   },
   secondaryCta: {
-    label: "Contact Me",
-    href: ROUTES.contact,
+    label: "View Projects",
+    href: ROUTES.projects,
   },
   profile: {
     imageAlt: `${siteConfig.author.name} professional headshot`,

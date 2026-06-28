@@ -1,39 +1,43 @@
 import type { HeroContent } from "@/types/hero";
-import type { IdentifiedStatItem } from "@/types/stats";
-import { selectStats } from "@/lib/content";
+import type { SiteSocialLink } from "@/types/social";
 
+import { HeroDecorSvg } from "@/features/hero/components/hero-decor-svg";
 import { HeroContentBlock } from "@/features/hero/components/hero-content";
 import { HeroLayout } from "@/features/hero/components/hero-layout";
-import { HeroProfileImage } from "@/features/hero/components/hero-profile-image";
+import { HeroPortrait } from "@/features/hero/components/hero-portrait";
 import { Container } from "@/components/ui/container";
-import { Section } from "@/components/ui/section";
-
-const HERO_SOCIAL_PROOF_LIMIT = 3;
 
 interface HeroSectionProps {
   content: HeroContent;
-  professionalHighlights: readonly IdentifiedStatItem[];
+  socialLinks: readonly SiteSocialLink[];
 }
 
-export function HeroSection({
-  content,
-  professionalHighlights,
-}: HeroSectionProps) {
-  const socialProof = selectStats(
-    professionalHighlights,
-    HERO_SOCIAL_PROOF_LIMIT,
-  );
-
+export function HeroSection({ content, socialLinks }: HeroSectionProps) {
   return (
-    <Section spacing="default" aria-labelledby="hero-heading">
-      <Container size="wide">
+    <section
+      aria-labelledby="hero-heading"
+      className="hero-section relative -mt-16 min-h-[100svh] pt-16 lg:-mt-[4.5rem] lg:pt-[4.5rem]"
+    >
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <HeroDecorSvg className="h-full w-full" />
+      </div>
+
+      <Container
+        size="wide"
+        className="hero-section__container relative pb-0 pt-0"
+      >
         <HeroLayout
           content={
-            <HeroContentBlock content={content} socialProof={socialProof} />
+            <HeroContentBlock content={content} socialLinks={socialLinks} />
           }
-          media={<HeroProfileImage profile={content.profile} />}
+          media={
+            <HeroPortrait
+              profile={content.profile}
+              socialLinks={socialLinks}
+            />
+          }
         />
       </Container>
-    </Section>
+    </section>
   );
 }

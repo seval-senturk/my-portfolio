@@ -56,6 +56,6 @@ export const footerNavigation: readonly NavigationItem[] = [
 ] as const;
 
 export const headerCta = {
-  label: "Download CV",
-  href: ROUTES.resume,
+  label: "Let's Talk",
+  href: ROUTES.contact,
 } as const;

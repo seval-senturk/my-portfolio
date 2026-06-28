@@ -1,6 +1,8 @@
-import { mainNavigation } from "@/config/navigation.config";
+import NextLink from "next/link";
 
-import { NavLink } from "@/features/layout/components/nav-link";
+import { mainNavigation } from "@/config/navigation.config";
+import { FOCUS_RING_CLASS } from "@/lib/accessibility";
+import { cn } from "@/lib/cn";
 
 export function DesktopNav() {
   return (
@@ -8,7 +10,16 @@ export function DesktopNav() {
       <ul className="flex items-center gap-1">
         {mainNavigation.map((item) => (
           <li key={item.href}>
-            <NavLink href={item.href}>{item.label}</NavLink>
+            <NextLink
+              href={item.href}
+              prefetch
+              className={cn(
+                "rounded-lg px-3 py-2 text-small font-medium text-muted-foreground transition-base hover:text-foreground",
+                FOCUS_RING_CLASS,
+              )}
+            >
+              {item.label}
+            </NextLink>
           </li>
         ))}
       </ul>

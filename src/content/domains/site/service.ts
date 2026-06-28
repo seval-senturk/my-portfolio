@@ -18,4 +18,8 @@ export const siteContentService = {
   ): Promise<readonly IdentifiedStatItem[]> {
     return siteService.getProfessionalHighlights(options);
   },
+
+  getSocialLinks(options?: ContentQueryOptions) {
+    return siteService.getSocialLinks(options);
+  },
 };

@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { saveHeroAction } from "@/features/admin/actions/content.actions";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   AdminFormActions,
   AdminFormSection,
@@ -39,101 +40,97 @@ export function HeroAdminView({ initial }: HeroAdminViewProps) {
       const result = await saveHeroAction(formData);
       setStatus(
         result.success
-          ? { success: "Hero content saved successfully." }
-          : { error: result.error ?? "Failed to save hero content." },
+          ? { success: adminTr.common.saved }
+          : { error: result.error ?? adminTr.common.saveFailed },
       );
     });
   }
 
   return (
     <div>
-      <AdminPageHeader
-        title="Hero"
-        description="Manage the homepage hero section — headline, summary, CTAs, and profile."
-      />
+      <AdminPageHeader title={adminTr.hero.title} description={adminTr.hero.description} />
 
       <form action={handleSubmit} className="space-y-6">
-        <AdminFormSection title="Content" description="Primary hero messaging.">
+        <AdminFormSection title={adminTr.hero.sections.content} description={adminTr.hero.sections.contentDesc}>
           <AdminTextField
             id="eyebrow"
             name="eyebrow"
-            label="Eyebrow"
+            label={adminTr.hero.fields.eyebrow}
             defaultValue={initial.eyebrow}
-            required
           />
           <AdminTextField
             id="headline"
             name="headline"
-            label="Headline"
+            label={adminTr.hero.fields.headline}
             defaultValue={initial.headline}
-            required
           />
           <AdminTextareaField
             id="summary"
             name="summary"
-            label="Summary"
+            label={adminTr.hero.fields.summary}
             defaultValue={initial.summary}
-            required
           />
           <AdminTextField
             id="technologyHighlightsTitle"
             name="technologyHighlightsTitle"
-            label="Technology section title"
+            label={adminTr.hero.fields.techTitle}
             defaultValue={initial.technologyHighlightsTitle}
           />
         </AdminFormSection>
 
-        <AdminFormSection title="Calls to action">
+        <AdminFormSection title={adminTr.hero.sections.cta}>
           <div className="grid gap-4 md:grid-cols-2">
             <AdminTextField
               id="primaryCtaLabel"
               name="primaryCtaLabel"
-              label="Primary CTA label"
+              label={adminTr.hero.fields.primaryCtaLabel}
               defaultValue={initial.primaryCtaLabel}
-              required
             />
             <AdminTextField
               id="primaryCtaHref"
               name="primaryCtaHref"
-              label="Primary CTA link"
+              label={adminTr.hero.fields.primaryCtaHref}
               defaultValue={initial.primaryCtaHref}
             />
             <AdminTextField
               id="secondaryCtaLabel"
               name="secondaryCtaLabel"
-              label="Secondary CTA label"
+              label={adminTr.hero.fields.secondaryCtaLabel}
               defaultValue={initial.secondaryCtaLabel}
             />
             <AdminTextField
               id="secondaryCtaHref"
               name="secondaryCtaHref"
-              label="Secondary CTA link"
+              label={adminTr.hero.fields.secondaryCtaHref}
               defaultValue={initial.secondaryCtaHref}
             />
           </div>
         </AdminFormSection>
 
-        <AdminFormSection title="Profile">
+        <AdminFormSection
+          title={adminTr.hero.sections.profile}
+          description={adminTr.hero.sections.profileDesc}
+        >
           <AdminUploadField
             id="profileImageUrl"
             name="profileImageUrl"
-            label="Profile image URL"
+            label={adminTr.hero.fields.profileImage}
             defaultValue={initial.profileImageUrl}
+            accept="image/png,image/webp,image/jpeg"
+            category="Hero"
           />
           <div className="grid gap-4 md:grid-cols-2">
             <AdminTextField
               id="profileImageAlt"
               name="profileImageAlt"
-              label="Profile image alt text"
+              label={adminTr.hero.fields.profileAlt}
               defaultValue={initial.profileImageAlt}
-              required
             />
             <AdminTextField
               id="profileInitials"
               name="profileInitials"
-              label="Profile initials"
+              label={adminTr.hero.fields.profileInitials}
               defaultValue={initial.profileInitials}
-              required
             />
           </div>
         </AdminFormSection>
@@ -142,7 +139,7 @@ export function HeroAdminView({ initial }: HeroAdminViewProps) {
 
         <AdminFormActions>
           <Button type="submit" variant="primary" isLoading={isPending}>
-            Save Hero
+            {adminTr.hero.save}
           </Button>
         </AdminFormActions>
       </form>

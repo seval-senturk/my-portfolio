@@ -59,7 +59,7 @@ export function MobileNav() {
         ref={toggleRef}
         type="button"
         className={cn(
-          "inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-surface text-foreground transition-base hover:bg-muted",
+          "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border/60 bg-surface/60 text-foreground transition-base hover:border-accent/30 hover:bg-surface lg:hidden",
           FOCUS_RING_CLASS,
         )}
         aria-expanded={isOpen}
@@ -74,14 +74,14 @@ export function MobileNav() {
         <>
           <button
             type="button"
-            className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-[2px]"
+            className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm"
             aria-label="Close menu overlay"
             onClick={closeMenu}
           />
           <div
             ref={panelRef}
             id={panelId}
-            className="fixed inset-x-0 top-14 z-50 border-b border-border bg-surface/95 shadow-lg backdrop-blur-md lg:top-16"
+            className="fixed inset-x-0 top-14 z-50 border-b border-border/60 bg-background/95 shadow-xl backdrop-blur-xl lg:top-[4.5rem]"
           >
             <nav aria-label="Mobile navigation" className="px-4 py-4">
               <ul className="flex flex-col gap-1">
@@ -109,7 +109,7 @@ export function MobileNav() {
                   href={headerCta.href}
                   variant="outline"
                   size="md"
-                  className="w-full"
+                  className="w-full rounded-full border-border/70"
                   onClick={closeMenu}
                 >
                   {headerCta.label}

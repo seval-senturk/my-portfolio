@@ -12,12 +12,12 @@ export function HeroLayout({ content, media, className }: HeroLayoutProps) {
   return (
     <div
       className={cn(
-        "grid items-center gap-12 lg:grid-cols-2 lg:gap-16",
+        "hero-layout grid w-full gap-12 lg:grid-cols-2 lg:gap-16",
         className,
       )}
     >
-      <div>{content}</div>
-      <div>{media}</div>
+      <div className="hero-layout__content order-2 lg:order-1">{content}</div>
+      <div className="hero-layout__media order-1 lg:order-2">{media}</div>
     </div>
   );
 }
