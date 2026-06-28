@@ -1,9 +1,10 @@
 "use client";
 
-import { FolderOpen, Upload } from "lucide-react";
-import { useState } from "react";
+import { FolderOpen, HardDriveUpload, Loader2, Upload } from "lucide-react";
+import { useRef, useState } from "react";
 
 import { MediaPickerModal, type MediaSelection } from "@/features/admin/media/components/media-picker-modal";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { AdminFormField } from "@/features/admin/ui/form/admin-form-field";
 import { cn } from "@/lib/cn";
 import type { MediaAssetRecord } from "@/types/media-management";
@@ -22,16 +23,18 @@ interface AdminUploadFieldProps {
   mediaId?: string;
   altText?: string;
   category?: string;
+  folderSlug?: string;
   onChange?: (value: string) => void;
   onMediaSelect?: (selection: MediaSelection) => void;
   disabled?: boolean;
   enableLibrary?: boolean;
+  enableLocalUpload?: boolean;
 }
 
 export function AdminUploadField({
   id,
   label,
-  hint = "Enter a URL or pick from the Media Library.",
+  hint = adminTr.media.uploadField.hint,
   error,
   name,
   accept = "image/*",
@@ -40,16 +43,22 @@ export function AdminUploadField({
   mediaId,
   altText,
   category,
+  folderSlug,
   onChange,
   onMediaSelect,
   disabled,
   enableLibrary = true,
+  enableLocalUpload = true,
 }: AdminUploadFieldProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string>();
   const [previewUrl, setPreviewUrl] = useState(value ?? defaultValue ?? "");
 
   const handleLibrarySelect = (asset: MediaAssetRecord) => {
     setPreviewUrl(asset.publicUrl);
+    setUploadError(undefined);
     onChange?.(asset.publicUrl);
     onMediaSelect?.({
       id: asset.id,
@@ -59,9 +68,61 @@ export function AdminUploadField({
     setIsPickerOpen(false);
   };
 
+  async function handleLocalFileSelect(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) {
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError(undefined);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    if (category) formData.append("category", category);
+    if (folderSlug) formData.append("folderSlug", folderSlug);
+    if (altText) formData.append("altText", altText);
+
+    try {
+      const response = await fetch("/api/admin/media/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json()) as { error?: string };
+        throw new Error(payload.error ?? adminTr.media.upload.uploadFailed);
+      }
+
+      const payload = (await response.json()) as { asset: MediaAssetRecord };
+      setPreviewUrl(payload.asset.publicUrl);
+      onChange?.(payload.asset.publicUrl);
+      onMediaSelect?.({
+        id: payload.asset.id,
+        url: payload.asset.publicUrl,
+        altText: payload.asset.altText ?? undefined,
+      });
+    } catch (uploadErr) {
+      setUploadError(
+        uploadErr instanceof Error
+          ? uploadErr.message
+          : adminTr.media.upload.uploadFailed,
+      );
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
   return (
     <>
-      <AdminFormField id={id} label={label} hint={hint} error={error}>
+      <AdminFormField
+        id={id}
+        label={label}
+        hint={hint}
+        error={error ?? uploadError}
+      >
         <div
           className={cn(
             "rounded-xl border border-dashed border-border bg-muted/40 p-4",
@@ -76,13 +137,16 @@ export function AdminUploadField({
               <input
                 id={id}
                 name={name}
-                type="url"
-                placeholder="https://..."
+                type="text"
+                inputMode="url"
+                spellCheck={false}
+                placeholder="https://... veya /uploads/..."
                 value={value ?? previewUrl}
                 defaultValue={value === undefined ? defaultValue : undefined}
-                disabled={disabled}
+                disabled={disabled || isUploading}
                 onChange={(event) => {
                   setPreviewUrl(event.target.value);
+                  setUploadError(undefined);
                   onChange?.(event.target.value);
                 }}
                 className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-small"
@@ -109,16 +173,44 @@ export function AdminUploadField({
               ) : null}
 
               <div className="flex flex-wrap gap-2">
+                {enableLocalUpload ? (
+                  <>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept={accept}
+                      className="sr-only"
+                      disabled={disabled || isUploading}
+                      onChange={handleLocalFileSelect}
+                    />
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      disabled={disabled || isUploading}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      {isUploading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                      ) : (
+                        <HardDriveUpload className="h-4 w-4" aria-hidden />
+                      )}
+                      {isUploading
+                        ? adminTr.media.uploadField.uploading
+                        : adminTr.media.uploadField.browseComputer}
+                    </Button>
+                  </>
+                ) : null}
                 {enableLibrary ? (
                   <Button
                     type="button"
                     variant="secondary"
                     size="sm"
-                    disabled={disabled}
+                    disabled={disabled || isUploading}
                     onClick={() => setIsPickerOpen(true)}
                   >
                     <FolderOpen className="h-4 w-4" />
-                    Browse library
+                    {adminTr.media.uploadField.browseLibrary}
                   </Button>
                 ) : null}
               </div>
@@ -133,7 +225,7 @@ export function AdminUploadField({
           onClose={() => setIsPickerOpen(false)}
           onSelect={handleLibrarySelect}
           categoryFilter={category}
-          title={`Select ${label}`}
+          title={`${adminTr.media.uploadField.select} ${label}`}
         />
       ) : null}
     </>
