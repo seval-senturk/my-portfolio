@@ -1,13 +1,24 @@
 import { siteConfig } from "@/config/site.config";
 import { socialLinks } from "@/config/social-links.config";
 import { ROUTES } from "@/constants/routes";
+import { CACHE_TAGS, cachedQuery } from "@/lib/cache/server";
 import { resolveSeoImageUrl } from "@/lib/seo/resolve-image-url";
 import { absoluteUrl } from "@/lib/url";
 import { seoRepository } from "@/repositories/prisma/seo.repository";
 import { DEFAULT_LOCALE } from "@/repositories/shared/locale";
+import type { ResumeStructuredDataInput } from "@/types/resume";
+import type { ProjectEntry } from "@/types/project";
 import type { StructuredDataSchema } from "@/types/seo";
 
 export async function buildGlobalStructuredData(): Promise<StructuredDataSchema[]> {
+  return cachedQuery(
+    "seo:global-structured-data",
+    [CACHE_TAGS.seo],
+    buildGlobalStructuredDataUncached,
+  );
+}
+
+async function buildGlobalStructuredDataUncached(): Promise<StructuredDataSchema[]> {
   const [globalSettings, rules] = await Promise.all([
     seoRepository.getGlobalSettings(DEFAULT_LOCALE),
     seoRepository.ensureStructuredDataRules(),
@@ -85,11 +96,20 @@ export async function buildBlogPostingStructuredData(input: {
       headline: input.title,
       description: input.description,
       url,
+      inLanguage: globalSettings.defaultLanguage || siteConfig.language,
       datePublished: input.publishedAt ?? input.updatedAt ?? new Date().toISOString(),
       dateModified: input.updatedAt,
       author: {
         "@type": "Person",
         name: input.authorName,
+      },
+      publisher: {
+        "@type": "Person",
+        name: globalSettings.defaultAuthorName || siteConfig.author.name,
+      },
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": url,
       },
       image,
     } as StructuredDataSchema);
@@ -129,6 +149,120 @@ export async function buildBlogPostingStructuredData(input: {
       name: input.title,
       description: input.description,
       url,
+    } as StructuredDataSchema);
+  }
+
+  return schemas;
+}
+
+export async function buildResumeStructuredData(input: {
+  title: string;
+  description: string;
+  pathname: string;
+  resume: ResumeStructuredDataInput;
+  pdfUrl?: string;
+}): Promise<StructuredDataSchema[]> {
+  const rules = await seoRepository.ensureStructuredDataRules();
+  const enabled = new Set(
+    rules.filter((rule) => rule.enabled).map((rule) => rule.schemaType),
+  );
+
+  const url = absoluteUrl(input.pathname);
+  const schemas: StructuredDataSchema[] = [];
+
+  const personEntity = {
+    "@type": "Person" as const,
+    name: input.resume.fullName,
+    jobTitle: input.resume.title,
+    email: input.resume.email,
+    url: input.resume.url || url,
+    address: input.resume.location
+      ? {
+          "@type": "PostalAddress" as const,
+          addressLocality: input.resume.location,
+        }
+      : undefined,
+    sameAs: [input.resume.linkedin, input.resume.github].filter(Boolean),
+    knowsAbout: [...input.resume.skills],
+    description: input.resume.summary,
+  };
+
+  schemas.push({
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    name: input.title,
+    url,
+    description: input.description,
+    dateModified: input.resume.updatedAt,
+    mainEntity: personEntity,
+  } as StructuredDataSchema);
+
+  if (input.pdfUrl) {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "DigitalDocument",
+      name: `${input.resume.fullName} — Resume`,
+      encodingFormat: "application/pdf",
+      url: absoluteUrl(input.pdfUrl),
+    } as StructuredDataSchema);
+  }
+
+  if (enabled.has("WebPage")) {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: input.title,
+      description: input.description,
+      url,
+    } as StructuredDataSchema);
+  }
+
+  return schemas;
+}
+
+export async function buildProjectsStructuredData(input: {
+  title: string;
+  description: string;
+  projects: readonly ProjectEntry[];
+}): Promise<StructuredDataSchema[]> {
+  const rules = await seoRepository.ensureStructuredDataRules();
+  const enabled = new Set(
+    rules.filter((rule) => rule.enabled).map((rule) => rule.schemaType),
+  );
+
+  const url = absoluteUrl(ROUTES.projects);
+  const schemas: StructuredDataSchema[] = [];
+
+  if (enabled.has("WebPage")) {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: input.title,
+      description: input.description,
+      url,
+    } as StructuredDataSchema);
+  }
+
+  if (input.projects.length > 0) {
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: input.title,
+      description: input.description,
+      url,
+      itemListElement: input.projects.map((project, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: project.title,
+        url: `${url}#${project.slug}`,
+        item: {
+          "@type": "CreativeWork",
+          name: project.title,
+          description: project.shortDescription,
+          url: project.liveUrl ?? project.githubUrl ?? `${url}#${project.slug}`,
+          keywords: project.technologies.join(", "),
+        },
+      })),
     } as StructuredDataSchema);
   }
 
@@ -192,6 +326,13 @@ export async function buildAiCareerStructuredData(): Promise<StructuredDataSchem
       "@context": "https://schema.org",
       "@type": "FAQPage",
       ...(settings.faqSchemaJson as object),
+    } as StructuredDataSchema);
+  }
+
+  if (settings.featureSchemaJson && typeof settings.featureSchemaJson === "object") {
+    schemas.push({
+      "@context": "https://schema.org",
+      ...(settings.featureSchemaJson as object),
     } as StructuredDataSchema);
   }
 

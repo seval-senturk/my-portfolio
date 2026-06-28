@@ -377,9 +377,14 @@ export class SeoRepository {
         create: {
           schemaType,
           label: schemaType,
-          enabled: ["Person", "WebSite", "BlogPosting", "BreadcrumbList", "WebPage"].includes(
-            schemaType,
-          ),
+          enabled: [
+            "Person",
+            "WebSite",
+            "BlogPosting",
+            "BreadcrumbList",
+            "WebPage",
+            "ProfilePage",
+          ].includes(schemaType),
           scope: "global",
           sortOrder: index,
         },

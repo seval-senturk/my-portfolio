@@ -3,6 +3,7 @@
 import { useState, useTransition, type ReactNode } from "react";
 
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   AdminFormSection,
   AdminSelectField,
@@ -52,8 +53,8 @@ export function SeoFieldsForm({
           const result = await action(formData);
           setStatus(
             result.success
-              ? { success: "Saved successfully." }
-              : { error: result.error ?? "Save failed." },
+              ? { success: adminTr.common.saved }
+              : { error: result.error ?? adminTr.common.saveFailed },
           );
         });
       }}
@@ -65,7 +66,7 @@ export function SeoFieldsForm({
           ))
         : null}
 
-      <AdminFormSection title="Meta">
+      <AdminFormSection title={adminTr.seo.fields.meta}>
         <AdminTextField
           id="metaTitle"
           name="metaTitle"
@@ -101,7 +102,7 @@ export function SeoFieldsForm({
         />
       </AdminFormSection>
 
-      <AdminFormSection title="Open Graph">
+      <AdminFormSection title={adminTr.seo.fields.openGraph}>
         <AdminTextField id="ogTitle" name="ogTitle" label="OG title" defaultValue={initial.ogTitle} />
         <AdminTextareaField
           id="ogDescription"
@@ -127,22 +128,22 @@ export function SeoFieldsForm({
           label="OG type"
           defaultValue={initial.ogType ?? "website"}
           options={[
-            { value: "website", label: "Website" },
-            { value: "article", label: "Article" },
-            { value: "profile", label: "Profile" },
+            { value: "website", label: adminTr.seo.fields.website },
+            { value: "article", label: adminTr.seo.fields.article },
+            { value: "profile", label: adminTr.seo.fields.profile },
           ]}
         />
       </AdminFormSection>
 
-      <AdminFormSection title="Twitter / X">
+      <AdminFormSection title={adminTr.seo.fields.twitter}>
         <AdminSelectField
           id="twitterCardType"
           name="twitterCardType"
           label="Card type"
           defaultValue={initial.twitterCardType ?? "SUMMARY_LARGE_IMAGE"}
           options={[
-            { value: "SUMMARY", label: "Summary" },
-            { value: "SUMMARY_LARGE_IMAGE", label: "Summary Large Image" },
+            { value: "SUMMARY", label: adminTr.seo.fields.summary },
+            { value: "SUMMARY_LARGE_IMAGE", label: adminTr.seo.fields.summaryLargeImage },
           ]}
         />
         <AdminTextField
@@ -153,37 +154,37 @@ export function SeoFieldsForm({
         />
       </AdminFormSection>
 
-      <AdminFormSection title="Robots">
+      <AdminFormSection title={adminTr.seo.fields.robots}>
         <AdminSelectField
           id="robotsIndex"
           name="robotsIndex"
-          label="Index"
+          label={adminTr.seo.fields.index}
           defaultValue={initial.robotsIndex ?? "inherit"}
           options={[
-            { value: "inherit", label: "Inherit global default" },
-            { value: "true", label: "Index" },
-            { value: "false", label: "No Index" },
+            { value: "inherit", label: adminTr.seo.fields.inheritGlobal },
+            { value: "true", label: adminTr.seo.fields.index },
+            { value: "false", label: adminTr.seo.fields.noIndex },
           ]}
         />
         <AdminSelectField
           id="robotsFollow"
           name="robotsFollow"
-          label="Follow"
+          label={adminTr.seo.fields.follow}
           defaultValue={initial.robotsFollow ?? "inherit"}
           options={[
-            { value: "inherit", label: "Inherit global default" },
-            { value: "true", label: "Follow" },
-            { value: "false", label: "No Follow" },
+            { value: "inherit", label: adminTr.seo.fields.inheritGlobal },
+            { value: "true", label: adminTr.seo.fields.follow },
+            { value: "false", label: adminTr.seo.fields.noFollow },
           ]}
         />
       </AdminFormSection>
 
       {showSeoNotes ? (
-        <AdminFormSection title="SEO Notes">
+        <AdminFormSection title={adminTr.seo.fields.seoNotes}>
           <AdminTextareaField
             id="seoNotes"
             name="seoNotes"
-            label="Internal SEO notes"
+            label={adminTr.seo.fields.seoNotes}
             defaultValue={initial.seoNotes}
           />
         </AdminFormSection>
@@ -194,7 +195,7 @@ export function SeoFieldsForm({
       <AdminFormStatus error={status.error} success={status.success} />
       <div className="flex justify-end">
         <Button type="submit" variant="primary" isLoading={isPending}>
-          Save SEO
+          {adminTr.seo.saveSeo}
         </Button>
       </div>
     </form>

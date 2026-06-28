@@ -41,6 +41,11 @@ export async function applySeoRedirect(request: NextRequest): Promise<NextRespon
     return null;
   }
 
+  // Dev: skip internal redirect-map fetch on every navigation (major latency source).
+  if (process.env.NODE_ENV === "development") {
+    return null;
+  }
+
   try {
     const map = await fetchRedirectMap(request.nextUrl.origin);
     const hit = map[pathname];

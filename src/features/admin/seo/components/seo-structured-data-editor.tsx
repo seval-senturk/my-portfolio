@@ -4,6 +4,7 @@ import { useTransition } from "react";
 
 import { saveStructuredDataRuleAction } from "@/features/admin/actions/seo.actions";
 import type { SeoStructuredDataRuleRecord } from "@/types/seo-management";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { AdminSwitchField } from "@/features/admin/ui";
 
 interface SeoStructuredDataEditorProps {
@@ -18,9 +19,9 @@ export function SeoStructuredDataEditor({ rules }: SeoStructuredDataEditorProps)
       <table className="min-w-full text-left text-small">
         <thead className="bg-muted/40 text-caption uppercase tracking-wide text-muted-foreground">
           <tr>
-            <th className="px-5 py-3 font-medium">Schema</th>
-            <th className="px-5 py-3 font-medium">Scope</th>
-            <th className="px-5 py-3 font-medium">Enabled</th>
+            <th className="px-5 py-3 font-medium">{adminTr.seo.structuredData.columns.schema}</th>
+            <th className="px-5 py-3 font-medium">{adminTr.seo.structuredData.columns.scope}</th>
+            <th className="px-5 py-3 font-medium">{adminTr.seo.structuredData.columns.enabled}</th>
           </tr>
         </thead>
         <tbody>
@@ -40,7 +41,7 @@ export function SeoStructuredDataEditor({ rules }: SeoStructuredDataEditorProps)
                   <AdminSwitchField
                     id={`enabled-${rule.schemaType}`}
                     name="enabled"
-                    label="Enabled"
+                    label={adminTr.seo.structuredData.enabledLabel}
                     defaultChecked={rule.enabled}
                   />
                 </form>

@@ -1,11 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import type { SeoRedirectStatusCode, TwitterCardType } from "@prisma/client";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
 import { SEO_ENTITY_TYPES } from "@/constants/seo-pages";
 import { adminError, adminSuccess, type AdminActionResult } from "@/lib/admin/action-result";
+import { CACHE_TAGS } from "@/lib/cache/server";
 import { AuditActions, recordAudit } from "@/lib/platform/audit";
 import { invalidateRedirectCache } from "@/lib/seo/redirect-middleware";
 import { requireAdminUser } from "@/lib/auth/session";
@@ -36,6 +37,9 @@ function getNullableBoolean(formData: FormData, key: string): boolean | null {
 }
 
 function revalidateSeoPaths() {
+  revalidateTag(CACHE_TAGS.seo);
+  revalidateTag(CACHE_TAGS.content);
+  revalidateTag(CACHE_TAGS.redirects);
   revalidatePath("/");
   revalidatePath("/blog");
   revalidatePath("/sitemap.xml");

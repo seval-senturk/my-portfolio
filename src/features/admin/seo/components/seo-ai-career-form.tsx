@@ -5,6 +5,7 @@ import { useTransition, useState } from "react";
 import { saveAiCareerSeoAction } from "@/features/admin/actions/seo.actions";
 import type { SeoAiCareerSettingsRecord } from "@/types/seo-management";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   AdminFormSection,
   AdminTextField,
@@ -27,14 +28,14 @@ export function SeoAiCareerForm({ initial }: SeoAiCareerFormProps) {
           const result = await saveAiCareerSeoAction(formData);
           setStatus(
             result.success
-              ? { success: "Saved successfully." }
-              : { error: result.error ?? "Save failed." },
+              ? { success: adminTr.common.saved }
+              : { error: result.error ?? adminTr.common.saveFailed },
           );
         });
       }}
       className="admin-surface space-y-6 rounded-xl border p-6"
     >
-      <AdminFormSection title="Landing Page SEO">
+      <AdminFormSection title={adminTr.seo.aiCareer.sections.landing}>
         <AdminTextField
           id="landingMetaTitle"
           name="landingMetaTitle"
@@ -61,7 +62,7 @@ export function SeoAiCareerForm({ initial }: SeoAiCareerFormProps) {
         />
       </AdminFormSection>
 
-      <AdminFormSection title="Tool SEO">
+      <AdminFormSection title={adminTr.seo.aiCareer.sections.tool}>
         <AdminTextField
           id="toolMetaTitle"
           name="toolMetaTitle"
@@ -76,7 +77,7 @@ export function SeoAiCareerForm({ initial }: SeoAiCareerFormProps) {
         />
       </AdminFormSection>
 
-      <AdminFormSection title="Structured Data (JSON)">
+      <AdminFormSection title={adminTr.seo.aiCareer.sections.structured}>
         <AdminTextareaField
           id="faqSchemaJson"
           name="faqSchemaJson"
@@ -101,7 +102,7 @@ export function SeoAiCareerForm({ initial }: SeoAiCareerFormProps) {
       <AdminFormStatus error={status.error} success={status.success} />
       <div className="flex justify-end">
         <Button type="submit" variant="primary" isLoading={isPending}>
-          Save AI Career SEO
+          {adminTr.seo.saveAiCareer}
         </Button>
       </div>
     </form>

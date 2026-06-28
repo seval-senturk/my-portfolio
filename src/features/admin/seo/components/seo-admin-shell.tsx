@@ -5,21 +5,22 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
+import { adminTr } from "@/features/admin/i18n/tr";
 import { cn } from "@/lib/cn";
 
 const SEO_NAV = [
-  { href: ADMIN_ROUTES.seo, label: "Overview", exact: true },
-  { href: `${ADMIN_ROUTES.seo}/global`, label: "Global Settings" },
-  { href: `${ADMIN_ROUTES.seo}/pages`, label: "Page SEO" },
-  { href: `${ADMIN_ROUTES.seo}/blog`, label: "Blog SEO" },
-  { href: `${ADMIN_ROUTES.seo}/projects`, label: "Project SEO" },
-  { href: `${ADMIN_ROUTES.seo}/resume`, label: "Resume SEO" },
-  { href: `${ADMIN_ROUTES.seo}/ai-career`, label: "AI Career SEO" },
-  { href: `${ADMIN_ROUTES.seo}/structured-data`, label: "Structured Data" },
-  { href: `${ADMIN_ROUTES.seo}/sitemap`, label: "Sitemap" },
-  { href: `${ADMIN_ROUTES.seo}/robots`, label: "Robots" },
-  { href: `${ADMIN_ROUTES.seo}/redirects`, label: "Redirects" },
-  { href: `${ADMIN_ROUTES.seo}/health`, label: "SEO Health" },
+  { href: ADMIN_ROUTES.seo, label: adminTr.seo.nav.overview, exact: true },
+  { href: `${ADMIN_ROUTES.seo}/global`, label: adminTr.seo.nav.global },
+  { href: `${ADMIN_ROUTES.seo}/pages`, label: adminTr.seo.nav.pages },
+  { href: `${ADMIN_ROUTES.seo}/blog`, label: adminTr.seo.nav.blog },
+  { href: `${ADMIN_ROUTES.seo}/projects`, label: adminTr.seo.nav.projects },
+  { href: `${ADMIN_ROUTES.seo}/resume`, label: adminTr.seo.nav.resume },
+  { href: `${ADMIN_ROUTES.seo}/ai-career`, label: adminTr.seo.nav.aiCareer },
+  { href: `${ADMIN_ROUTES.seo}/structured-data`, label: adminTr.seo.nav.structuredData },
+  { href: `${ADMIN_ROUTES.seo}/sitemap`, label: adminTr.seo.nav.sitemap },
+  { href: `${ADMIN_ROUTES.seo}/robots`, label: adminTr.seo.nav.robots },
+  { href: `${ADMIN_ROUTES.seo}/redirects`, label: adminTr.seo.nav.redirects },
+  { href: `${ADMIN_ROUTES.seo}/health`, label: adminTr.seo.nav.health },
 ] as const;
 
 interface SeoAdminNavProps {
@@ -30,7 +31,7 @@ export function SeoAdminNav({ className }: SeoAdminNavProps) {
   const pathname = usePathname();
 
   return (
-    <nav className={cn("flex flex-wrap gap-2", className)} aria-label="SEO sections">
+    <nav className={cn("flex flex-wrap gap-2", className)} aria-label="SEO bölümleri">
       {SEO_NAV.map((item) => {
         const active = "exact" in item && item.exact
           ? pathname === item.href

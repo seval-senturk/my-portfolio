@@ -1,7 +1,2 @@
-export { createPageMetadata, rootMetadata } from "@/seo/metadata";
-export {
-  createArticleSchema,
-  createPersonSchema,
-  createWebSiteSchema,
-} from "@/seo/structured-data";
+export { createPageMetadata } from "@/seo/metadata";
 export { JsonLd } from "@/seo/json-ld";

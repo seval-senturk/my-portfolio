@@ -114,6 +114,11 @@ export interface ResolvedSeoMetadata {
   ogType?: "website" | "article" | "profile";
   twitterCardType?: "summary" | "summary_large_image";
   twitterImageUrl?: string;
+  twitterHandle?: string;
+  faviconPath?: string;
+  authorName?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
   robots?: SeoRobotsDirective;
 }
 

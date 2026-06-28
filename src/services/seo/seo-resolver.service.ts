@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 
-import { SEO_ENTITY_TYPES } from "@/constants/seo-pages";
+import { SEO_ENTITY_TYPES, SEO_PAGE_KEYS } from "@/constants/seo-pages";
+import { ROUTES } from "@/constants/routes";
 import { seoConfig } from "@/config/seo.config";
 import { siteConfig } from "@/config/site.config";
+import { CACHE_TAGS, cachedQuery } from "@/lib/cache/server";
 import { resolveSeoImageUrl } from "@/lib/seo/resolve-image-url";
 import { absoluteUrl } from "@/lib/url";
 import { seoRepository } from "@/repositories/prisma/seo.repository";
@@ -25,6 +27,25 @@ function applyTitleTemplate(title: string | undefined, template: string, siteNam
 }
 
 export async function resolvePageSeo(
+  pageKey: string,
+  fallback: Partial<PageMetadataInput> = {},
+  locale = DEFAULT_LOCALE,
+): Promise<ResolvedSeoMetadata> {
+  const fallbackKey = JSON.stringify({
+    title: fallback.title,
+    description: fallback.description,
+    pathname: fallback.pathname,
+    ogImagePath: fallback.ogImagePath,
+  });
+
+  return cachedQuery(
+    `seo-page:${locale}:${pageKey}:${fallbackKey}`,
+    [CACHE_TAGS.seo],
+    () => resolvePageSeoFromDb(pageKey, fallback, locale),
+  );
+}
+
+async function resolvePageSeoFromDb(
   pageKey: string,
   fallback: Partial<PageMetadataInput> = {},
   locale = DEFAULT_LOCALE,
@@ -65,6 +86,9 @@ export async function resolvePageSeo(
       page?.twitterImageUrl ?? page?.ogImageUrl,
       globalSettings.defaultTwitterImageUrl ?? defaultOg,
     ),
+    twitterHandle: globalSettings.twitterHandle ?? seoConfig.twitterHandle ?? undefined,
+    faviconPath: globalSettings.faviconPath ?? seoConfig.faviconPath,
+    authorName: globalSettings.defaultAuthorName || siteConfig.author.name,
     robots: noIndex
       ? { index: false, follow: robotsFollow }
       : { index: true, follow: robotsFollow },
@@ -74,7 +98,38 @@ export async function resolvePageSeo(
 export async function resolveEntitySeo(
   entityType: string,
   entityId: string,
-  fallback: Partial<PageMetadataInput> & { ogType?: "website" | "article" | "profile" } = {},
+  fallback: Partial<PageMetadataInput> & {
+    ogType?: "website" | "article" | "profile";
+    publishedTime?: string;
+    modifiedTime?: string;
+  } = {},
+  locale = DEFAULT_LOCALE,
+): Promise<ResolvedSeoMetadata> {
+  const fallbackKey = JSON.stringify({
+    title: fallback.title,
+    description: fallback.description,
+    pathname: fallback.pathname,
+    ogImagePath: fallback.ogImagePath,
+    ogType: fallback.ogType,
+    publishedTime: fallback.publishedTime,
+    modifiedTime: fallback.modifiedTime,
+  });
+
+  return cachedQuery(
+    `seo-entity:${locale}:${entityType}:${entityId}:${fallbackKey}`,
+    [CACHE_TAGS.seo],
+    () => resolveEntitySeoFromDb(entityType, entityId, fallback, locale),
+  );
+}
+
+async function resolveEntitySeoFromDb(
+  entityType: string,
+  entityId: string,
+  fallback: Partial<PageMetadataInput> & {
+    ogType?: "website" | "article" | "profile";
+    publishedTime?: string;
+    modifiedTime?: string;
+  } = {},
   locale = DEFAULT_LOCALE,
 ): Promise<ResolvedSeoMetadata> {
   const [globalSettings, metadata] = await Promise.all([
@@ -117,6 +172,11 @@ export async function resolveEntitySeo(
       metadata?.twitterImageUrl ?? metadata?.ogImageUrl,
       globalSettings.defaultTwitterImageUrl ?? defaultOg,
     ),
+    twitterHandle: globalSettings.twitterHandle ?? seoConfig.twitterHandle ?? undefined,
+    faviconPath: globalSettings.faviconPath ?? seoConfig.faviconPath,
+    authorName: globalSettings.defaultAuthorName || siteConfig.author.name,
+    publishedTime: fallback.publishedTime,
+    modifiedTime: fallback.modifiedTime,
     robots: {
       index: robotsIndex,
       follow: robotsFollow,
@@ -124,12 +184,51 @@ export async function resolveEntitySeo(
   };
 }
 
+function mergeResolvedSeo(
+  page: ResolvedSeoMetadata,
+  entity: ResolvedSeoMetadata,
+): ResolvedSeoMetadata {
+  return {
+    pathname: entity.pathname || page.pathname,
+    title: entity.title ?? page.title,
+    description: entity.description ?? page.description,
+    keywords: entity.keywords?.length ? entity.keywords : page.keywords,
+    canonicalUrl: entity.canonicalUrl ?? page.canonicalUrl,
+    focusKeyword: entity.focusKeyword ?? page.focusKeyword,
+    ogTitle: entity.ogTitle ?? page.ogTitle,
+    ogDescription: entity.ogDescription ?? page.ogDescription,
+    ogImageUrl: entity.ogImageUrl ?? page.ogImageUrl,
+    ogImageAlt: entity.ogImageAlt ?? page.ogImageAlt,
+    ogType: entity.ogType ?? page.ogType,
+    twitterCardType: entity.twitterCardType ?? page.twitterCardType,
+    twitterImageUrl: entity.twitterImageUrl ?? page.twitterImageUrl,
+    twitterHandle: entity.twitterHandle ?? page.twitterHandle,
+    faviconPath: entity.faviconPath ?? page.faviconPath,
+    authorName: entity.authorName ?? page.authorName,
+    publishedTime: entity.publishedTime ?? page.publishedTime,
+    modifiedTime: entity.modifiedTime ?? page.modifiedTime,
+    robots: entity.robots ?? page.robots,
+  };
+}
+
 export function resolvedSeoToMetadata(resolved: ResolvedSeoMetadata): Metadata {
+  const isArticle = resolved.ogType === "article";
+
   return {
     metadataBase: new URL(absoluteUrl()),
     title: resolved.title,
     description: resolved.description,
     keywords: resolved.keywords ? [...resolved.keywords] : undefined,
+    icons: resolved.faviconPath
+      ? {
+          icon: resolved.faviconPath,
+          shortcut: resolved.faviconPath,
+        }
+      : undefined,
+    authors: resolved.authorName
+      ? [{ name: resolved.authorName, url: absoluteUrl() }]
+      : undefined,
+    creator: resolved.authorName,
     alternates: resolved.canonicalUrl
       ? { canonical: resolved.canonicalUrl }
       : undefined,
@@ -150,15 +249,24 @@ export function resolvedSeoToMetadata(resolved: ResolvedSeoMetadata): Metadata {
         ? [
             {
               url: resolved.ogImageUrl,
+              width: 1200,
+              height: 630,
               alt: resolved.ogImageAlt ?? siteConfig.name,
             },
           ]
         : undefined,
+      ...(isArticle && resolved.publishedTime
+        ? {
+            publishedTime: resolved.publishedTime,
+            modifiedTime: resolved.modifiedTime ?? resolved.publishedTime,
+          }
+        : {}),
     },
     twitter: {
       card: resolved.twitterCardType ?? "summary_large_image",
       title: resolved.ogTitle ?? resolved.title,
       description: resolved.ogDescription ?? resolved.description,
+      creator: resolved.twitterHandle,
       images: resolved.twitterImageUrl ? [resolved.twitterImageUrl] : undefined,
     },
   };
@@ -175,8 +283,28 @@ export async function buildPageMetadata(
 export async function buildEntityMetadata(
   entityType: string,
   entityId: string,
-  fallback: Partial<PageMetadataInput> & { ogType?: "website" | "article" | "profile" } = {},
+  fallback: Partial<PageMetadataInput> & {
+    ogType?: "website" | "article" | "profile";
+    publishedTime?: string;
+    modifiedTime?: string;
+  } = {},
 ): Promise<Metadata> {
   const resolved = await resolveEntitySeo(entityType, entityId, fallback);
   return resolvedSeoToMetadata(resolved);
+}
+
+export async function buildResumeMetadata(
+  resumeId: string,
+  fallback: Partial<PageMetadataInput> = {},
+): Promise<Metadata> {
+  const [pageResolved, entityResolved] = await Promise.all([
+    resolvePageSeo(SEO_PAGE_KEYS.RESUME, fallback),
+    resolveEntitySeo(SEO_ENTITY_TYPES.RESUME, resumeId, {
+      ...fallback,
+      pathname: fallback.pathname ?? ROUTES.resume,
+      ogType: "profile",
+    }),
+  ]);
+
+  return resolvedSeoToMetadata(mergeResolvedSeo(pageResolved, entityResolved));
 }

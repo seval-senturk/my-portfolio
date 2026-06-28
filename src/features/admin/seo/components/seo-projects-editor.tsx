@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { saveProjectSeoAction } from "@/features/admin/actions/seo.actions";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   seoRecordToFormInitial,
   SeoFieldsForm,
@@ -25,7 +26,7 @@ export function SeoProjectsEditor({ projects }: SeoProjectsEditorProps) {
   const active = projects.find((project) => project.id === activeId) ?? projects[0];
 
   if (!active) {
-    return <p className="text-small text-muted-foreground">No projects found.</p>;
+    return <p className="text-small text-muted-foreground">{adminTr.seo.projects.noProjects}</p>;
   }
 
   return (
@@ -53,7 +54,7 @@ export function SeoProjectsEditor({ projects }: SeoProjectsEditorProps) {
       <div className="admin-surface rounded-xl border p-6">
         <div className="mb-4">
           <h3 className="text-body font-semibold">{active.title}</h3>
-          <p className="text-caption text-muted-foreground">Slug: {active.slug}</p>
+          <p className="text-caption text-muted-foreground">{adminTr.seo.projects.slugLabel}: {active.slug}</p>
         </div>
         <SeoFieldsForm
           key={active.id}

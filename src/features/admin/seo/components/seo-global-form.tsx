@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 
 import type { SeoGlobalSettingsRecord } from "@/types/seo-management";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   AdminFormSection,
   AdminSwitchField,
@@ -28,14 +29,14 @@ export function SeoGlobalForm({ initial, action }: SeoGlobalFormProps) {
           const result = await action(formData);
           setStatus(
             result.success
-              ? { success: "Saved successfully." }
-              : { error: result.error ?? "Save failed." },
+              ? { success: adminTr.common.saved }
+              : { error: result.error ?? adminTr.common.saveFailed },
           );
         });
       }}
       className="admin-surface space-y-6 rounded-xl border p-6"
     >
-      <AdminFormSection title="Site Identity">
+      <AdminFormSection title={adminTr.seo.global.sections.identity}>
         <AdminTextField id="siteTitle" name="siteTitle" label="Site title" defaultValue={initial.siteTitle} />
         <AdminTextareaField
           id="siteDescription"
@@ -65,7 +66,7 @@ export function SeoGlobalForm({ initial, action }: SeoGlobalFormProps) {
         />
       </AdminFormSection>
 
-      <AdminFormSection title="URLs & Language">
+      <AdminFormSection title={adminTr.seo.global.sections.urls}>
         <AdminTextField
           id="siteUrlOverride"
           name="siteUrlOverride"
@@ -86,7 +87,7 @@ export function SeoGlobalForm({ initial, action }: SeoGlobalFormProps) {
         />
       </AdminFormSection>
 
-      <AdminFormSection title="Social Defaults">
+      <AdminFormSection title={adminTr.seo.global.sections.social}>
         <AdminTextField
           id="defaultOgImageUrl"
           name="defaultOgImageUrl"
@@ -107,7 +108,7 @@ export function SeoGlobalForm({ initial, action }: SeoGlobalFormProps) {
         />
       </AdminFormSection>
 
-      <AdminFormSection title="Default Robots">
+      <AdminFormSection title={adminTr.seo.global.sections.robots}>
         <AdminSwitchField
           id="defaultRobotsIndex"
           name="defaultRobotsIndex"
@@ -125,7 +126,7 @@ export function SeoGlobalForm({ initial, action }: SeoGlobalFormProps) {
       <AdminFormStatus error={status.error} success={status.success} />
       <div className="flex justify-end">
         <Button type="submit" variant="primary" isLoading={isPending}>
-          Save Global SEO
+          {adminTr.seo.global.save}
         </Button>
       </div>
     </form>

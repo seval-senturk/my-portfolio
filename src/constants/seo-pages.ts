@@ -31,29 +31,29 @@ export interface SeoPageDefinition {
 }
 
 export const SEO_PAGE_DEFINITIONS: readonly SeoPageDefinition[] = [
-  { pageKey: SEO_PAGE_KEYS.HOME, label: "Home", routePath: ROUTES.home },
-  { pageKey: SEO_PAGE_KEYS.ABOUT, label: "About", routePath: ROUTES.about },
+  { pageKey: SEO_PAGE_KEYS.HOME, label: "Ana Sayfa", routePath: ROUTES.home },
+  { pageKey: SEO_PAGE_KEYS.ABOUT, label: "Hakkımda", routePath: ROUTES.about },
   {
     pageKey: SEO_PAGE_KEYS.EXPERIENCE,
-    label: "Experience",
+    label: "Deneyim",
     routePath: ROUTES.experience,
   },
   {
     pageKey: SEO_PAGE_KEYS.PROJECTS,
-    label: "Projects",
+    label: "Projeler",
     routePath: ROUTES.projects,
   },
-  { pageKey: SEO_PAGE_KEYS.SKILLS, label: "Skills", routePath: ROUTES.skills },
-  { pageKey: SEO_PAGE_KEYS.RESUME, label: "Resume", routePath: ROUTES.resume },
+  { pageKey: SEO_PAGE_KEYS.SKILLS, label: "Yetenekler", routePath: ROUTES.skills },
+  { pageKey: SEO_PAGE_KEYS.RESUME, label: "Özgeçmiş", routePath: ROUTES.resume },
   {
     pageKey: SEO_PAGE_KEYS.CONTACT,
-    label: "Contact",
+    label: "İletişim",
     routePath: ROUTES.contact,
   },
   { pageKey: SEO_PAGE_KEYS.BLOG, label: "Blog", routePath: ROUTES.blog },
   {
     pageKey: SEO_PAGE_KEYS.AI_CAREER,
-    label: "AI Career",
+    label: "AI Kariyer",
     routePath: "/career",
   },
 ] as const;

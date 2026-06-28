@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { savePageSeoAction } from "@/features/admin/actions/seo.actions";
+import { adminTr } from "@/features/admin/i18n/tr";
 import {
   seoRecordToFormInitial,
   SeoFieldsForm,
@@ -18,7 +19,7 @@ export function SeoPagesEditor({ pages }: SeoPagesEditorProps) {
   const activePage = pages.find((page) => page.pageKey === activeKey) ?? pages[0];
 
   if (!activePage) {
-    return <p className="text-small text-muted-foreground">No pages configured.</p>;
+    return <p className="text-small text-muted-foreground">{adminTr.seo.pages.noPages}</p>;
   }
 
   return (
