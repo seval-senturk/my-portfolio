@@ -2,6 +2,8 @@ import type { AboutRepository } from "@/content/domains/about/repository";
 import type { BlogRepository } from "@/content/domains/blog/repository";
 import type { ContactRepository } from "@/content/domains/contact/repository";
 import type { ExperienceRepository } from "@/content/domains/experience/repository";
+import type { ExpertiseCarouselRepository } from "@/content/domains/expertise-carousel/repository";
+import type { FooterRepository } from "@/content/domains/footer/repository";
 import type { HeroRepository } from "@/content/domains/hero/repository";
 import type { ProjectsRepository } from "@/content/domains/projects/repository";
 import type { ResumeRepository } from "@/content/domains/resume/repository";
@@ -12,6 +14,8 @@ import {
   prismaBlogRepository,
   prismaContactRepository,
   prismaExperienceRepository,
+  prismaExpertiseCarouselRepository,
+  prismaFooterRepository,
   prismaHeroRepository,
   prismaProjectsRepository,
   prismaResumeRepository,
@@ -23,6 +27,8 @@ export interface ContentRepositories {
   hero: HeroRepository;
   about: AboutRepository;
   experience: ExperienceRepository;
+  expertiseCarousel: ExpertiseCarouselRepository;
+  footer: FooterRepository;
   projects: ProjectsRepository;
   skills: SkillsRepository;
   resume: ResumeRepository;
@@ -35,6 +41,8 @@ export const contentRepositories: ContentRepositories = {
   hero: prismaHeroRepository,
   about: prismaAboutRepository,
   experience: prismaExperienceRepository,
+  expertiseCarousel: prismaExpertiseCarouselRepository,
+  footer: prismaFooterRepository,
   projects: prismaProjectsRepository,
   skills: prismaSkillsRepository,
   resume: prismaResumeRepository,

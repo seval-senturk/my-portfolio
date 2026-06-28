@@ -1,28 +1,24 @@
+import { Suspense } from "react";
+
 import {
-  aboutContentService,
-  contactContentService,
-  experienceContentService,
-  heroContentService,
-  projectsContentService,
-  resumeContentService,
-  siteContentService,
-  skillsContentService,
-} from "@/content";
-import { AboutSection } from "@/features/about";
-import { ContactSection } from "@/features/contact";
-import { ExperienceSection } from "@/features/experience";
+  requestHeroContent,
+  requestExpertiseCarouselContent,
+  requestSiteSocialLinks,
+} from "@/lib/cache/request-dedupe";
 import { HeroSection } from "@/features/hero";
-import { ProjectsSection } from "@/features/projects";
-import { ResumeSection } from "@/features/resume";
-import { SkillsSection } from "@/features/skills";
+import { ExpertiseCarouselSection } from "@/features/expertise-carousel";
+import {
+  HomeBelowFoldSections,
+  HomeBelowFoldSkeleton,
+} from "@/features/home";
 import { buildPageMetadata } from "@/services/seo/seo-resolver.service";
 import { SEO_PAGE_KEYS } from "@/constants/seo-pages";
 import { ROUTES } from "@/constants/routes";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata() {
-  const hero = await heroContentService.get();
+  const hero = await requestHeroContent();
 
   return buildPageMetadata(SEO_PAGE_KEYS.HOME, {
     description: hero.summary,
@@ -31,42 +27,19 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [
-    hero,
-    about,
-    experience,
-    projects,
-    skills,
-    resume,
-    contact,
-    professionalHighlights,
-  ] = await Promise.all([
-    heroContentService.get(),
-    aboutContentService.get(),
-    experienceContentService.get(),
-    projectsContentService.get(),
-    skillsContentService.get(),
-    resumeContentService.get(),
-    contactContentService.get(),
-    siteContentService.getProfessionalHighlights(),
+  const [hero, socialLinks, expertiseCarousel] = await Promise.all([
+    requestHeroContent(),
+    requestSiteSocialLinks(),
+    requestExpertiseCarouselContent(),
   ]);
 
   return (
     <>
-      <HeroSection
-        content={hero}
-        professionalHighlights={professionalHighlights}
-      />
-      <AboutSection content={about} />
-      <ExperienceSection content={experience} />
-      <ProjectsSection content={projects} />
-      <SkillsSection content={skills} />
-      <ResumeSection
-        content={resume}
-        experience={experience}
-        skills={skills}
-      />
-      <ContactSection content={contact} />
+      <HeroSection content={hero} socialLinks={socialLinks} />
+      <ExpertiseCarouselSection content={expertiseCarousel} />
+      <Suspense fallback={<HomeBelowFoldSkeleton />}>
+        <HomeBelowFoldSections />
+      </Suspense>
     </>
   );
 }

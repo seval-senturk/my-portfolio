@@ -317,6 +317,58 @@ model Hero {
   @@index([status])
 }
 
+// ─── Expertise carousel (home section 02) ───────────────────────────────────
+
+model ExpertiseCarouselConfig {
+  id          String  @id @default("default")
+  locale      String  @default("en")
+  label       String
+  title       String
+  description String  @db.Text
+  visible     Boolean @default(true)
+
+  @@unique([locale])
+}
+
+model ExpertiseCarouselItem {
+  id          String   @id
+  icon        String
+  title       String
+  description String?  @db.Text
+  bulletItems Json     @default("[]")
+  ctaLabel    String?
+  ctaHref     String?
+  sortOrder   Int      @default(0)
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([sortOrder])
+  @@index([visible, sortOrder])
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+model FooterConfig {
+  id                    String  @id @default("default")
+  locale                String  @default("en")
+  newsletterEnabled     Boolean @default(true)
+  newsletterLabel       String
+  newsletterTitle       String
+  newsletterDescription String? @db.Text
+  newsletterPlaceholder String
+  newsletterButtonText  String
+  phone                 String?
+  email                 String?
+  address               String?
+  copyright             String
+  brandName             String
+  brandLogoUrl          String?
+  scrollToTopEnabled    Boolean @default(true)
+
+  @@unique([locale])
+}
+
 // ─── About ──────────────────────────────────────────────────────────────────
 
 model About {

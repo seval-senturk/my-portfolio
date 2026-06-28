@@ -8,6 +8,8 @@ import { socialLinks } from "@/config/social-links.config";
 import { aboutContent } from "@/data/about.data";
 import { blogContent } from "@/data/blog.data";
 import { contactContent } from "@/data/contact.data";
+import { expertiseCarouselContent } from "@/data/expertise-carousel.data";
+import { siteFooterContent } from "@/data/site-footer.data";
 import { experienceContent } from "@/data/experience.data";
 import { footerContent } from "@/data/footer.data";
 import { heroContent } from "@/data/hero.data";
@@ -18,6 +20,7 @@ import { skillsContent } from "@/data/skills.data";
 import { MEDIA_FOLDER_DEFINITIONS } from "@/constants/media-folders";
 import { DEFAULT_FEATURE_FLAGS } from "@/constants/feature-flags";
 import { slugify } from "@/repositories/shared/locale";
+import { ensureDefaultResumePdfExists } from "@/lib/resume/pdf-storage";
 import type { ContactContent } from "@/types/contact";
 import type { ExperienceEntry } from "@/types/experience";
 import type { ProjectEntry } from "@/types/project";
@@ -149,6 +152,94 @@ async function seedHero() {
       profileImageUrl: null,
       profileImageAlt: heroContent.profile.imageAlt,
       profileInitials: heroContent.profile.initials,
+    },
+  });
+}
+
+async function seedExpertiseCarousel() {
+  await prisma.expertiseCarouselConfig.upsert({
+    where: { locale: LOCALE },
+    update: {
+      label: expertiseCarouselContent.section.label,
+      title: expertiseCarouselContent.section.title,
+      description: expertiseCarouselContent.section.description,
+      visible: expertiseCarouselContent.section.visible,
+    },
+    create: {
+      locale: LOCALE,
+      label: expertiseCarouselContent.section.label,
+      title: expertiseCarouselContent.section.title,
+      description: expertiseCarouselContent.section.description,
+      visible: expertiseCarouselContent.section.visible,
+    },
+  });
+
+  const incomingIds = expertiseCarouselContent.items.map((item) => item.id);
+  await prisma.expertiseCarouselItem.deleteMany({
+    where: { id: { notIn: incomingIds } },
+  });
+
+  for (const [index, item] of expertiseCarouselContent.items.entries()) {
+    await prisma.expertiseCarouselItem.upsert({
+      where: { id: item.id },
+      update: {
+        icon: item.icon,
+        title: item.title,
+        description: item.description || null,
+        bulletItems: toJson([...item.bulletItems]),
+        ctaLabel: item.ctaLabel ?? null,
+        ctaHref: item.ctaHref ?? null,
+        visible: item.visible,
+        sortOrder: index,
+      },
+      create: {
+        id: item.id,
+        icon: item.icon,
+        title: item.title,
+        description: item.description || null,
+        bulletItems: toJson([...item.bulletItems]),
+        ctaLabel: item.ctaLabel ?? null,
+        ctaHref: item.ctaHref ?? null,
+        visible: item.visible,
+        sortOrder: index,
+      },
+    });
+  }
+}
+
+async function seedFooter() {
+  await prisma.footerConfig.upsert({
+    where: { locale: LOCALE },
+    update: {
+      newsletterEnabled: siteFooterContent.newsletter.enabled,
+      newsletterLabel: siteFooterContent.newsletter.label,
+      newsletterTitle: siteFooterContent.newsletter.title,
+      newsletterDescription: siteFooterContent.newsletter.description,
+      newsletterPlaceholder: siteFooterContent.newsletter.placeholder,
+      newsletterButtonText: siteFooterContent.newsletter.buttonText,
+      phone: siteFooterContent.contact.phone,
+      email: siteFooterContent.contact.email,
+      address: siteFooterContent.contact.address,
+      copyright: siteFooterContent.brand.copyright,
+      brandName: siteFooterContent.brand.siteName,
+      brandLogoUrl: siteFooterContent.brand.logoUrl,
+      scrollToTopEnabled: siteFooterContent.scrollToTop.enabled,
+    },
+    create: {
+      locale: LOCALE,
+      newsletterEnabled: siteFooterContent.newsletter.enabled,
+      newsletterLabel: siteFooterContent.newsletter.label,
+      newsletterTitle: siteFooterContent.newsletter.title,
+      newsletterDescription: siteFooterContent.newsletter.description,
+      newsletterPlaceholder: siteFooterContent.newsletter.placeholder,
+      newsletterButtonText: siteFooterContent.newsletter.buttonText,
+      phone: siteFooterContent.contact.phone,
+      email: siteFooterContent.contact.email,
+      address: siteFooterContent.contact.address,
+      copyright: siteFooterContent.brand.copyright,
+      brandName: siteFooterContent.brand.siteName,
+      brandLogoUrl: siteFooterContent.brand.logoUrl,
+      scrollToTopEnabled: siteFooterContent.scrollToTop.enabled,
     },
   });
 }
@@ -410,6 +501,8 @@ async function seedSkills() {
 }
 
 async function seedResume() {
+  const defaultPdfPath = await ensureDefaultResumePdfExists();
+
   const resume = await prisma.resume.upsert({
     where: { locale: LOCALE },
     update: {
@@ -454,7 +547,7 @@ async function seedResume() {
       resumeId: resume.id,
       locale: file.locale,
       label: file.label,
-      filePath: file.filePath,
+      filePath: file.isDefault ? defaultPdfPath : file.filePath,
       fileName: file.fileName,
       mimeType: file.mimeType,
       isDefault: file.isDefault ?? false,
@@ -741,7 +834,7 @@ async function seedSeoManagement() {
       create: {
         schemaType,
         label: schemaType,
-        enabled: ["Person", "WebSite", "BlogPosting", "BreadcrumbList", "WebPage"].includes(
+        enabled: ["Person", "WebSite", "BlogPosting", "BreadcrumbList", "WebPage", "ProfilePage"].includes(
           schemaType,
         ),
         scope: "global",
@@ -815,6 +908,8 @@ async function main() {
   await seedAdminUser();
   await seedSiteSettings();
   await seedHero();
+  await seedExpertiseCarousel();
+  await seedFooter();
   await seedAbout();
   await seedExperience();
   await seedProjects();

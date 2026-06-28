@@ -23,6 +23,11 @@ export { getHeroRecord, updateHero } from "@/services/admin/hero.admin.service";
 export type { UpdateHeroInput } from "@/services/admin/hero.admin.service";
 
 export {
+  getSocialLinksForAdmin,
+  replaceSocialLinks,
+} from "@/services/admin/social.admin.service";
+
+export {
   createExperienceEntry,
   deleteExperienceEntry,
   listExperienceEntries,
@@ -49,11 +54,29 @@ export {
 export type { SkillEntryInput } from "@/services/admin/skill.admin.service";
 
 export {
+  createExpertiseCarouselItem,
+  deleteExpertiseCarouselItem,
+  getExpertiseCarouselConfig,
+  listExpertiseCarouselItems,
+  parseExpertiseBulletList,
+  reorderExpertiseCarouselItems,
+  updateExpertiseCarouselConfig,
+  updateExpertiseCarouselItem,
+} from "@/services/admin/expertise-carousel.admin.service";
+
+export {
+  getFooterConfig,
+  updateFooterConfig,
+} from "@/services/admin/footer.admin.service";
+
+export {
   getResumeRecord,
   serializeResumeForForm,
+  serializeResumeFile,
   updateResume,
+  upsertDefaultResumePdf,
 } from "@/services/admin/resume.admin.service";
-export type { UpdateResumeInput } from "@/services/admin/resume.admin.service";
+export type { ResumeFileInfo, UpdateResumeInput } from "@/services/admin/resume.admin.service";
 
 export {
   listBlogPostsAdmin,

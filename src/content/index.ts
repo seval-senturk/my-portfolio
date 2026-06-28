@@ -23,6 +23,8 @@ export type {
 export { aboutContentService } from "@/content/domains/about";
 export { blogContentService } from "@/content/domains/blog";
 export { contactContentService } from "@/content/domains/contact";
+export { expertiseCarouselContentService } from "@/content/domains/expertise-carousel";
+export { footerContentService } from "@/content/domains/footer";
 export { experienceContentService } from "@/content/domains/experience";
 export { heroContentService } from "@/content/domains/hero";
 export { projectsContentService } from "@/content/domains/projects";

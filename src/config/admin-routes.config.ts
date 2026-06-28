@@ -6,6 +6,8 @@ export const ADMIN_ROUTES = {
   unauthorized: "/admin/unauthorized",
   dashboard: "/admin/dashboard",
   hero: "/admin/hero",
+  expertiseCarousel: "/admin/expertise-carousel",
+  footer: "/admin/footer",
   about: "/admin/about",
   projects: "/admin/projects",
   experience: "/admin/experience",

@@ -2,6 +2,8 @@ export { prismaAboutRepository } from "@/repositories/prisma/about.repository";
 export { prismaBlogRepository } from "@/repositories/prisma/blog.repository";
 export { prismaContactMessageRepository } from "@/repositories/prisma/contact-message.repository";
 export { prismaContactRepository } from "@/repositories/prisma/contact.repository";
+export { prismaExpertiseCarouselRepository } from "@/repositories/prisma/expertise-carousel.repository";
+export { prismaFooterRepository } from "@/repositories/prisma/footer.repository";
 export { prismaExperienceRepository } from "@/repositories/prisma/experience.repository";
 export { prismaHeroRepository } from "@/repositories/prisma/hero.repository";
 export { prismaProjectsRepository } from "@/repositories/prisma/projects.repository";

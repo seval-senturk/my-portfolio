@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import type { ReactNode } from "react";
 
 import { MaintenancePage } from "@/components/platform/maintenance-page";
@@ -5,6 +7,7 @@ import { A11Y } from "@/lib/accessibility";
 import { isMaintenanceModeActive, getPlatformSettings } from "@/services/platform/settings.service";
 
 import { Footer } from "@/features/layout/components/footer";
+import { FooterSkeleton } from "@/features/layout/components/footer-skeleton";
 import { Header } from "@/features/layout/components/header";
 
 interface SiteLayoutProps {
@@ -23,7 +26,9 @@ export default async function SiteLayout({ children }: SiteLayoutProps) {
         <main id={A11Y.mainContentId} className="flex flex-1 flex-col">
           <MaintenancePage message={settings.maintenanceMessage} />
         </main>
-        <Footer />
+        <Suspense fallback={<FooterSkeleton />}>
+          <Footer />
+        </Suspense>
       </>
     );
   }
@@ -34,7 +39,9 @@ export default async function SiteLayout({ children }: SiteLayoutProps) {
       <main id={A11Y.mainContentId} className="flex flex-1 flex-col">
         {children}
       </main>
-      <Footer />
+      <Suspense fallback={<FooterSkeleton />}>
+        <Footer />
+      </Suspense>
     </>
   );
 }
