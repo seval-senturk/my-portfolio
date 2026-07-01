@@ -15,6 +15,7 @@ export type {
 export {
   getAboutRecord,
   serializeAboutForForm,
+  serializeAboutContentForForm,
   updateAbout,
 } from "@/services/admin/about.admin.service";
 export type { UpdateAboutInput } from "@/services/admin/about.admin.service";
@@ -68,6 +69,21 @@ export {
   getFooterConfig,
   updateFooterConfig,
 } from "@/services/admin/footer.admin.service";
+
+export {
+  getAboutHomeConfig,
+  listAboutHomeQuickInfo,
+  listAboutHomeStats,
+  updateAboutHomeConfig,
+  createAboutHomeQuickInfo,
+  updateAboutHomeQuickInfo,
+  deleteAboutHomeQuickInfo,
+  reorderAboutHomeQuickInfo,
+  createAboutHomeStat,
+  updateAboutHomeStat,
+  deleteAboutHomeStat,
+  reorderAboutHomeStats,
+} from "@/services/admin/about-home.admin.service";
 
 export {
   getResumeRecord,

@@ -2,6 +2,7 @@ import { cache } from "react";
 
 import {
   aboutContentService,
+  aboutHomeContentService,
   blogContentService,
   contactContentService,
   experienceContentService,
@@ -17,6 +18,7 @@ import {
 /** Dedupes identical content reads within a single RSC request (metadata + page). */
 export const requestHeroContent = cache(() => heroContentService.get());
 export const requestAboutContent = cache(() => aboutContentService.get());
+export const requestAboutHomeContent = cache(() => aboutHomeContentService.get());
 export const requestExperienceContent = cache(() => experienceContentService.get());
 export const requestExpertiseCarouselContent = cache(() =>
   expertiseCarouselContentService.get(),

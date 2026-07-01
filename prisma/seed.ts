@@ -10,6 +10,7 @@ import { blogContent } from "@/data/blog.data";
 import { contactContent } from "@/data/contact.data";
 import { expertiseCarouselContent } from "@/data/expertise-carousel.data";
 import { siteFooterContent } from "@/data/site-footer.data";
+import { aboutHomeContent } from "@/data/about-home.data";
 import { experienceContent } from "@/data/experience.data";
 import { footerContent } from "@/data/footer.data";
 import { heroContent } from "@/data/hero.data";
@@ -242,6 +243,95 @@ async function seedFooter() {
       scrollToTopEnabled: siteFooterContent.scrollToTop.enabled,
     },
   });
+}
+
+async function seedAboutHome() {
+  await prisma.aboutHomeConfig.upsert({
+    where: { locale: LOCALE },
+    update: {
+      visible: aboutHomeContent.section.visible,
+      sectionLabel: aboutHomeContent.section.label,
+      title: aboutHomeContent.section.title,
+      titleAccent: aboutHomeContent.section.titleAccent,
+      description: aboutHomeContent.section.description,
+      profileImageUrl: aboutHomeContent.profile.imageUrl,
+      profileImageAlt: aboutHomeContent.profile.imageAlt,
+      primaryCtaLabel: aboutHomeContent.actions.primary.label,
+      primaryCtaHref: aboutHomeContent.actions.primary.href,
+      primaryCtaVisible: aboutHomeContent.actions.primary.visible,
+      secondaryCtaLabel: aboutHomeContent.actions.secondary.label,
+      secondaryCtaHref: aboutHomeContent.actions.secondary.href,
+      secondaryCtaVisible: aboutHomeContent.actions.secondary.visible,
+    },
+    create: {
+      locale: LOCALE,
+      visible: aboutHomeContent.section.visible,
+      sectionLabel: aboutHomeContent.section.label,
+      title: aboutHomeContent.section.title,
+      titleAccent: aboutHomeContent.section.titleAccent,
+      description: aboutHomeContent.section.description,
+      profileImageUrl: aboutHomeContent.profile.imageUrl,
+      profileImageAlt: aboutHomeContent.profile.imageAlt,
+      primaryCtaLabel: aboutHomeContent.actions.primary.label,
+      primaryCtaHref: aboutHomeContent.actions.primary.href,
+      primaryCtaVisible: aboutHomeContent.actions.primary.visible,
+      secondaryCtaLabel: aboutHomeContent.actions.secondary.label,
+      secondaryCtaHref: aboutHomeContent.actions.secondary.href,
+      secondaryCtaVisible: aboutHomeContent.actions.secondary.visible,
+    },
+  });
+
+  const quickInfoIds = aboutHomeContent.quickInfo.map((item) => item.id);
+  await prisma.aboutHomeQuickInfo.deleteMany({
+    where: { id: { notIn: quickInfoIds } },
+  });
+
+  for (const [index, item] of aboutHomeContent.quickInfo.entries()) {
+    await prisma.aboutHomeQuickInfo.upsert({
+      where: { id: item.id },
+      update: {
+        icon: item.icon,
+        label: item.label,
+        value: item.value,
+        visible: item.visible,
+        sortOrder: index,
+      },
+      create: {
+        id: item.id,
+        icon: item.icon,
+        label: item.label,
+        value: item.value,
+        visible: item.visible,
+        sortOrder: index,
+      },
+    });
+  }
+
+  const statIds = aboutHomeContent.stats.map((item) => item.id);
+  await prisma.aboutHomeStat.deleteMany({
+    where: { id: { notIn: statIds } },
+  });
+
+  for (const [index, item] of aboutHomeContent.stats.entries()) {
+    await prisma.aboutHomeStat.upsert({
+      where: { id: item.id },
+      update: {
+        icon: item.icon,
+        value: item.value,
+        label: item.label,
+        visible: item.visible,
+        sortOrder: index,
+      },
+      create: {
+        id: item.id,
+        icon: item.icon,
+        value: item.value,
+        label: item.label,
+        visible: item.visible,
+        sortOrder: index,
+      },
+    });
+  }
 }
 
 async function seedAbout() {
@@ -910,6 +1000,7 @@ async function main() {
   await seedHero();
   await seedExpertiseCarousel();
   await seedFooter();
+  await seedAboutHome();
   await seedAbout();
   await seedExperience();
   await seedProjects();

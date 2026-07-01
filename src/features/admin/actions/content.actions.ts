@@ -34,6 +34,15 @@ import {
   reorderExpertiseCarouselItems,
   parseExpertiseBulletList,
   updateFooterConfig,
+  updateAboutHomeConfig,
+  createAboutHomeQuickInfo,
+  updateAboutHomeQuickInfo,
+  deleteAboutHomeQuickInfo,
+  reorderAboutHomeQuickInfo,
+  createAboutHomeStat,
+  updateAboutHomeStat,
+  deleteAboutHomeStat,
+  reorderAboutHomeStats,
 } from "@/services/admin";
 import { replaceSocialLinks } from "@/services/admin/social.admin.service";
 
@@ -161,6 +170,14 @@ export async function saveAboutAction(formData: FormData) {
     const introductionParagraphs = getString(formData, "introductionParagraphs");
     const storyTitle = getString(formData, "storyTitle");
     const storyParagraphs = getString(formData, "storyParagraphs");
+    const coreExpertiseTitle = getString(formData, "coreExpertiseTitle");
+    const coreExpertiseItems = getString(formData, "coreExpertiseItems");
+    const workingPrinciplesTitle = getString(formData, "workingPrinciplesTitle");
+    const workingPrinciplesItems = getString(formData, "workingPrinciplesItems");
+    const professionalHighlightsTitle = getString(formData, "professionalHighlightsTitle");
+    const professionalHighlightsItems = getString(formData, "professionalHighlightsItems");
+    const personalValuesTitle = getString(formData, "personalValuesTitle");
+    const personalValuesItems = getString(formData, "personalValuesItems");
 
     const fieldErrors: Record<string, string> = {};
     for (const [key, value, label] of [
@@ -169,6 +186,14 @@ export async function saveAboutAction(formData: FormData) {
       ["introductionParagraphs", introductionParagraphs, "Introduction"],
       ["storyTitle", storyTitle, "Story title"],
       ["storyParagraphs", storyParagraphs, "Story content"],
+      ["coreExpertiseTitle", coreExpertiseTitle, "Core expertise title"],
+      ["coreExpertiseItems", coreExpertiseItems, "Core expertise items"],
+      ["workingPrinciplesTitle", workingPrinciplesTitle, "Working principles title"],
+      ["workingPrinciplesItems", workingPrinciplesItems, "Working principles items"],
+      ["professionalHighlightsTitle", professionalHighlightsTitle, "Highlights title"],
+      ["professionalHighlightsItems", professionalHighlightsItems, "Highlights items"],
+      ["personalValuesTitle", personalValuesTitle, "Personal values title"],
+      ["personalValuesItems", personalValuesItems, "Personal values items"],
     ] as const) {
       const error = validateRequired(value, label);
       if (error) fieldErrors[key] = error;
@@ -184,6 +209,14 @@ export async function saveAboutAction(formData: FormData) {
       introductionParagraphs,
       storyTitle,
       storyParagraphs,
+      coreExpertiseTitle,
+      coreExpertiseItems,
+      workingPrinciplesTitle,
+      workingPrinciplesItems,
+      professionalHighlightsTitle,
+      professionalHighlightsItems,
+      personalValuesTitle,
+      personalValuesItems,
     });
 
     revalidatePublicContent();
@@ -659,4 +692,184 @@ export async function subscribeNewsletterAction(formData: FormData) {
   }
 
   return adminSuccess();
+}
+
+export async function saveAboutHomeConfigAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+
+    await updateAboutHomeConfig({
+      visible: formData.get("visible") === "on",
+      sectionLabel: getString(formData, "sectionLabel"),
+      title: getString(formData, "title"),
+      titleAccent: getOptionalString(formData, "titleAccent") ?? null,
+      description: getString(formData, "description"),
+      profileImageUrl: getOptionalString(formData, "profileImageUrl") ?? null,
+      profileImageAlt: getString(formData, "profileImageAlt"),
+      primaryCtaLabel: getString(formData, "primaryCtaLabel"),
+      primaryCtaHref: getString(formData, "primaryCtaHref"),
+      primaryCtaVisible: formData.get("primaryCtaVisible") === "on",
+      secondaryCtaLabel: getString(formData, "secondaryCtaLabel"),
+      secondaryCtaHref: getString(formData, "secondaryCtaHref"),
+      secondaryCtaVisible: formData.get("secondaryCtaVisible") === "on",
+    });
+
+    revalidatePublicContent();
+    revalidatePath("/admin/about");
+    await recordAudit({
+      user,
+      action: AuditActions.ABOUT_HOME_UPDATED,
+      category: "CONTENT",
+      entityType: "about_home_config",
+      summary: "About home section updated",
+    });
+
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save about home section.");
+  }
+}
+
+export async function saveAboutHomeQuickInfoAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+    const id = getOptionalString(formData, "id");
+    const input = {
+      icon: getString(formData, "icon"),
+      label: getString(formData, "label"),
+      value: getString(formData, "value"),
+      visible: formData.get("visible") === "on",
+    };
+
+    if (id) {
+      await updateAboutHomeQuickInfo(id, input);
+    } else {
+      await createAboutHomeQuickInfo(input);
+    }
+
+    revalidatePublicContent();
+    revalidatePath("/admin/about");
+    await recordAudit({
+      user,
+      action: AuditActions.ABOUT_HOME_QUICK_INFO_SAVED,
+      category: "CONTENT",
+      entityType: "about_home_quick_info",
+      entityId: id ?? undefined,
+      summary: id ? "About home quick info updated" : "About home quick info created",
+    });
+
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save quick info item.");
+  }
+}
+
+export async function deleteAboutHomeQuickInfoAction(id: string) {
+  try {
+    const user = await requireAdminUser();
+    await deleteAboutHomeQuickInfo(id);
+    revalidatePublicContent();
+    revalidatePath("/admin/about");
+    await recordAudit({
+      user,
+      action: AuditActions.ABOUT_HOME_QUICK_INFO_DELETED,
+      category: "CONTENT",
+      entityType: "about_home_quick_info",
+      entityId: id,
+      summary: "About home quick info deleted",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to delete quick info item.");
+  }
+}
+
+export async function reorderAboutHomeQuickInfoAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderAboutHomeQuickInfo(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/about");
+    await recordAudit({
+      user,
+      action: AuditActions.ABOUT_HOME_QUICK_INFO_REORDERED,
+      category: "CONTENT",
+      summary: "About home quick info reordered",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder quick info items.");
+  }
+}
+
+export async function saveAboutHomeStatAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+    const id = getOptionalString(formData, "id");
+    const input = {
+      icon: getString(formData, "icon"),
+      value: getString(formData, "value"),
+      label: getString(formData, "label"),
+      visible: formData.get("visible") === "on",
+    };
+
+    if (id) {
+      await updateAboutHomeStat(id, input);
+    } else {
+      await createAboutHomeStat(input);
+    }
+
+    revalidatePublicContent();
+    revalidatePath("/admin/about");
+    await recordAudit({
+      user,
+      action: AuditActions.ABOUT_HOME_STAT_SAVED,
+      category: "CONTENT",
+      entityType: "about_home_stat",
+      entityId: id ?? undefined,
+      summary: id ? "About home stat updated" : "About home stat created",
+    });
+
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save stat card.");
+  }
+}
+
+export async function deleteAboutHomeStatAction(id: string) {
+  try {
+    const user = await requireAdminUser();
+    await deleteAboutHomeStat(id);
+    revalidatePublicContent();
+    revalidatePath("/admin/about");
+    await recordAudit({
+      user,
+      action: AuditActions.ABOUT_HOME_STAT_DELETED,
+      category: "CONTENT",
+      entityType: "about_home_stat",
+      entityId: id,
+      summary: "About home stat deleted",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to delete stat card.");
+  }
+}
+
+export async function reorderAboutHomeStatsAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderAboutHomeStats(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/about");
+    await recordAudit({
+      user,
+      action: AuditActions.ABOUT_HOME_STATS_REORDERED,
+      category: "CONTENT",
+      summary: "About home stats reordered",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder stat cards.");
+  }
 }

@@ -9,6 +9,7 @@ export const ADMIN_ROUTES = {
   expertiseCarousel: "/admin/expertise-carousel",
   footer: "/admin/footer",
   about: "/admin/about",
+  aboutHome: "/admin/about-home",
   projects: "/admin/projects",
   experience: "/admin/experience",
   skills: "/admin/skills",

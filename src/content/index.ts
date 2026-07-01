@@ -20,6 +20,7 @@ export type {
   SeoFields,
 } from "@/content/shared";
 
+export { aboutHomeContentService } from "@/content/domains/about-home";
 export { aboutContentService } from "@/content/domains/about";
 export { blogContentService } from "@/content/domains/blog";
 export { contactContentService } from "@/content/domains/contact";

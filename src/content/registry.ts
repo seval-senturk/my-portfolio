@@ -1,4 +1,5 @@
 import type { AboutRepository } from "@/content/domains/about/repository";
+import type { AboutHomeRepository } from "@/content/domains/about-home/repository";
 import type { BlogRepository } from "@/content/domains/blog/repository";
 import type { ContactRepository } from "@/content/domains/contact/repository";
 import type { ExperienceRepository } from "@/content/domains/experience/repository";
@@ -10,6 +11,7 @@ import type { ResumeRepository } from "@/content/domains/resume/repository";
 import type { SiteRepository } from "@/content/domains/site/repository";
 import type { SkillsRepository } from "@/content/domains/skills/repository";
 import {
+  prismaAboutHomeRepository,
   prismaAboutRepository,
   prismaBlogRepository,
   prismaContactRepository,
@@ -26,6 +28,7 @@ import {
 export interface ContentRepositories {
   hero: HeroRepository;
   about: AboutRepository;
+  aboutHome: AboutHomeRepository;
   experience: ExperienceRepository;
   expertiseCarousel: ExpertiseCarouselRepository;
   footer: FooterRepository;
@@ -40,6 +43,7 @@ export interface ContentRepositories {
 export const contentRepositories: ContentRepositories = {
   hero: prismaHeroRepository,
   about: prismaAboutRepository,
+  aboutHome: prismaAboutHomeRepository,
   experience: prismaExperienceRepository,
   expertiseCarousel: prismaExpertiseCarouselRepository,
   footer: prismaFooterRepository,

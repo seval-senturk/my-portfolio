@@ -3,10 +3,12 @@ import { Suspense } from "react";
 import {
   requestHeroContent,
   requestExpertiseCarouselContent,
+  requestAboutHomeContent,
   requestSiteSocialLinks,
 } from "@/lib/cache/request-dedupe";
 import { HeroSection } from "@/features/hero";
 import { ExpertiseCarouselSection } from "@/features/expertise-carousel";
+import { AboutHomeSection } from "@/features/about-home";
 import {
   HomeBelowFoldSections,
   HomeBelowFoldSkeleton,
@@ -27,15 +29,17 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [hero, socialLinks, expertiseCarousel] = await Promise.all([
+  const [hero, socialLinks, expertiseCarousel, aboutHome] = await Promise.all([
     requestHeroContent(),
     requestSiteSocialLinks(),
     requestExpertiseCarouselContent(),
+    requestAboutHomeContent(),
   ]);
 
   return (
     <>
       <HeroSection content={hero} socialLinks={socialLinks} />
+      <AboutHomeSection content={aboutHome} />
       <ExpertiseCarouselSection content={expertiseCarousel} />
       <Suspense fallback={<HomeBelowFoldSkeleton />}>
         <HomeBelowFoldSections />

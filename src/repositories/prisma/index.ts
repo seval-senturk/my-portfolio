@@ -1,3 +1,4 @@
+export { prismaAboutHomeRepository } from "@/repositories/prisma/about-home.repository";
 export { prismaAboutRepository } from "@/repositories/prisma/about.repository";
 export { prismaBlogRepository } from "@/repositories/prisma/blog.repository";
 export { prismaContactMessageRepository } from "@/repositories/prisma/contact-message.repository";
