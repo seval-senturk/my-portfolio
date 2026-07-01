@@ -47,6 +47,14 @@ export const adminNavigation: readonly AdminNavigationItem[] = [
     section: "content",
   },
   {
+    id: "about",
+    label: adminTr.nav.about,
+    href: ADMIN_ROUTES.about,
+    description: adminTr.about.description,
+    icon: User,
+    section: "content",
+  },
+  {
     id: "expertise-carousel",
     label: adminTr.nav.expertiseCarousel,
     href: ADMIN_ROUTES.expertiseCarousel,
@@ -60,14 +68,6 @@ export const adminNavigation: readonly AdminNavigationItem[] = [
     href: ADMIN_ROUTES.footer,
     description: adminTr.footer.description,
     icon: PanelBottom,
-    section: "content",
-  },
-  {
-    id: "about",
-    label: adminTr.nav.about,
-    href: ADMIN_ROUTES.about,
-    description: adminTr.about.description,
-    icon: User,
     section: "content",
   },
   {

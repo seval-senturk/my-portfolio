@@ -21,16 +21,27 @@ interface AboutAdminViewProps {
     introductionParagraphs: string;
     storyTitle: string;
     storyParagraphs: string;
+    coreExpertiseTitle: string;
+    coreExpertiseItems: string;
+    workingPrinciplesTitle: string;
+    workingPrinciplesItems: string;
+    professionalHighlightsTitle: string;
+    professionalHighlightsItems: string;
+    personalValuesTitle: string;
+    personalValuesItems: string;
   };
+  embedded?: boolean;
 }
 
-export function AboutAdminView({ initial }: AboutAdminViewProps) {
+export function AboutAdminView({ initial, embedded = false }: AboutAdminViewProps) {
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<{ error?: string; success?: string }>({});
 
   return (
     <div>
-      <AdminPageHeader title={adminTr.about.title} description={adminTr.about.description} />
+      {!embedded ? (
+        <AdminPageHeader title={adminTr.about.title} description={adminTr.about.description} />
+      ) : null}
 
       <form
         action={(formData) => {
@@ -39,7 +50,7 @@ export function AboutAdminView({ initial }: AboutAdminViewProps) {
             setStatus(
               result.success
                 ? { success: adminTr.common.saved }
-                : { error: result.error },
+                : { error: result.error ?? adminTr.common.saveFailed },
             );
           });
         }}
@@ -71,6 +82,7 @@ export function AboutAdminView({ initial }: AboutAdminViewProps) {
             name="introductionParagraphs"
             label={adminTr.about.fields.introductionParagraphs}
             defaultValue={initial.introductionParagraphs}
+            rows={6}
             required
           />
         </AdminFormSection>
@@ -88,6 +100,95 @@ export function AboutAdminView({ initial }: AboutAdminViewProps) {
             name="storyParagraphs"
             label={adminTr.about.fields.storyParagraphs}
             defaultValue={initial.storyParagraphs}
+            rows={6}
+            required
+          />
+        </AdminFormSection>
+
+        <AdminFormSection
+          title={adminTr.about.sections.coreExpertise}
+          description={adminTr.about.sections.coreExpertiseDesc}
+        >
+          <AdminTextField
+            id="coreExpertiseTitle"
+            name="coreExpertiseTitle"
+            label={adminTr.about.fields.sectionBlockTitle}
+            defaultValue={initial.coreExpertiseTitle}
+            required
+          />
+          <AdminTextareaField
+            id="coreExpertiseItems"
+            name="coreExpertiseItems"
+            label={adminTr.about.fields.coreExpertiseItems}
+            defaultValue={initial.coreExpertiseItems}
+            rows={10}
+            hint={adminTr.about.fields.expertiseItemsHint}
+            required
+          />
+        </AdminFormSection>
+
+        <AdminFormSection
+          title={adminTr.about.sections.workingPrinciples}
+          description={adminTr.about.sections.workingPrinciplesDesc}
+        >
+          <AdminTextField
+            id="workingPrinciplesTitle"
+            name="workingPrinciplesTitle"
+            label={adminTr.about.fields.sectionBlockTitle}
+            defaultValue={initial.workingPrinciplesTitle}
+            required
+          />
+          <AdminTextareaField
+            id="workingPrinciplesItems"
+            name="workingPrinciplesItems"
+            label={adminTr.about.fields.workingPrinciplesItems}
+            defaultValue={initial.workingPrinciplesItems}
+            rows={8}
+            hint={adminTr.about.fields.simpleItemsHint}
+            required
+          />
+        </AdminFormSection>
+
+        <AdminFormSection
+          title={adminTr.about.sections.professionalHighlights}
+          description={adminTr.about.sections.professionalHighlightsDesc}
+        >
+          <AdminTextField
+            id="professionalHighlightsTitle"
+            name="professionalHighlightsTitle"
+            label={adminTr.about.fields.sectionBlockTitle}
+            defaultValue={initial.professionalHighlightsTitle}
+            required
+          />
+          <AdminTextareaField
+            id="professionalHighlightsItems"
+            name="professionalHighlightsItems"
+            label={adminTr.about.fields.professionalHighlightsItems}
+            defaultValue={initial.professionalHighlightsItems}
+            rows={6}
+            hint={adminTr.about.fields.highlightsItemsHint}
+            required
+          />
+        </AdminFormSection>
+
+        <AdminFormSection
+          title={adminTr.about.sections.personalValues}
+          description={adminTr.about.sections.personalValuesDesc}
+        >
+          <AdminTextField
+            id="personalValuesTitle"
+            name="personalValuesTitle"
+            label={adminTr.about.fields.sectionBlockTitle}
+            defaultValue={initial.personalValuesTitle}
+            required
+          />
+          <AdminTextareaField
+            id="personalValuesItems"
+            name="personalValuesItems"
+            label={adminTr.about.fields.personalValuesItems}
+            defaultValue={initial.personalValuesItems}
+            rows={8}
+            hint={adminTr.about.fields.simpleItemsHint}
             required
           />
         </AdminFormSection>
@@ -96,7 +197,7 @@ export function AboutAdminView({ initial }: AboutAdminViewProps) {
 
         <AdminFormActions>
           <Button type="submit" variant="primary" isLoading={isPending}>
-            {adminTr.about.save}
+            {adminTr.about.savePage}
           </Button>
         </AdminFormActions>
       </form>
