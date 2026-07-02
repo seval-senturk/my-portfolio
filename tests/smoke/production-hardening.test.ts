@@ -8,11 +8,14 @@ describe("production env validation", () => {
   });
 });
 
-describe("home page streaming", () => {
-  it("includes below-fold Suspense module", async () => {
+describe("home page layout", () => {
+  it("renders core sections without below-fold projects block", async () => {
     const fs = await import("node:fs");
-    expect(fs.existsSync("src/features/home/components/home-below-fold-sections.tsx")).toBe(true);
-    expect(fs.existsSync("src/features/home/components/home-below-fold-skeleton.tsx")).toBe(true);
+    const pageSource = fs.readFileSync("src/app/(site)/page.tsx", "utf8");
+
+    expect(pageSource).toContain("ExpertiseCarouselSection");
+    expect(pageSource).not.toContain("HomeBelowFoldSections");
+    expect(pageSource).not.toContain("ProjectsSection");
   });
 });
 
