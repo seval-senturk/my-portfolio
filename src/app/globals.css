@@ -328,6 +328,19 @@ main :is(h1, h2, h3, h4, h5, h6).text-foreground {
 /* ─── Career journey (Experience / Education timeline) ──────────────────── */
 .career-journey-section {
   background: var(--background);
+  padding: clamp(4rem, 8vw, 6rem) 0;
+}
+
+.career-journey__container {
+  padding-inline: 1.5rem;
+}
+
+.career-journey__header {
+  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.career-journey__description {
+  max-width: 42rem;
 }
 
 .career-rails-grid {
@@ -347,20 +360,20 @@ main :is(h1, h2, h3, h4, h5, h6).text-foreground {
 }
 
 .career-rail-column__header {
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
 }
 
 .career-rail-column__label {
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.65rem;
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 0.6875rem;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--primary);
+  color: rgba(124, 131, 255, 0.85);
 }
 
 .career-rail-column__label-bars {
@@ -390,11 +403,11 @@ main :is(h1, h2, h3, h4, h5, h6).text-foreground {
 
 .career-rail-column__title {
   margin: 0;
-  font-family: var(--font-heading), "Cormorant Garamond", serif;
-  font-size: clamp(2rem, 3.5vw, 2.75rem);
-  font-weight: 600;
-  line-height: 1.15;
-  color: var(--foreground);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.5rem, 2.5vw, 1.875rem);
+  font-weight: 500;
+  line-height: 1.2;
+  color: #fff;
 }
 
 .career-rail-column__description {

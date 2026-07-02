@@ -104,9 +104,9 @@ export function CareerRailColumnHeader({
         <span className="career-rail-column__label-bars" aria-hidden="true" />
         <span>{label}</span>
       </p>
-      <h2 id={headingId} className="career-rail-column__title">
+      <h3 id={headingId} className="career-rail-column__title">
         {title}
-      </h2>
+      </h3>
       {description ? (
         <p className="career-rail-column__description">{description}</p>
       ) : null}

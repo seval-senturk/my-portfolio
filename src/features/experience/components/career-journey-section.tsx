@@ -2,6 +2,8 @@ import type { EducationHomeContent } from "@/types/education-home";
 import type { ExperienceContent } from "@/types/experience";
 
 import { CareerRailsLayout } from "@/features/experience/components/career-rail/career-rails-layout";
+import { CareerJourneySectionHeader } from "@/features/experience/components/career-journey-section-header";
+import { careerJourneySectionConfig } from "@/features/experience/config/career-journey-section.config";
 import { Container } from "@/components/ui/container";
 
 interface CareerJourneySectionProps {
@@ -22,13 +24,22 @@ export function CareerJourneySection({
     return null;
   }
 
+  const headingId = "career-journey-heading";
+
   return (
     <section
       id="career-journey"
-      aria-label="Experience and education"
-      className="career-journey-section py-16 md:py-24"
+      aria-labelledby={headingId}
+      className="career-journey-section"
     >
-      <Container size="default">
+      <Container size="wide" className="career-journey__container">
+        <CareerJourneySectionHeader
+          label={careerJourneySectionConfig.label}
+          title={careerJourneySectionConfig.title}
+          titleAccent={careerJourneySectionConfig.titleAccent}
+          description={careerJourneySectionConfig.description}
+          headingId={headingId}
+        />
         <CareerRailsLayout experience={experience} education={education} />
       </Container>
     </section>
