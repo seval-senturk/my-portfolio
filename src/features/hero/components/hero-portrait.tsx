@@ -1,25 +1,17 @@
 import Image from "next/image";
 
 import type { HeroProfile } from "@/types/hero";
-import type { SiteSocialLink } from "@/types/social";
 import { optimizePortraitUrl } from "@/lib/media/optimize-portrait-url";
 import { cn } from "@/lib/cn";
-
-import { HeroSocialLinks } from "@/features/hero/components/hero-social-links";
 
 const PROFILE_SIZE = 800;
 
 interface HeroPortraitProps {
   profile: HeroProfile;
-  socialLinks: readonly SiteSocialLink[];
   className?: string;
 }
 
-export function HeroPortrait({
-  profile,
-  socialLinks,
-  className,
-}: HeroPortraitProps) {
+export function HeroPortrait({ profile, className }: HeroPortraitProps) {
   const hasImage = Boolean(profile.imageSrc);
   const imageSrc = profile.imageSrc
     ? optimizePortraitUrl(profile.imageSrc)
@@ -28,7 +20,7 @@ export function HeroPortrait({
   return (
     <div
       className={cn(
-        "hero-portrait relative mx-auto w-full max-w-md overflow-visible sm:max-w-lg lg:mx-0 lg:max-w-xl",
+        "hero-portrait relative mx-auto w-full max-w-md overflow-visible sm:max-w-lg lg:max-w-xl",
         className,
       )}
     >
@@ -57,12 +49,6 @@ export function HeroPortrait({
             </span>
           </div>
         )}
-
-        <HeroSocialLinks
-          links={socialLinks}
-          variant="portrait-rail"
-          className="hidden lg:flex"
-        />
       </div>
     </div>
   );

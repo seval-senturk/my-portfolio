@@ -25,7 +25,7 @@ export function HeroSocialLinks({
     return (
       <ul
         className={cn(
-          "hero-portrait-social-rail m-0 list-none p-0",
+          "hero-layout__social-rail m-0 list-none p-0",
           className,
         )}
         aria-label="Social profiles"

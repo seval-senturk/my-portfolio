@@ -5,6 +5,7 @@ import { HeroDecorSvg } from "@/features/hero/components/hero-decor-svg";
 import { HeroContentBlock } from "@/features/hero/components/hero-content";
 import { HeroLayout } from "@/features/hero/components/hero-layout";
 import { HeroPortrait } from "@/features/hero/components/hero-portrait";
+import { HeroSocialLinks } from "@/features/hero/components/hero-social-links";
 import { Container } from "@/components/ui/container";
 
 interface HeroSectionProps {
@@ -30,11 +31,9 @@ export function HeroSection({ content, socialLinks }: HeroSectionProps) {
           content={
             <HeroContentBlock content={content} socialLinks={socialLinks} />
           }
-          media={
-            <HeroPortrait
-              profile={content.profile}
-              socialLinks={socialLinks}
-            />
+          media={<HeroPortrait profile={content.profile} />}
+          aside={
+            <HeroSocialLinks links={socialLinks} variant="portrait-rail" />
           }
         />
       </Container>
