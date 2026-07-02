@@ -18,6 +18,7 @@ import { heroContent } from "@/data/hero.data";
 import { professionalHighlights } from "@/data/professional-highlights.data";
 import { projectsContent } from "@/data/projects.data";
 import { resumeContent } from "@/data/resume.data";
+import { testimonialsContent } from "@/data/testimonials.data";
 import { skillsContent } from "@/data/skills.data";
 import { MEDIA_FOLDER_DEFINITIONS } from "@/constants/media-folders";
 import { DEFAULT_FEATURE_FLAGS } from "@/constants/feature-flags";
@@ -202,6 +203,71 @@ async function seedExpertiseCarousel() {
         bulletItems: toJson([...item.bulletItems]),
         ctaLabel: item.ctaLabel ?? null,
         ctaHref: item.ctaHref ?? null,
+        visible: item.visible,
+        sortOrder: index,
+      },
+    });
+  }
+}
+
+async function seedTestimonials() {
+  await prisma.testimonialsSectionConfig.upsert({
+    where: { locale: LOCALE },
+    update: {
+      label: testimonialsContent.section.label,
+      title: testimonialsContent.section.title,
+      titleAccent: testimonialsContent.section.titleAccent ?? null,
+      description: testimonialsContent.section.description,
+      sectionNumber: testimonialsContent.section.sectionNumber,
+      visible: testimonialsContent.section.visible,
+      carouselEnabled: testimonialsContent.section.carousel.enabled,
+      autoplay: testimonialsContent.section.carousel.autoplay,
+      autoplayDelayMs: testimonialsContent.section.carousel.autoplayDelayMs,
+      loop: testimonialsContent.section.carousel.loop,
+    },
+    create: {
+      locale: LOCALE,
+      label: testimonialsContent.section.label,
+      title: testimonialsContent.section.title,
+      titleAccent: testimonialsContent.section.titleAccent ?? null,
+      description: testimonialsContent.section.description,
+      sectionNumber: testimonialsContent.section.sectionNumber,
+      visible: testimonialsContent.section.visible,
+      carouselEnabled: testimonialsContent.section.carousel.enabled,
+      autoplay: testimonialsContent.section.carousel.autoplay,
+      autoplayDelayMs: testimonialsContent.section.carousel.autoplayDelayMs,
+      loop: testimonialsContent.section.carousel.loop,
+    },
+  });
+
+  const incomingIds = testimonialsContent.items.map((item) => item.id);
+  await prisma.testimonial.deleteMany({
+    where: { id: { notIn: incomingIds } },
+  });
+
+  for (const [index, item] of testimonialsContent.items.entries()) {
+    await prisma.testimonial.upsert({
+      where: { id: item.id },
+      update: {
+        quote: item.quote,
+        authorName: item.authorName,
+        authorTitle: item.authorTitle,
+        company: item.company,
+        avatarUrl: item.avatarUrl ?? null,
+        companyLogoUrl: item.companyLogoUrl ?? null,
+        rating: item.rating ?? null,
+        visible: item.visible,
+        sortOrder: index,
+      },
+      create: {
+        id: item.id,
+        quote: item.quote,
+        authorName: item.authorName,
+        authorTitle: item.authorTitle,
+        company: item.company,
+        avatarUrl: item.avatarUrl ?? null,
+        companyLogoUrl: item.companyLogoUrl ?? null,
+        rating: item.rating ?? null,
         visible: item.visible,
         sortOrder: index,
       },
@@ -1076,6 +1142,7 @@ async function main() {
   await seedAbout();
   await seedExperience();
   await seedEducationHome();
+  await seedTestimonials();
   await seedProjects();
   await seedSkills();
   await seedResume();

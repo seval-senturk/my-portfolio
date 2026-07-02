@@ -28,6 +28,11 @@ import {
   deleteEducationHomeEntry,
   updateEducationHomeConfig,
   reorderEducationHomeEntries,
+  createTestimonialItem,
+  updateTestimonialItem,
+  deleteTestimonialItem,
+  updateTestimonialsConfig,
+  reorderTestimonialItems,
   createProjectEntry,
   updateProjectEntry,
   deleteProjectEntry,
@@ -540,6 +545,120 @@ export async function reorderEducationHomeEntriesAction(orderedIds: string[]) {
     return adminSuccess();
   } catch {
     return adminError("Failed to reorder education entries.");
+  }
+}
+
+export async function saveTestimonialsConfigAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+
+    await updateTestimonialsConfig({
+      label: getString(formData, "label"),
+      title: getString(formData, "title"),
+      titleAccent: getOptionalString(formData, "titleAccent") ?? "",
+      description: getString(formData, "description"),
+      sectionNumber: getString(formData, "sectionNumber"),
+      visible: formData.get("visible") === "on",
+      carouselEnabled: formData.get("carouselEnabled") === "on",
+      autoplay: formData.get("autoplay") === "on",
+      autoplayDelayMs: Number(getString(formData, "autoplayDelayMs") || "5000"),
+      loop: formData.get("loop") === "on",
+    });
+
+    revalidatePublicContent();
+    revalidatePath("/admin/testimonials");
+    await recordAudit({
+      user,
+      action: AuditActions.TESTIMONIALS_CONFIG_UPDATED,
+      category: "CONTENT",
+      entityType: "testimonials_section_config",
+      summary: "Testimonials section updated",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save testimonials section.");
+  }
+}
+
+export async function saveTestimonialItemAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+
+    const id = getOptionalString(formData, "id");
+    const ratingRaw = getOptionalString(formData, "rating");
+    const testimonialDateRaw = getOptionalString(formData, "testimonialDate");
+    const input = {
+      quote: getString(formData, "quote"),
+      authorName: getString(formData, "authorName"),
+      authorTitle: getString(formData, "authorTitle"),
+      company: getString(formData, "company"),
+      avatarUrl: getOptionalString(formData, "avatarUrl") ?? "",
+      companyLogoUrl: getOptionalString(formData, "companyLogoUrl") ?? "",
+      rating: ratingRaw ? Number(ratingRaw) : undefined,
+      testimonialDate: testimonialDateRaw || undefined,
+      visible: formData.get("visible") === "on",
+    };
+
+    if (id) {
+      await updateTestimonialItem(id, input);
+    } else {
+      await createTestimonialItem(input);
+    }
+
+    revalidatePublicContent();
+    revalidatePath("/admin/testimonials");
+    await recordAudit({
+      user,
+      action: id
+        ? AuditActions.TESTIMONIAL_UPDATED
+        : AuditActions.TESTIMONIAL_CREATED,
+      category: "CONTENT",
+      entityType: "testimonial",
+      entityId: id ?? undefined,
+      summary: id ? "Testimonial updated" : "Testimonial created",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save testimonial.");
+  }
+}
+
+export async function deleteTestimonialItemAction(id: string) {
+  try {
+    const user = await requireAdminUser();
+    await deleteTestimonialItem(id);
+    revalidatePublicContent();
+    revalidatePath("/admin/testimonials");
+    await recordAudit({
+      user,
+      action: AuditActions.TESTIMONIAL_DELETED,
+      category: "CONTENT",
+      entityType: "testimonial",
+      entityId: id,
+      summary: "Testimonial deleted",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to delete testimonial.");
+  }
+}
+
+export async function reorderTestimonialItemsAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderTestimonialItems(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/testimonials");
+    await recordAudit({
+      user,
+      action: AuditActions.TESTIMONIALS_REORDERED,
+      category: "CONTENT",
+      entityType: "testimonial",
+      summary: "Testimonials reordered",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder testimonials.");
   }
 }
 

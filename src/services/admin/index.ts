@@ -57,6 +57,16 @@ export type {
 } from "@/services/admin/education-home.admin.service";
 
 export {
+  createTestimonialItem,
+  deleteTestimonialItem,
+  getTestimonialsConfig,
+  listTestimonialItems,
+  reorderTestimonialItems,
+  updateTestimonialsConfig,
+  updateTestimonialItem,
+} from "@/services/admin/testimonials.admin.service";
+
+export {
   createProjectEntry,
   deleteProjectEntry,
   listProjectEntries,

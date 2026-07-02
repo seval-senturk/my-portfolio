@@ -7,6 +7,7 @@ export const ADMIN_ROUTES = {
   dashboard: "/admin/dashboard",
   hero: "/admin/hero",
   expertiseCarousel: "/admin/expertise-carousel",
+  testimonials: "/admin/testimonials",
   footer: "/admin/footer",
   about: "/admin/about",
   aboutHome: "/admin/about-home",

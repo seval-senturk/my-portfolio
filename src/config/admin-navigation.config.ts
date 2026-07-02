@@ -8,6 +8,7 @@ import {
   LayoutGrid,
   LayoutDashboard,
   Mail,
+  MessageSquareQuote,
   PanelBottom,
   Search,
   Settings,
@@ -76,6 +77,14 @@ export const adminNavigation: readonly AdminNavigationItem[] = [
     href: ADMIN_ROUTES.experience,
     description: adminTr.experience.description,
     icon: Briefcase,
+    section: "content",
+  },
+  {
+    id: "testimonials",
+    label: adminTr.nav.testimonials,
+    href: ADMIN_ROUTES.testimonials,
+    description: adminTr.testimonials.description,
+    icon: MessageSquareQuote,
     section: "content",
   },
   {
