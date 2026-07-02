@@ -31,10 +31,30 @@ export {
 export {
   createExperienceEntry,
   deleteExperienceEntry,
+  getExperiencePageConfig,
   listExperienceEntries,
+  reorderExperienceEntries,
   updateExperienceEntry,
+  updateExperiencePageConfig,
 } from "@/services/admin/experience.admin.service";
-export type { ExperienceEntryInput } from "@/services/admin/experience.admin.service";
+export type {
+  ExperienceEntryInput,
+  ExperiencePageConfigInput,
+} from "@/services/admin/experience.admin.service";
+
+export {
+  createEducationHomeEntry,
+  deleteEducationHomeEntry,
+  getEducationHomeConfig,
+  listEducationHomeEntries,
+  reorderEducationHomeEntries,
+  updateEducationHomeConfig,
+  updateEducationHomeEntry,
+} from "@/services/admin/education-home.admin.service";
+export type {
+  EducationHomeConfigInput,
+  EducationHomeEntryInput,
+} from "@/services/admin/education-home.admin.service";
 
 export {
   createProjectEntry,

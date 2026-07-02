@@ -2,9 +2,16 @@ import type { ExperienceContent } from "@/types/experience";
 
 export const experienceContent = {
   section: {
+    label: "MY JOURNEY",
     title: "Experience",
     description:
       "Professional work history highlighting roles, technologies, and measurable impact across frontend and full stack development.",
+    visible: true,
+    cta: {
+      label: "View full resume and download CV",
+      href: "/resume",
+      visible: true,
+    },
   },
   entries: [
     {

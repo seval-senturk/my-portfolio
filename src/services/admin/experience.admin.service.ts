@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { slugify } from "@/repositories/shared/locale";
+import { DEFAULT_LOCALE, slugify } from "@/repositories/shared/locale";
 
 export interface ExperienceEntryInput {
   id?: string;
@@ -16,6 +16,17 @@ export interface ExperienceEntryInput {
   responsibilities: string[];
   achievements: string[];
   technologies: string[];
+  visible: boolean;
+}
+
+export interface ExperiencePageConfigInput {
+  sectionLabel: string;
+  sectionTitle: string;
+  sectionDescription: string;
+  sectionVisible: boolean;
+  ctaLabel: string;
+  ctaHref: string;
+  ctaVisible: boolean;
 }
 
 async function syncExperienceTechnologies(
@@ -38,6 +49,37 @@ async function syncExperienceTechnologies(
       data: { experienceId, technologyId: technology.id },
     });
   }
+}
+
+export async function getExperiencePageConfig() {
+  return prisma.experiencePageConfig.findUnique({
+    where: { locale: DEFAULT_LOCALE },
+  });
+}
+
+export async function updateExperiencePageConfig(input: ExperiencePageConfigInput) {
+  return prisma.experiencePageConfig.upsert({
+    where: { locale: DEFAULT_LOCALE },
+    update: {
+      sectionLabel: input.sectionLabel,
+      sectionTitle: input.sectionTitle,
+      sectionDescription: input.sectionDescription,
+      sectionVisible: input.sectionVisible,
+      ctaLabel: input.ctaLabel,
+      ctaHref: input.ctaHref,
+      ctaVisible: input.ctaVisible,
+    },
+    create: {
+      locale: DEFAULT_LOCALE,
+      sectionLabel: input.sectionLabel,
+      sectionTitle: input.sectionTitle,
+      sectionDescription: input.sectionDescription,
+      sectionVisible: input.sectionVisible,
+      ctaLabel: input.ctaLabel,
+      ctaHref: input.ctaHref,
+      ctaVisible: input.ctaVisible,
+    },
+  });
 }
 
 export async function listExperienceEntries() {
@@ -68,6 +110,7 @@ export async function createExperienceEntry(input: ExperienceEntryInput) {
       summary: input.summary,
       responsibilities: input.responsibilities,
       achievements: input.achievements,
+      visible: input.visible,
       sortOrder: count,
     },
   });
@@ -92,6 +135,7 @@ export async function updateExperienceEntry(id: string, input: ExperienceEntryIn
       summary: input.summary,
       responsibilities: input.responsibilities,
       achievements: input.achievements,
+      visible: input.visible,
     },
   });
 
@@ -101,4 +145,15 @@ export async function updateExperienceEntry(id: string, input: ExperienceEntryIn
 
 export async function deleteExperienceEntry(id: string) {
   await prisma.experience.delete({ where: { id } });
+}
+
+export async function reorderExperienceEntries(orderedIds: string[]) {
+  await prisma.$transaction(
+    orderedIds.map((id, index) =>
+      prisma.experience.update({
+        where: { id },
+        data: { sortOrder: index },
+      }),
+    ),
+  );
 }

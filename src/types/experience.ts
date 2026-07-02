@@ -10,6 +10,18 @@ export interface EmploymentDate {
   year: number;
 }
 
+export interface ExperienceSectionHeader {
+  label: string;
+  title: string;
+  description: string;
+  visible: boolean;
+  cta: {
+    label: string;
+    href: string;
+    visible: boolean;
+  };
+}
+
 export interface ExperienceEntry {
   id: string;
   company: string;
@@ -23,11 +35,7 @@ export interface ExperienceEntry {
   responsibilities: readonly string[];
   technologies: readonly string[];
   achievements?: readonly string[];
-}
-
-export interface ExperienceSectionHeader {
-  title: string;
-  description: string;
+  visible?: boolean;
 }
 
 export interface ExperienceContent {

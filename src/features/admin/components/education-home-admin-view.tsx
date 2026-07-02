@@ -4,10 +4,10 @@ import { GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState, useTransition, type DragEvent } from "react";
 
 import {
-  deleteExperienceAction,
-  reorderExperienceEntriesAction,
-  saveExperienceAction,
-  saveExperienceConfigAction,
+  deleteEducationHomeEntryAction,
+  reorderEducationHomeEntriesAction,
+  saveEducationHomeConfigAction,
+  saveEducationHomeEntryAction,
 } from "@/features/admin/actions/content.actions";
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
@@ -26,56 +26,50 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-export interface ExperiencePageConfigRow {
+export interface EducationHomeConfigRow {
   sectionLabel: string;
   sectionTitle: string;
   sectionDescription: string;
   sectionVisible: boolean;
-  ctaLabel: string;
-  ctaHref: string;
-  ctaVisible: boolean;
 }
 
-export interface ExperienceAdminRow {
+export interface EducationHomeAdminRow {
   id: string;
-  company: string;
-  position: string;
-  employmentType: string;
-  location: string;
-  startMonth: number;
+  institution: string;
+  degree: string;
+  fieldOfStudy: string;
+  levelBadge: string;
+  startMonth?: number | null;
   startYear: number;
   endMonth?: number | null;
   endYear?: number | null;
-  current: boolean;
-  summary: string;
-  responsibilities: string[];
-  achievements: string[];
+  description: string;
   technologies: string[];
   visible: boolean;
 }
 
-interface ExperienceAdminViewProps {
-  config: ExperiencePageConfigRow;
-  entries: ExperienceAdminRow[];
+interface EducationHomeAdminViewProps {
+  config: EducationHomeConfigRow;
+  entries: EducationHomeAdminRow[];
   embedded?: boolean;
 }
 
-export function ExperienceAdminView({
+export function EducationHomeAdminView({
   config,
   entries,
   embedded = false,
-}: ExperienceAdminViewProps) {
+}: EducationHomeAdminViewProps) {
   const [rows, setRows] = useState(entries);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [selected, setSelected] = useState<ExperienceAdminRow | null>(null);
+  const [selected, setSelected] = useState<EducationHomeAdminRow | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [status, setStatus] = useState<{ error?: string; success?: string }>({});
   const [isPending, startTransition] = useTransition();
   const [isConfigPending, startConfigTransition] = useTransition();
 
-  const columns = useMemo<AdminTableColumn<ExperienceAdminRow>[]>(
+  const columns = useMemo<AdminTableColumn<EducationHomeAdminRow>[]>(
     () => [
       {
         id: "order",
@@ -87,42 +81,28 @@ export function ExperienceAdminView({
             onDragStart={() => setDraggingId(row.id)}
             onDragEnd={() => setDraggingId(null)}
             className="cursor-grab text-muted-foreground active:cursor-grabbing"
-            aria-label={adminTr.experience.reorderHandle}
+            aria-label={adminTr.educationHome.reorderHandle}
           >
             <GripVertical className="h-4 w-4" />
           </button>
         ),
       },
       {
-        id: "position",
-        header: adminTr.experience.columns.role,
-        sortValue: (row) => row.position,
+        id: "degree",
+        header: adminTr.educationHome.columns.degree,
+        sortValue: (row) => row.degree,
         accessor: (row) => (
           <div>
-            <p className="font-medium">{row.position}</p>
-            <p className="text-caption text-muted-foreground">{row.company}</p>
+            <p className="font-medium">{row.degree}</p>
+            <p className="text-caption text-muted-foreground">{row.institution}</p>
           </div>
         ),
       },
       {
-        id: "location",
-        header: adminTr.experience.columns.location,
-        sortValue: (row) => row.location,
-        accessor: (row) => row.location,
-      },
-      {
-        id: "type",
-        header: adminTr.experience.columns.type,
-        accessor: (row) => row.employmentType,
-      },
-      {
-        id: "status",
-        header: adminTr.experience.columns.status,
-        accessor: (row) => (
-          <Badge variant={row.current ? "accent" : "outline"}>
-            {row.current ? adminTr.experience.current : adminTr.experience.past}
-          </Badge>
-        ),
+        id: "field",
+        header: adminTr.educationHome.columns.field,
+        sortValue: (row) => row.fieldOfStudy,
+        accessor: (row) => row.fieldOfStudy || "—",
       },
       {
         id: "visible",
@@ -151,10 +131,10 @@ export function ExperienceAdminView({
     setDraggingId(null);
 
     startTransition(async () => {
-      const result = await reorderExperienceEntriesAction(nextRows.map((row) => row.id));
+      const result = await reorderEducationHomeEntriesAction(nextRows.map((row) => row.id));
       setStatus(
         result.success
-          ? { success: adminTr.experience.reorderSaved }
+          ? { success: adminTr.educationHome.reorderSaved }
           : { error: result.error ?? adminTr.common.saveFailed },
       );
     });
@@ -165,12 +145,12 @@ export function ExperienceAdminView({
     setIsModalOpen(true);
   }
 
-  function openEdit(row: ExperienceAdminRow) {
+  function openEdit(row: EducationHomeAdminRow) {
     setSelected(row);
     setIsModalOpen(true);
   }
 
-  function openDelete(row: ExperienceAdminRow) {
+  function openDelete(row: EducationHomeAdminRow) {
     setDeleteId(row.id);
     setIsDeleteOpen(true);
   }
@@ -179,8 +159,8 @@ export function ExperienceAdminView({
     <div className="space-y-8">
       {!embedded ? (
         <AdminPageHeader
-          title={adminTr.experience.title}
-          description={adminTr.experience.description}
+          title={adminTr.educationHome.title}
+          description={adminTr.educationHome.description}
         />
       ) : null}
 
@@ -189,7 +169,7 @@ export function ExperienceAdminView({
       <form
         action={(formData) => {
           startConfigTransition(async () => {
-            const result = await saveExperienceConfigAction(formData);
+            const result = await saveEducationHomeConfigAction(formData);
             setStatus(
               result.success
                 ? { success: adminTr.common.saved }
@@ -200,66 +180,40 @@ export function ExperienceAdminView({
         className="admin-surface space-y-6 rounded-xl border p-6"
       >
         <AdminFormSection
-          title={adminTr.experience.sections.config}
-          description={adminTr.experience.sections.configDesc}
+          title={adminTr.educationHome.sections.config}
+          description={adminTr.educationHome.sections.configDesc}
         >
           <AdminTextField
-            id="sectionLabel"
+            id="educationSectionLabel"
             name="sectionLabel"
-            label={adminTr.experience.fields.sectionLabel}
+            label={adminTr.educationHome.fields.sectionLabel}
             defaultValue={config.sectionLabel}
             required
           />
           <AdminTextField
-            id="sectionTitle"
+            id="educationSectionTitle"
             name="sectionTitle"
-            label={adminTr.experience.fields.sectionTitle}
+            label={adminTr.educationHome.fields.sectionTitle}
             defaultValue={config.sectionTitle}
             required
           />
           <AdminTextareaField
-            id="sectionDescription"
+            id="educationSectionDescription"
             name="sectionDescription"
-            label={adminTr.experience.fields.sectionDescription}
+            label={adminTr.educationHome.fields.sectionDescription}
             defaultValue={config.sectionDescription}
-            required
           />
           <AdminSwitchField
-            id="sectionVisible"
+            id="educationSectionVisible"
             name="sectionVisible"
-            label={adminTr.experience.fields.sectionVisible}
+            label={adminTr.educationHome.fields.sectionVisible}
             defaultChecked={config.sectionVisible}
-          />
-        </AdminFormSection>
-
-        <AdminFormSection title={adminTr.experience.sections.cta}>
-          <div className="grid gap-4 md:grid-cols-2">
-            <AdminTextField
-              id="ctaLabel"
-              name="ctaLabel"
-              label={adminTr.experience.fields.ctaLabel}
-              defaultValue={config.ctaLabel}
-              required
-            />
-            <AdminTextField
-              id="ctaHref"
-              name="ctaHref"
-              label={adminTr.experience.fields.ctaHref}
-              defaultValue={config.ctaHref}
-              required
-            />
-          </div>
-          <AdminSwitchField
-            id="ctaVisible"
-            name="ctaVisible"
-            label={adminTr.experience.fields.ctaVisible}
-            defaultChecked={config.ctaVisible}
           />
         </AdminFormSection>
 
         <AdminFormActions>
           <Button type="submit" variant="primary" isLoading={isConfigPending}>
-            {adminTr.experience.saveSection}
+            {adminTr.educationHome.saveSection}
           </Button>
         </AdminFormActions>
       </form>
@@ -267,9 +221,9 @@ export function ExperienceAdminView({
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h2 className="text-h4 text-foreground">{adminTr.experience.sections.entries}</h2>
+            <h2 className="text-h4 text-foreground">{adminTr.educationHome.sections.entries}</h2>
             <p className="mt-1 text-small text-muted-foreground">
-              {adminTr.experience.sections.entriesDesc}
+              {adminTr.educationHome.sections.entriesDesc}
             </p>
           </div>
           <Button
@@ -278,16 +232,16 @@ export function ExperienceAdminView({
             leftIcon={<Plus className="h-4 w-4" />}
             onClick={openCreate}
           >
-            {adminTr.experience.add}
+            {adminTr.educationHome.add}
           </Button>
         </div>
 
         <AdminDataTable
           data={rows}
           columns={columns}
-          searchPlaceholder={adminTr.experience.search}
+          searchPlaceholder={adminTr.educationHome.search}
           searchFilter={(row, query) =>
-            `${row.company} ${row.position} ${row.location}`.toLowerCase().includes(query)
+            `${row.institution} ${row.degree} ${row.fieldOfStudy}`.toLowerCase().includes(query)
           }
           getRowProps={(row) => ({
             onDragOver: (event: DragEvent<HTMLTableRowElement>) => {
@@ -307,33 +261,32 @@ export function ExperienceAdminView({
             </div>
           )}
         />
-
       </div>
 
       <AdminModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selected ? adminTr.experience.edit : adminTr.experience.add}
-        description={adminTr.experience.editDesc}
+        title={selected ? adminTr.educationHome.edit : adminTr.educationHome.add}
+        description={adminTr.educationHome.editDesc}
         size="lg"
         footer={
           <Button
             type="submit"
-            form="experience-admin-form"
+            form="education-home-admin-form"
             variant="primary"
             isLoading={isPending}
           >
-            {adminTr.experience.saveEntry}
+            {adminTr.educationHome.saveEntry}
           </Button>
         }
       >
         <form
-          id="experience-admin-form"
+          id="education-home-admin-form"
           className="space-y-4"
           action={(formData) => {
             if (selected) formData.set("id", selected.id);
             startTransition(async () => {
-              const result = await saveExperienceAction(formData);
+              const result = await saveEducationHomeEntryAction(formData);
               if (result.success) {
                 setIsModalOpen(false);
                 setStatus({ success: adminTr.common.saved });
@@ -344,104 +297,86 @@ export function ExperienceAdminView({
             });
           }}
         >
-          <AdminFormSection title={adminTr.experience.sections.roleDetails}>
+          <AdminFormSection title={adminTr.educationHome.sections.entryDetails}>
             <div className="grid gap-4 md:grid-cols-2">
               <AdminTextField
-                id="company"
-                name="company"
-                label="Company"
-                defaultValue={selected?.company}
+                id="institution"
+                name="institution"
+                label={adminTr.educationHome.fields.institution}
+                defaultValue={selected?.institution}
                 required
               />
               <AdminTextField
-                id="position"
-                name="position"
-                label="Position"
-                defaultValue={selected?.position}
+                id="degree"
+                name="degree"
+                label={adminTr.educationHome.fields.degree}
+                defaultValue={selected?.degree}
                 required
               />
               <AdminTextField
-                id="employmentType"
-                name="employmentType"
-                label="Employment type"
-                defaultValue={selected?.employmentType ?? "Full-time"}
+                id="fieldOfStudy"
+                name="fieldOfStudy"
+                label={adminTr.educationHome.fields.fieldOfStudy}
+                defaultValue={selected?.fieldOfStudy}
               />
               <AdminTextField
-                id="location"
-                name="location"
-                label="Location"
-                defaultValue={selected?.location}
-                required
+                id="levelBadge"
+                name="levelBadge"
+                label={adminTr.educationHome.fields.levelBadge}
+                defaultValue={selected?.levelBadge}
               />
               <AdminTextField
-                id="startMonth"
+                id="educationStartMonth"
                 name="startMonth"
-                label="Start month"
+                label={adminTr.educationHome.fields.startMonth}
                 type="number"
                 min={1}
                 max={12}
-                defaultValue={selected?.startMonth ?? 1}
+                defaultValue={selected?.startMonth ?? undefined}
               />
               <AdminTextField
-                id="startYear"
+                id="educationStartYear"
                 name="startYear"
-                label="Start year"
+                label={adminTr.educationHome.fields.startYear}
                 type="number"
                 defaultValue={selected?.startYear ?? new Date().getFullYear()}
+                required
               />
               <AdminTextField
-                id="endMonth"
+                id="educationEndMonth"
                 name="endMonth"
-                label="End month"
+                label={adminTr.educationHome.fields.endMonth}
                 type="number"
                 min={1}
                 max={12}
                 defaultValue={selected?.endMonth ?? undefined}
               />
               <AdminTextField
-                id="endYear"
+                id="educationEndYear"
                 name="endYear"
-                label="End year"
+                label={adminTr.educationHome.fields.endYear}
                 type="number"
                 defaultValue={selected?.endYear ?? undefined}
               />
             </div>
-            <AdminSwitchField
-              id="current"
-              name="current"
-              label="Current role"
-              defaultChecked={selected?.current ?? false}
-            />
-            <AdminSwitchField
-              id="visible"
-              name="visible"
-              label={adminTr.experience.fields.entryVisible}
-              defaultChecked={selected?.visible ?? true}
-            />
             <AdminTextareaField
-              id="summary"
-              name="summary"
-              label="Summary"
-              defaultValue={selected?.summary}
+              id="educationDescription"
+              name="description"
+              label={adminTr.educationHome.fields.description}
+              defaultValue={selected?.description}
               required
             />
-            <AdminTextareaField
-              id="responsibilities"
-              name="responsibilities"
-              label="Responsibilities (one per line)"
-              defaultValue={selected?.responsibilities.join("\n")}
-            />
-            <AdminTextareaField
-              id="achievements"
-              name="achievements"
-              label="Achievements (one per line)"
-              defaultValue={selected?.achievements.join("\n")}
-            />
             <AdminTextField
-              id="technologies"
+              id="educationTechnologies"
               name="technologies"
-              label="Technologies (comma-separated)"
+              label={adminTr.educationHome.fields.technologies}
               defaultValue={selected?.technologies.join(", ")}
+            />
+            <AdminSwitchField
+              id="educationVisible"
+              name="visible"
+              label={adminTr.educationHome.fields.entryVisible}
+              defaultChecked={selected?.visible ?? true}
             />
           </AdminFormSection>
         </form>
@@ -453,7 +388,7 @@ export function ExperienceAdminView({
         onConfirm={() => {
           if (!deleteId) return;
           startTransition(async () => {
-            const result = await deleteExperienceAction(deleteId);
+            const result = await deleteEducationHomeEntryAction(deleteId);
             if (result.success) {
               setRows((current) => current.filter((row) => row.id !== deleteId));
               setStatus({ success: adminTr.common.deleted });
@@ -463,8 +398,8 @@ export function ExperienceAdminView({
             setIsDeleteOpen(false);
           });
         }}
-        title={adminTr.experience.deleteTitle}
-        description={adminTr.experience.deleteDesc}
+        title={adminTr.educationHome.deleteTitle}
+        description={adminTr.educationHome.deleteDesc}
         confirmLabel={adminTr.common.delete}
         variant="danger"
         isLoading={isPending}

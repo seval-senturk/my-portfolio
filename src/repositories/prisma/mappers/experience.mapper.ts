@@ -25,17 +25,33 @@ export function mapExperienceEntry(
       .map((item) => item.technology.name)
       .sort((a, b) => a.localeCompare(b)),
     achievements: entry.achievements,
+    visible: entry.visible,
   };
 }
 
 export function mapExperienceToContent(
-  config: { sectionTitle: string; sectionDescription: string },
+  config: {
+    sectionLabel?: string;
+    sectionTitle: string;
+    sectionDescription: string;
+    sectionVisible?: boolean;
+    ctaLabel?: string;
+    ctaHref?: string;
+    ctaVisible?: boolean;
+  },
   entries: ExperienceWithTechnologies[],
 ): ExperienceContent {
   return {
     section: {
+      label: config.sectionLabel ?? "MY JOURNEY",
       title: config.sectionTitle,
       description: config.sectionDescription,
+      visible: config.sectionVisible ?? true,
+      cta: {
+        label: config.ctaLabel ?? "View full resume and download CV",
+        href: config.ctaHref ?? "/resume",
+        visible: config.ctaVisible ?? true,
+      },
     },
     entries: entries.map(mapExperienceEntry),
   };

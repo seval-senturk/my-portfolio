@@ -11,6 +11,7 @@ import { contactContent } from "@/data/contact.data";
 import { expertiseCarouselContent } from "@/data/expertise-carousel.data";
 import { siteFooterContent } from "@/data/site-footer.data";
 import { aboutHomeContent } from "@/data/about-home.data";
+import { educationHomeContent } from "@/data/education-home.data";
 import { experienceContent } from "@/data/experience.data";
 import { footerContent } from "@/data/footer.data";
 import { heroContent } from "@/data/hero.data";
@@ -365,13 +366,23 @@ async function seedExperience() {
   await prisma.experiencePageConfig.upsert({
     where: { locale: LOCALE },
     update: {
+      sectionLabel: experienceContent.section.label,
       sectionTitle: experienceContent.section.title,
       sectionDescription: experienceContent.section.description,
+      sectionVisible: experienceContent.section.visible,
+      ctaLabel: experienceContent.section.cta.label,
+      ctaHref: experienceContent.section.cta.href,
+      ctaVisible: experienceContent.section.cta.visible,
     },
     create: {
       locale: LOCALE,
+      sectionLabel: experienceContent.section.label,
       sectionTitle: experienceContent.section.title,
       sectionDescription: experienceContent.section.description,
+      sectionVisible: experienceContent.section.visible,
+      ctaLabel: experienceContent.section.cta.label,
+      ctaHref: experienceContent.section.cta.href,
+      ctaVisible: experienceContent.section.cta.visible,
     },
   });
 
@@ -401,6 +412,7 @@ async function seedExperience() {
         summary: entry.summary,
         responsibilities: [...entry.responsibilities],
         achievements: [...(entry.achievements ?? [])],
+        visible: entry.visible ?? true,
         sortOrder: index,
       },
       create: {
@@ -417,6 +429,7 @@ async function seedExperience() {
         summary: entry.summary,
         responsibilities: [...entry.responsibilities],
         achievements: [...(entry.achievements ?? [])],
+        visible: entry.visible ?? true,
         sortOrder: index,
       },
     });
@@ -434,6 +447,65 @@ async function seedExperience() {
         },
       });
     }
+  }
+}
+
+async function seedEducationHome() {
+  await prisma.educationHomeConfig.upsert({
+    where: { locale: LOCALE },
+    update: {
+      sectionLabel: educationHomeContent.section.label,
+      sectionTitle: educationHomeContent.section.title,
+      sectionDescription: educationHomeContent.section.description ?? null,
+      sectionVisible: educationHomeContent.section.visible,
+    },
+    create: {
+      locale: LOCALE,
+      sectionLabel: educationHomeContent.section.label,
+      sectionTitle: educationHomeContent.section.title,
+      sectionDescription: educationHomeContent.section.description ?? null,
+      sectionVisible: educationHomeContent.section.visible,
+    },
+  });
+
+  const incomingIds = educationHomeContent.entries.map((entry) => entry.id);
+  await prisma.educationHomeEntry.deleteMany({
+    where: { id: { notIn: incomingIds } },
+  });
+
+  for (const [index, entry] of educationHomeContent.entries.entries()) {
+    await prisma.educationHomeEntry.upsert({
+      where: { id: entry.id },
+      update: {
+        institution: entry.institution,
+        degree: entry.degree,
+        fieldOfStudy: entry.fieldOfStudy ?? null,
+        levelBadge: entry.levelBadge ?? null,
+        startMonth: entry.startDate?.month ?? null,
+        startYear: entry.startDate?.year ?? entry.endDate?.year ?? new Date().getFullYear(),
+        endMonth: entry.endDate?.month ?? null,
+        endYear: entry.endDate?.year ?? null,
+        description: entry.description,
+        technologies: [...entry.technologies],
+        visible: entry.visible ?? true,
+        sortOrder: index,
+      },
+      create: {
+        id: entry.id,
+        institution: entry.institution,
+        degree: entry.degree,
+        fieldOfStudy: entry.fieldOfStudy ?? null,
+        levelBadge: entry.levelBadge ?? null,
+        startMonth: entry.startDate?.month ?? null,
+        startYear: entry.startDate?.year ?? entry.endDate?.year ?? new Date().getFullYear(),
+        endMonth: entry.endDate?.month ?? null,
+        endYear: entry.endDate?.year ?? null,
+        description: entry.description,
+        technologies: [...entry.technologies],
+        visible: entry.visible ?? true,
+        sortOrder: index,
+      },
+    });
   }
 }
 
@@ -1003,6 +1075,7 @@ async function main() {
   await seedAboutHome();
   await seedAbout();
   await seedExperience();
+  await seedEducationHome();
   await seedProjects();
   await seedSkills();
   await seedResume();

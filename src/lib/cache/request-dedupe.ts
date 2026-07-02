@@ -5,6 +5,7 @@ import {
   aboutHomeContentService,
   blogContentService,
   contactContentService,
+  educationHomeContentService,
   experienceContentService,
   expertiseCarouselContentService,
   footerContentService,
@@ -19,6 +20,7 @@ import {
 export const requestHeroContent = cache(() => heroContentService.get());
 export const requestAboutContent = cache(() => aboutContentService.get());
 export const requestAboutHomeContent = cache(() => aboutHomeContentService.get());
+export const requestEducationHomeContent = cache(() => educationHomeContentService.get());
 export const requestExperienceContent = cache(() => experienceContentService.get());
 export const requestExpertiseCarouselContent = cache(() =>
   expertiseCarouselContentService.get(),

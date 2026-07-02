@@ -145,7 +145,7 @@ model SeoGlobalSettings {
   defaultTwitterImageUrl String?
   twitterHandle          String?
   titleTemplate          String          @default("%s | %siteName%")
-  faviconPath            String          @default("/favicon.ico")
+  faviconPath            String          @default("/icons/favicon.ico")
   defaultRobotsIndex     Boolean         @default(true)
   defaultRobotsFollow    Boolean         @default(true)
   createdAt              DateTime        @default(now())
@@ -441,10 +441,15 @@ model AboutHomeStat {
 // ─── Experience ─────────────────────────────────────────────────────────────
 
 model ExperiencePageConfig {
-  id                 String @id @default("default")
-  locale             String @default("en")
+  id                 String  @id @default("default")
+  locale             String  @default("en")
+  sectionLabel       String  @default("MY JOURNEY")
   sectionTitle       String
-  sectionDescription String @db.Text
+  sectionDescription String  @db.Text
+  sectionVisible     Boolean @default(true)
+  ctaLabel           String  @default("View full resume and download CV")
+  ctaHref            String  @default("/resume")
+  ctaVisible         Boolean @default(true)
 
   @@unique([locale])
 }
@@ -463,10 +468,42 @@ model Experience {
   summary          String                 @db.Text
   responsibilities String[]
   achievements     String[]
+  visible          Boolean                @default(true)
   sortOrder        Int                    @default(0)
   createdAt        DateTime               @default(now())
   updatedAt        DateTime               @updatedAt
   technologies     ExperienceTechnology[]
+
+  @@index([sortOrder])
+}
+
+model EducationHomeConfig {
+  id                 String  @id @default("default")
+  locale             String  @default("en")
+  sectionLabel       String  @default("MY BACKGROUND")
+  sectionTitle       String  @default("Education")
+  sectionDescription String? @db.Text
+  sectionVisible     Boolean @default(true)
+
+  @@unique([locale])
+}
+
+model EducationHomeEntry {
+  id             String   @id
+  institution    String
+  degree         String
+  fieldOfStudy   String?
+  levelBadge     String?
+  startMonth     Int?
+  startYear      Int
+  endMonth       Int?
+  endYear        Int?
+  description    String   @db.Text
+  technologies   String[]
+  visible        Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([sortOrder])
 }

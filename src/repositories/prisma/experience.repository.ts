@@ -19,6 +19,7 @@ export const prismaExperienceRepository: ExperienceRepository = {
     const [config, entries] = await Promise.all([
       prisma.experiencePageConfig.findUnique({ where: { locale } }),
       prisma.experience.findMany({
+        where: { visible: true },
         orderBy: { sortOrder: "asc" },
         include: experienceInclude,
       }),

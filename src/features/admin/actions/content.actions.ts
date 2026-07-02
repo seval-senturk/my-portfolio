@@ -21,6 +21,13 @@ import {
   createExperienceEntry,
   updateExperienceEntry,
   deleteExperienceEntry,
+  updateExperiencePageConfig,
+  reorderExperienceEntries,
+  createEducationHomeEntry,
+  updateEducationHomeEntry,
+  deleteEducationHomeEntry,
+  updateEducationHomeConfig,
+  reorderEducationHomeEntries,
   createProjectEntry,
   updateProjectEntry,
   deleteProjectEntry,
@@ -306,6 +313,35 @@ export async function uploadResumePdfAction(formData: FormData) {
   }
 }
 
+export async function saveExperienceConfigAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+
+    await updateExperiencePageConfig({
+      sectionLabel: getString(formData, "sectionLabel"),
+      sectionTitle: getString(formData, "sectionTitle"),
+      sectionDescription: getString(formData, "sectionDescription"),
+      sectionVisible: formData.get("sectionVisible") === "on",
+      ctaLabel: getString(formData, "ctaLabel"),
+      ctaHref: getString(formData, "ctaHref"),
+      ctaVisible: formData.get("ctaVisible") === "on",
+    });
+
+    revalidatePublicContent();
+    revalidatePath("/admin/experience");
+    await recordAudit({
+      user,
+      action: AuditActions.EXPERIENCE_CONFIG_UPDATED,
+      category: "CONTENT",
+      entityType: "experience_page_config",
+      summary: "Experience section updated",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save experience section.");
+  }
+}
+
 export async function saveExperienceAction(formData: FormData) {
   try {
     const user = await requireAdminUser();
@@ -329,6 +365,7 @@ export async function saveExperienceAction(formData: FormData) {
       responsibilities: parseMultilineList(getString(formData, "responsibilities")),
       achievements: parseMultilineList(getString(formData, "achievements")),
       technologies: parseCommaList(getString(formData, "technologies")),
+      visible: formData.get("visible") === "on",
     };
 
     if (id) {
@@ -370,6 +407,139 @@ export async function deleteExperienceAction(id: string) {
     return adminSuccess();
   } catch {
     return adminError("Failed to delete experience entry.");
+  }
+}
+
+export async function reorderExperienceEntriesAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderExperienceEntries(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/experience");
+    await recordAudit({
+      user,
+      action: AuditActions.EXPERIENCE_REORDERED,
+      category: "CONTENT",
+      entityType: "experience",
+      summary: "Experience entries reordered",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder experience entries.");
+  }
+}
+
+export async function saveEducationHomeConfigAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+
+    await updateEducationHomeConfig({
+      sectionLabel: getString(formData, "sectionLabel"),
+      sectionTitle: getString(formData, "sectionTitle"),
+      sectionDescription: getString(formData, "sectionDescription"),
+      sectionVisible: formData.get("sectionVisible") === "on",
+    });
+
+    revalidatePublicContent();
+    revalidatePath("/admin/experience");
+    await recordAudit({
+      user,
+      action: AuditActions.EDUCATION_HOME_CONFIG_UPDATED,
+      category: "CONTENT",
+      entityType: "education_home_config",
+      summary: "Education home section updated",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save education section.");
+  }
+}
+
+export async function saveEducationHomeEntryAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+
+    const id = getOptionalString(formData, "id");
+    const input = {
+      institution: getString(formData, "institution"),
+      degree: getString(formData, "degree"),
+      fieldOfStudy: getOptionalString(formData, "fieldOfStudy") ?? "",
+      levelBadge: getOptionalString(formData, "levelBadge") ?? "",
+      startMonth: getOptionalString(formData, "startMonth")
+        ? Number(getString(formData, "startMonth"))
+        : undefined,
+      startYear: Number(getString(formData, "startYear") || new Date().getFullYear()),
+      endMonth: getOptionalString(formData, "endMonth")
+        ? Number(getString(formData, "endMonth"))
+        : undefined,
+      endYear: getOptionalString(formData, "endYear")
+        ? Number(getString(formData, "endYear"))
+        : undefined,
+      description: getString(formData, "description"),
+      technologies: parseCommaList(getString(formData, "technologies")),
+      visible: formData.get("visible") === "on",
+    };
+
+    if (id) {
+      await updateEducationHomeEntry(id, input);
+    } else {
+      await createEducationHomeEntry(input);
+    }
+
+    revalidatePublicContent();
+    revalidatePath("/admin/experience");
+    await recordAudit({
+      user,
+      action: id
+        ? AuditActions.EDUCATION_HOME_ENTRY_UPDATED
+        : AuditActions.EDUCATION_HOME_ENTRY_CREATED,
+      category: "CONTENT",
+      entityType: "education_home_entry",
+      entityId: id ?? undefined,
+      summary: id ? "Education home entry updated" : "Education home entry created",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save education entry.");
+  }
+}
+
+export async function deleteEducationHomeEntryAction(id: string) {
+  try {
+    const user = await requireAdminUser();
+    await deleteEducationHomeEntry(id);
+    revalidatePublicContent();
+    revalidatePath("/admin/experience");
+    await recordAudit({
+      user,
+      action: AuditActions.EDUCATION_HOME_ENTRY_DELETED,
+      category: "CONTENT",
+      entityType: "education_home_entry",
+      entityId: id,
+      summary: "Education home entry deleted",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to delete education entry.");
+  }
+}
+
+export async function reorderEducationHomeEntriesAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderEducationHomeEntries(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/experience");
+    await recordAudit({
+      user,
+      action: AuditActions.EDUCATION_HOME_REORDERED,
+      category: "CONTENT",
+      entityType: "education_home_entry",
+      summary: "Education home entries reordered",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder education entries.");
   }
 }
 

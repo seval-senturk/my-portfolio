@@ -4,11 +4,14 @@ import {
   requestHeroContent,
   requestExpertiseCarouselContent,
   requestAboutHomeContent,
+  requestExperienceContent,
+  requestEducationHomeContent,
   requestSiteSocialLinks,
 } from "@/lib/cache/request-dedupe";
 import { HeroSection } from "@/features/hero";
 import { ExpertiseCarouselSection } from "@/features/expertise-carousel";
 import { AboutHomeSection } from "@/features/about-home";
+import { CareerJourneySection } from "@/features/experience";
 import {
   HomeBelowFoldSections,
   HomeBelowFoldSkeleton,
@@ -29,17 +32,21 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [hero, socialLinks, expertiseCarousel, aboutHome] = await Promise.all([
-    requestHeroContent(),
-    requestSiteSocialLinks(),
-    requestExpertiseCarouselContent(),
-    requestAboutHomeContent(),
-  ]);
+  const [hero, socialLinks, aboutHome, experience, educationHome, expertiseCarousel] =
+    await Promise.all([
+      requestHeroContent(),
+      requestSiteSocialLinks(),
+      requestAboutHomeContent(),
+      requestExperienceContent(),
+      requestEducationHomeContent(),
+      requestExpertiseCarouselContent(),
+    ]);
 
   return (
     <>
       <HeroSection content={hero} socialLinks={socialLinks} />
       <AboutHomeSection content={aboutHome} />
+      <CareerJourneySection experience={experience} education={educationHome} />
       <ExpertiseCarouselSection content={expertiseCarousel} />
       <Suspense fallback={<HomeBelowFoldSkeleton />}>
         <HomeBelowFoldSections />
