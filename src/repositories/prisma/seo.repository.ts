@@ -41,6 +41,7 @@ function mapGlobal(record: {
   faviconPath: string;
   defaultRobotsIndex: boolean;
   defaultRobotsFollow: boolean;
+  updatedAt: Date;
 }): SeoGlobalSettingsRecord {
   return record;
 }

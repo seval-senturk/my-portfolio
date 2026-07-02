@@ -18,6 +18,10 @@ const PUBLIC_ADMIN_ROUTES = new Set<string>([
 export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  if (pathname === "/favicon.ico") {
+    return NextResponse.rewrite(new URL("/api/site/favicon", request.url));
+  }
+
   if (!pathname.startsWith("/admin") && !pathname.startsWith("/api")) {
     const redirectResponse = await applySeoRedirect(request);
     if (redirectResponse) {
@@ -43,5 +47,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image).*)"],
 };

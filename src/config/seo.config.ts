@@ -16,6 +16,6 @@ export const seoConfig = {
   ],
   twitterHandle: "@sevalsenturk",
   ogImagePath: "/og-image.png",
-  /** Drop your file at public/icons/favicon.ico */
-  faviconPath: "/favicon.ico",
+  /** Portfolio favicon — public/icons/favicon.ico */
+  faviconPath: "/icons/favicon.ico",
 } as const;

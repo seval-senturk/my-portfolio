@@ -9,6 +9,7 @@ import { adminError, adminSuccess, type AdminActionResult } from "@/lib/admin/ac
 import { CACHE_TAGS } from "@/lib/cache/server";
 import { AuditActions, recordAudit } from "@/lib/platform/audit";
 import { invalidateRedirectCache } from "@/lib/seo/redirect-middleware";
+import { syncPublicRootFavicon } from "@/lib/seo/favicon";
 import { requireAdminUser } from "@/lib/auth/session";
 import {
   deleteSeoRedirect,
@@ -40,7 +41,7 @@ function revalidateSeoPaths() {
   revalidateTag(CACHE_TAGS.seo);
   revalidateTag(CACHE_TAGS.content);
   revalidateTag(CACHE_TAGS.redirects);
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/blog");
   revalidatePath("/sitemap.xml");
   revalidatePath("/robots.txt");
@@ -51,6 +52,8 @@ export async function saveGlobalSeoAction(formData: FormData): Promise<AdminActi
   const user = await requireAdminUser();
 
   try {
+    const faviconPath = getString(formData, "faviconPath") || "/icons/favicon.ico";
+
     await saveGlobalSeoSettings({
       siteTitle: getString(formData, "siteTitle"),
       siteDescription: getString(formData, "siteDescription"),
@@ -62,10 +65,11 @@ export async function saveGlobalSeoAction(formData: FormData): Promise<AdminActi
       defaultTwitterImageUrl: getString(formData, "defaultTwitterImageUrl") || undefined,
       twitterHandle: getString(formData, "twitterHandle") || undefined,
       titleTemplate: getString(formData, "titleTemplate") || "%s | %siteName%",
-      faviconPath: getString(formData, "faviconPath") || "/favicon.ico",
+      faviconPath,
       defaultRobotsIndex: getBoolean(formData, "defaultRobotsIndex"),
       defaultRobotsFollow: getBoolean(formData, "defaultRobotsFollow"),
     });
+    await syncPublicRootFavicon(faviconPath);
     revalidateSeoPaths();
     await recordAudit({
       user,

@@ -5,6 +5,7 @@ import { ROUTES } from "@/constants/routes";
 import { seoConfig } from "@/config/seo.config";
 import { siteConfig } from "@/config/site.config";
 import { CACHE_TAGS, cachedQuery } from "@/lib/cache/server";
+import { resolveFaviconUrl } from "@/lib/seo/favicon";
 import { resolveSeoImageUrl } from "@/lib/seo/resolve-image-url";
 import { absoluteUrl } from "@/lib/url";
 import { seoRepository } from "@/repositories/prisma/seo.repository";
@@ -87,7 +88,10 @@ async function resolvePageSeoFromDb(
       globalSettings.defaultTwitterImageUrl ?? defaultOg,
     ),
     twitterHandle: globalSettings.twitterHandle ?? seoConfig.twitterHandle ?? undefined,
-    faviconPath: globalSettings.faviconPath ?? seoConfig.faviconPath,
+    faviconPath: resolveFaviconUrl(
+      globalSettings.faviconPath ?? seoConfig.faviconPath,
+      globalSettings.updatedAt,
+    ),
     authorName: globalSettings.defaultAuthorName || siteConfig.author.name,
     robots: noIndex
       ? { index: false, follow: robotsFollow }
@@ -173,7 +177,10 @@ async function resolveEntitySeoFromDb(
       globalSettings.defaultTwitterImageUrl ?? defaultOg,
     ),
     twitterHandle: globalSettings.twitterHandle ?? seoConfig.twitterHandle ?? undefined,
-    faviconPath: globalSettings.faviconPath ?? seoConfig.faviconPath,
+    faviconPath: resolveFaviconUrl(
+      globalSettings.faviconPath ?? seoConfig.faviconPath,
+      globalSettings.updatedAt,
+    ),
     authorName: globalSettings.defaultAuthorName || siteConfig.author.name,
     publishedTime: fallback.publishedTime,
     modifiedTime: fallback.modifiedTime,

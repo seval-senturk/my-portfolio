@@ -131,7 +131,7 @@ export async function saveGlobalSeoSettings(input: SeoGlobalInput): Promise<SeoG
     defaultTwitterImageUrl: sanitizeSeoUrl(input.defaultTwitterImageUrl) ?? null,
     twitterHandle: sanitizeSeoText(input.twitterHandle, 80) ?? null,
     titleTemplate: sanitizeSeoText(input.titleTemplate, 120) ?? "%s | %siteName%",
-    faviconPath: sanitizeSeoText(input.faviconPath, 120) ?? "/favicon.ico",
+    faviconPath: sanitizeSeoText(input.faviconPath, 120) ?? "/icons/favicon.ico",
     defaultRobotsIndex: input.defaultRobotsIndex,
     defaultRobotsFollow: input.defaultRobotsFollow,
   });

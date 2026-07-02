@@ -21,6 +21,7 @@ export interface SeoGlobalSettingsRecord {
   faviconPath: string;
   defaultRobotsIndex: boolean;
   defaultRobotsFollow: boolean;
+  updatedAt: Date;
 }
 
 export interface SeoPageRecord {
