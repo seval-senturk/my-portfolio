@@ -31,6 +31,7 @@ import {
 function revalidateBlogPaths(slug?: string) {
   revalidateTag(CACHE_TAGS.content);
   revalidateTag(CACHE_TAGS.seo);
+  revalidatePath("/");
   revalidatePath("/blog");
   revalidatePath(ADMIN_ROUTES.blog);
   if (slug) {

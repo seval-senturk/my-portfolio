@@ -9,6 +9,7 @@ import { deleteBlogPostAction } from "@/features/admin/actions/blog.actions";
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { BlogAdminNav } from "@/features/admin/blog/components/blog-admin-nav";
 import { adminTr } from "@/features/admin/i18n/tr";
 import { AdminDataTable, type AdminTableColumn } from "@/features/admin/ui";
 import { Badge } from "@/components/ui/badge";
@@ -97,6 +98,8 @@ export function BlogAdminView({ entries }: BlogAdminViewProps) {
           </div>
         }
       />
+
+      <BlogAdminNav />
 
       <AdminFormStatus error={status.error} success={status.success} />
 

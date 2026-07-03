@@ -25,6 +25,7 @@ export { educationHomeContentService } from "@/content/domains/education-home";
 export { aboutHomeContentService } from "@/content/domains/about-home";
 export { aboutContentService } from "@/content/domains/about";
 export { blogContentService } from "@/content/domains/blog";
+export { blogHomeContentService } from "@/content/domains/blog-home";
 export { contactContentService } from "@/content/domains/contact";
 export { expertiseCarouselContentService } from "@/content/domains/expertise-carousel";
 export { footerContentService } from "@/content/domains/footer";

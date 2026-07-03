@@ -4,6 +4,7 @@ import {
   aboutContentService,
   aboutHomeContentService,
   blogContentService,
+  blogHomeContentService,
   contactContentService,
   testimonialsContentService,
   educationHomeContentService,
@@ -32,6 +33,7 @@ export const requestSkillsContent = cache(() => skillsContentService.get());
 export const requestResumeContent = cache(() => resumeContentService.get());
 export const requestContactContent = cache(() => contactContentService.get());
 export const requestBlogContent = cache(() => blogContentService.get());
+export const requestBlogHomeContent = cache(() => blogHomeContentService.get());
 export const requestSiteHighlights = cache(() =>
   siteContentService.getProfessionalHighlights(),
 );
