@@ -388,124 +388,136 @@ async function seedBlogHome() {
 }
 
 async function seedFooter() {
+  const content = siteFooterContent;
+
   await prisma.footerConfig.upsert({
     where: { locale: LOCALE },
     update: {
-      newsletterEnabled: siteFooterContent.newsletter.enabled,
-      newsletterLabel: siteFooterContent.newsletter.label,
-      newsletterTitle: siteFooterContent.newsletter.title,
-      newsletterDescription: siteFooterContent.newsletter.description,
-      newsletterPlaceholder: siteFooterContent.newsletter.placeholder,
-      newsletterButtonText: siteFooterContent.newsletter.buttonText,
-      phone: siteFooterContent.contact.phone,
-      email: siteFooterContent.contact.email,
-      address: siteFooterContent.contact.address,
-      copyright: siteFooterContent.brand.copyright,
-      brandName: siteFooterContent.brand.siteName,
-      brandLogoUrl: siteFooterContent.brand.logoUrl,
-      scrollToTopEnabled: siteFooterContent.scrollToTop.enabled,
+      brandName: content.brand.siteName,
+      brandLogoUrl: content.brand.logoUrl,
+      brandRole: content.brand.role,
+      brandDescription: content.brand.description,
+      navSectionLabel: content.sectionLabels.navigation,
+      resourcesSectionLabel: content.sectionLabels.resources,
+      connectSectionLabel: content.sectionLabels.connect,
+      ctaTitle: content.connect.title,
+      ctaDescription: content.connect.description,
+      ctaLabel: content.connect.ctaLabel,
+      ctaHref: content.connect.ctaHref,
+      copyright: content.bottom.copyright,
+      scrollToTopEnabled: content.bottom.backToTopEnabled,
+      scrollToTopLabel: content.bottom.backToTopLabel,
+      orbitalDecorEnabled: content.decor.orbitalEnabled,
     },
     create: {
       locale: LOCALE,
-      newsletterEnabled: siteFooterContent.newsletter.enabled,
-      newsletterLabel: siteFooterContent.newsletter.label,
-      newsletterTitle: siteFooterContent.newsletter.title,
-      newsletterDescription: siteFooterContent.newsletter.description,
-      newsletterPlaceholder: siteFooterContent.newsletter.placeholder,
-      newsletterButtonText: siteFooterContent.newsletter.buttonText,
-      phone: siteFooterContent.contact.phone,
-      email: siteFooterContent.contact.email,
-      address: siteFooterContent.contact.address,
-      copyright: siteFooterContent.brand.copyright,
-      brandName: siteFooterContent.brand.siteName,
-      brandLogoUrl: siteFooterContent.brand.logoUrl,
-      scrollToTopEnabled: siteFooterContent.scrollToTop.enabled,
-    },
-  });
-}
-
-async function seedAboutHome() {
-  await prisma.aboutHomeConfig.upsert({
-    where: { locale: LOCALE },
-    update: {
-      visible: aboutHomeContent.section.visible,
-      sectionLabel: aboutHomeContent.section.label,
-      title: aboutHomeContent.section.title,
-      titleAccent: aboutHomeContent.section.titleAccent,
-      description: aboutHomeContent.section.description,
-      profileImageUrl: aboutHomeContent.profile.imageUrl,
-      profileImageAlt: aboutHomeContent.profile.imageAlt,
-      primaryCtaLabel: aboutHomeContent.actions.primary.label,
-      primaryCtaHref: aboutHomeContent.actions.primary.href,
-      primaryCtaVisible: aboutHomeContent.actions.primary.visible,
-      secondaryCtaLabel: aboutHomeContent.actions.secondary.label,
-      secondaryCtaHref: aboutHomeContent.actions.secondary.href,
-      secondaryCtaVisible: aboutHomeContent.actions.secondary.visible,
-    },
-    create: {
-      locale: LOCALE,
-      visible: aboutHomeContent.section.visible,
-      sectionLabel: aboutHomeContent.section.label,
-      title: aboutHomeContent.section.title,
-      titleAccent: aboutHomeContent.section.titleAccent,
-      description: aboutHomeContent.section.description,
-      profileImageUrl: aboutHomeContent.profile.imageUrl,
-      profileImageAlt: aboutHomeContent.profile.imageAlt,
-      primaryCtaLabel: aboutHomeContent.actions.primary.label,
-      primaryCtaHref: aboutHomeContent.actions.primary.href,
-      primaryCtaVisible: aboutHomeContent.actions.primary.visible,
-      secondaryCtaLabel: aboutHomeContent.actions.secondary.label,
-      secondaryCtaHref: aboutHomeContent.actions.secondary.href,
-      secondaryCtaVisible: aboutHomeContent.actions.secondary.visible,
+      brandName: content.brand.siteName,
+      brandLogoUrl: content.brand.logoUrl,
+      brandRole: content.brand.role,
+      brandDescription: content.brand.description,
+      navSectionLabel: content.sectionLabels.navigation,
+      resourcesSectionLabel: content.sectionLabels.resources,
+      connectSectionLabel: content.sectionLabels.connect,
+      ctaTitle: content.connect.title,
+      ctaDescription: content.connect.description,
+      ctaLabel: content.connect.ctaLabel,
+      ctaHref: content.connect.ctaHref,
+      copyright: content.bottom.copyright,
+      scrollToTopEnabled: content.bottom.backToTopEnabled,
+      scrollToTopLabel: content.bottom.backToTopLabel,
+      orbitalDecorEnabled: content.decor.orbitalEnabled,
     },
   });
 
-  const quickInfoIds = aboutHomeContent.quickInfo.map((item) => item.id);
-  await prisma.aboutHomeQuickInfo.deleteMany({
-    where: { id: { notIn: quickInfoIds } },
-  });
-
-  for (const [index, item] of aboutHomeContent.quickInfo.entries()) {
-    await prisma.aboutHomeQuickInfo.upsert({
-      where: { id: item.id },
+  for (const [index, link] of content.navigation.entries()) {
+    await prisma.footerNavLink.upsert({
+      where: { id: link.id },
       update: {
-        icon: item.icon,
-        label: item.label,
-        value: item.value,
-        visible: item.visible,
+        label: link.label,
+        href: link.href,
         sortOrder: index,
+        visible: link.visible,
       },
       create: {
-        id: item.id,
-        icon: item.icon,
-        label: item.label,
-        value: item.value,
-        visible: item.visible,
+        id: link.id,
+        label: link.label,
+        href: link.href,
         sortOrder: index,
+        visible: link.visible,
       },
     });
   }
 
-  const statIds = aboutHomeContent.stats.map((item) => item.id);
-  await prisma.aboutHomeStat.deleteMany({
-    where: { id: { notIn: statIds } },
+  for (const [index, link] of content.resources.entries()) {
+    await prisma.footerResourceLink.upsert({
+      where: { id: link.id },
+      update: {
+        label: link.label,
+        href: link.href,
+        sortOrder: index,
+        visible: link.visible,
+      },
+      create: {
+        id: link.id,
+        label: link.label,
+        href: link.href,
+        sortOrder: index,
+        visible: link.visible,
+      },
+    });
+  }
+}
+
+async function seedAboutHome() {
+  const content = aboutHomeContent;
+
+  await prisma.aboutHomeConfig.upsert({
+    where: { locale: LOCALE },
+    update: {
+      visible: content.section.visible,
+      sectionLabel: content.section.label,
+      title: content.section.title,
+      titleAccent: content.section.titleAccent,
+      description: content.section.description,
+      ctaLabel: content.cta.label,
+      ctaHref: content.cta.href,
+      ctaVisible: content.cta.visible,
+    },
+    create: {
+      locale: LOCALE,
+      visible: content.section.visible,
+      sectionLabel: content.section.label,
+      title: content.section.title,
+      titleAccent: content.section.titleAccent,
+      description: content.section.description,
+      ctaLabel: content.cta.label,
+      ctaHref: content.cta.href,
+      ctaVisible: content.cta.visible,
+    },
   });
 
-  for (const [index, item] of aboutHomeContent.stats.entries()) {
-    await prisma.aboutHomeStat.upsert({
+  const featureCardIds = content.featureCards.map((item) => item.id);
+  await prisma.aboutHomeFeatureCard.deleteMany({
+    where: { id: { notIn: featureCardIds } },
+  });
+
+  for (const [index, item] of content.featureCards.entries()) {
+    await prisma.aboutHomeFeatureCard.upsert({
       where: { id: item.id },
       update: {
+        number: item.number,
         icon: item.icon,
-        value: item.value,
-        label: item.label,
+        title: item.title,
+        description: item.description,
         visible: item.visible,
         sortOrder: index,
       },
       create: {
         id: item.id,
+        number: item.number,
         icon: item.icon,
-        value: item.value,
-        label: item.label,
+        title: item.title,
+        description: item.description,
         visible: item.visible,
         sortOrder: index,
       },

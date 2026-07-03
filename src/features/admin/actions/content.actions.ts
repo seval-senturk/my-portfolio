@@ -58,16 +58,20 @@ import {
   reorderExpertiseCarouselItems,
   parseExpertiseBulletList,
   updateFooterConfig,
+  createFooterNavLink,
+  updateFooterNavLink,
+  deleteFooterNavLink,
+  reorderFooterNavLinks,
+  createFooterResourceLink,
+  updateFooterResourceLink,
+  deleteFooterResourceLink,
+  reorderFooterResourceLinks,
   updateAboutHomeConfig,
   getAboutHomeConfig,
-  createAboutHomeQuickInfo,
-  updateAboutHomeQuickInfo,
-  deleteAboutHomeQuickInfo,
-  reorderAboutHomeQuickInfo,
-  createAboutHomeStat,
-  updateAboutHomeStat,
-  deleteAboutHomeStat,
-  reorderAboutHomeStats,
+  createAboutHomeFeatureCard,
+  updateAboutHomeFeatureCard,
+  deleteAboutHomeFeatureCard,
+  reorderAboutHomeFeatureCards,
 } from "@/services/admin";
 import {
   addBlogHomeCuratedPost,
@@ -1078,19 +1082,21 @@ export async function saveFooterAction(formData: FormData) {
     const user = await requireAdminUser();
 
     await updateFooterConfig({
-      newsletterEnabled: formData.get("newsletterEnabled") === "on",
-      newsletterLabel: getString(formData, "newsletterLabel"),
-      newsletterTitle: getString(formData, "newsletterTitle"),
-      newsletterDescription: getOptionalString(formData, "newsletterDescription") ?? null,
-      newsletterPlaceholder: getString(formData, "newsletterPlaceholder"),
-      newsletterButtonText: getString(formData, "newsletterButtonText"),
-      phone: getOptionalString(formData, "phone") ?? null,
-      email: getOptionalString(formData, "email") ?? null,
-      address: getOptionalString(formData, "address") ?? null,
-      copyright: getString(formData, "copyright"),
       brandName: getString(formData, "brandName"),
       brandLogoUrl: getOptionalString(formData, "brandLogoUrl") ?? null,
+      brandRole: getString(formData, "brandRole"),
+      brandDescription: getOptionalString(formData, "brandDescription") ?? null,
+      navSectionLabel: getString(formData, "navSectionLabel"),
+      resourcesSectionLabel: getString(formData, "resourcesSectionLabel"),
+      connectSectionLabel: getString(formData, "connectSectionLabel"),
+      ctaTitle: getString(formData, "ctaTitle"),
+      ctaDescription: getOptionalString(formData, "ctaDescription") ?? null,
+      ctaLabel: getString(formData, "ctaLabel"),
+      ctaHref: getString(formData, "ctaHref"),
+      copyright: getString(formData, "copyright"),
       scrollToTopEnabled: formData.get("scrollToTopEnabled") === "on",
+      scrollToTopLabel: getString(formData, "scrollToTopLabel"),
+      orbitalDecorEnabled: formData.get("orbitalDecorEnabled") === "on",
     });
 
     revalidatePublicContent();
@@ -1106,6 +1112,154 @@ export async function saveFooterAction(formData: FormData) {
     return adminSuccess();
   } catch {
     return adminError("Failed to save footer.");
+  }
+}
+
+export async function saveFooterNavLinkAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+    const id = getOptionalString(formData, "id");
+    const input = {
+      label: getString(formData, "label"),
+      href: getString(formData, "href"),
+      visible: formData.get("visible") === "on",
+    };
+
+    if (id) {
+      await updateFooterNavLink(id, input);
+    } else {
+      await createFooterNavLink(input);
+    }
+
+    revalidatePublicContent();
+    revalidatePath("/admin/footer");
+    await recordAudit({
+      user,
+      action: AuditActions.FOOTER_UPDATED,
+      category: "CONTENT",
+      entityType: "footer_nav_link",
+      entityId: id ?? undefined,
+      summary: id ? "Footer navigation link updated" : "Footer navigation link created",
+    });
+
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save navigation link.");
+  }
+}
+
+export async function deleteFooterNavLinkAction(id: string) {
+  try {
+    const user = await requireAdminUser();
+    await deleteFooterNavLink(id);
+    revalidatePublicContent();
+    revalidatePath("/admin/footer");
+    await recordAudit({
+      user,
+      action: AuditActions.FOOTER_UPDATED,
+      category: "CONTENT",
+      entityType: "footer_nav_link",
+      entityId: id,
+      summary: "Footer navigation link deleted",
+    });
+
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to delete navigation link.");
+  }
+}
+
+export async function reorderFooterNavLinksAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderFooterNavLinks(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/footer");
+    await recordAudit({
+      user,
+      action: AuditActions.FOOTER_UPDATED,
+      category: "CONTENT",
+      entityType: "footer_nav_link",
+      summary: "Footer navigation links reordered",
+    });
+
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder navigation links.");
+  }
+}
+
+export async function saveFooterResourceLinkAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+    const id = getOptionalString(formData, "id");
+    const input = {
+      label: getString(formData, "label"),
+      href: getString(formData, "href"),
+      visible: formData.get("visible") === "on",
+    };
+
+    if (id) {
+      await updateFooterResourceLink(id, input);
+    } else {
+      await createFooterResourceLink(input);
+    }
+
+    revalidatePublicContent();
+    revalidatePath("/admin/footer");
+    await recordAudit({
+      user,
+      action: AuditActions.FOOTER_UPDATED,
+      category: "CONTENT",
+      entityType: "footer_resource_link",
+      entityId: id ?? undefined,
+      summary: id ? "Footer resource link updated" : "Footer resource link created",
+    });
+
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save resource link.");
+  }
+}
+
+export async function deleteFooterResourceLinkAction(id: string) {
+  try {
+    const user = await requireAdminUser();
+    await deleteFooterResourceLink(id);
+    revalidatePublicContent();
+    revalidatePath("/admin/footer");
+    await recordAudit({
+      user,
+      action: AuditActions.FOOTER_UPDATED,
+      category: "CONTENT",
+      entityType: "footer_resource_link",
+      entityId: id,
+      summary: "Footer resource link deleted",
+    });
+
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to delete resource link.");
+  }
+}
+
+export async function reorderFooterResourceLinksAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderFooterResourceLinks(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/footer");
+    await recordAudit({
+      user,
+      action: AuditActions.FOOTER_UPDATED,
+      category: "CONTENT",
+      entityType: "footer_resource_link",
+      summary: "Footer resource links reordered",
+    });
+
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder resource links.");
   }
 }
 
@@ -1170,7 +1324,6 @@ export async function subscribeNewsletterAction(formData: FormData) {
 export async function saveAboutHomeConfigAction(formData: FormData) {
   try {
     const user = await requireAdminUser();
-    const existingAboutHome = await getAboutHomeConfig();
 
     await updateAboutHomeConfig({
       visible: formData.get("visible") === "on",
@@ -1178,18 +1331,9 @@ export async function saveAboutHomeConfigAction(formData: FormData) {
       title: getString(formData, "title"),
       titleAccent: getOptionalString(formData, "titleAccent") ?? null,
       description: getString(formData, "description"),
-      profileImageUrl: getProfileImageUrl(
-        formData,
-        "profileImageUrl",
-        existingAboutHome?.profileImageUrl,
-      ),
-      profileImageAlt: getString(formData, "profileImageAlt"),
-      primaryCtaLabel: getString(formData, "primaryCtaLabel"),
-      primaryCtaHref: getString(formData, "primaryCtaHref"),
-      primaryCtaVisible: formData.get("primaryCtaVisible") === "on",
-      secondaryCtaLabel: getString(formData, "secondaryCtaLabel"),
-      secondaryCtaHref: getString(formData, "secondaryCtaHref"),
-      secondaryCtaVisible: formData.get("secondaryCtaVisible") === "on",
+      ctaLabel: getString(formData, "ctaLabel"),
+      ctaHref: getString(formData, "ctaHref"),
+      ctaVisible: formData.get("ctaVisible") === "on",
     });
 
     revalidatePublicContent();
@@ -1208,147 +1352,78 @@ export async function saveAboutHomeConfigAction(formData: FormData) {
   }
 }
 
-export async function saveAboutHomeQuickInfoAction(formData: FormData) {
+export async function saveAboutHomeFeatureCardAction(formData: FormData) {
   try {
     const user = await requireAdminUser();
     const id = getOptionalString(formData, "id");
     const input = {
+      number: getString(formData, "number"),
       icon: getString(formData, "icon"),
-      label: getString(formData, "label"),
-      value: getString(formData, "value"),
+      title: getString(formData, "title"),
+      description: getString(formData, "description"),
       visible: formData.get("visible") === "on",
     };
 
     if (id) {
-      await updateAboutHomeQuickInfo(id, input);
+      await updateAboutHomeFeatureCard(id, input);
     } else {
-      await createAboutHomeQuickInfo(input);
+      await createAboutHomeFeatureCard(input);
     }
 
     revalidatePublicContent();
     revalidatePath("/admin/about");
     await recordAudit({
       user,
-      action: AuditActions.ABOUT_HOME_QUICK_INFO_SAVED,
+      action: AuditActions.ABOUT_HOME_UPDATED,
       category: "CONTENT",
-      entityType: "about_home_quick_info",
+      entityType: "about_home_feature_card",
       entityId: id ?? undefined,
-      summary: id ? "About home quick info updated" : "About home quick info created",
+      summary: id ? "About home feature card updated" : "About home feature card created",
     });
 
     return adminSuccess();
   } catch {
-    return adminError("Failed to save quick info item.");
+    return adminError("Failed to save feature card.");
   }
 }
 
-export async function deleteAboutHomeQuickInfoAction(id: string) {
+export async function deleteAboutHomeFeatureCardAction(id: string) {
   try {
     const user = await requireAdminUser();
-    await deleteAboutHomeQuickInfo(id);
+    await deleteAboutHomeFeatureCard(id);
     revalidatePublicContent();
     revalidatePath("/admin/about");
     await recordAudit({
       user,
-      action: AuditActions.ABOUT_HOME_QUICK_INFO_DELETED,
+      action: AuditActions.ABOUT_HOME_UPDATED,
       category: "CONTENT",
-      entityType: "about_home_quick_info",
+      entityType: "about_home_feature_card",
       entityId: id,
-      summary: "About home quick info deleted",
+      summary: "About home feature card deleted",
     });
+
     return adminSuccess();
   } catch {
-    return adminError("Failed to delete quick info item.");
+    return adminError("Failed to delete feature card.");
   }
 }
 
-export async function reorderAboutHomeQuickInfoAction(orderedIds: string[]) {
+export async function reorderAboutHomeFeatureCardsAction(orderedIds: string[]) {
   try {
     const user = await requireAdminUser();
-    await reorderAboutHomeQuickInfo(orderedIds);
+    await reorderAboutHomeFeatureCards(orderedIds);
     revalidatePublicContent();
     revalidatePath("/admin/about");
     await recordAudit({
       user,
-      action: AuditActions.ABOUT_HOME_QUICK_INFO_REORDERED,
+      action: AuditActions.ABOUT_HOME_UPDATED,
       category: "CONTENT",
-      summary: "About home quick info reordered",
-    });
-    return adminSuccess();
-  } catch {
-    return adminError("Failed to reorder quick info items.");
-  }
-}
-
-export async function saveAboutHomeStatAction(formData: FormData) {
-  try {
-    const user = await requireAdminUser();
-    const id = getOptionalString(formData, "id");
-    const input = {
-      icon: getString(formData, "icon"),
-      value: getString(formData, "value"),
-      label: getString(formData, "label"),
-      visible: formData.get("visible") === "on",
-    };
-
-    if (id) {
-      await updateAboutHomeStat(id, input);
-    } else {
-      await createAboutHomeStat(input);
-    }
-
-    revalidatePublicContent();
-    revalidatePath("/admin/about");
-    await recordAudit({
-      user,
-      action: AuditActions.ABOUT_HOME_STAT_SAVED,
-      category: "CONTENT",
-      entityType: "about_home_stat",
-      entityId: id ?? undefined,
-      summary: id ? "About home stat updated" : "About home stat created",
+      summary: "About home feature cards reordered",
     });
 
     return adminSuccess();
   } catch {
-    return adminError("Failed to save stat card.");
-  }
-}
-
-export async function deleteAboutHomeStatAction(id: string) {
-  try {
-    const user = await requireAdminUser();
-    await deleteAboutHomeStat(id);
-    revalidatePublicContent();
-    revalidatePath("/admin/about");
-    await recordAudit({
-      user,
-      action: AuditActions.ABOUT_HOME_STAT_DELETED,
-      category: "CONTENT",
-      entityType: "about_home_stat",
-      entityId: id,
-      summary: "About home stat deleted",
-    });
-    return adminSuccess();
-  } catch {
-    return adminError("Failed to delete stat card.");
-  }
-}
-
-export async function reorderAboutHomeStatsAction(orderedIds: string[]) {
-  try {
-    const user = await requireAdminUser();
-    await reorderAboutHomeStats(orderedIds);
-    revalidatePublicContent();
-    revalidatePath("/admin/about");
-    await recordAudit({
-      user,
-      action: AuditActions.ABOUT_HOME_STATS_REORDERED,
-      category: "CONTENT",
-      summary: "About home stats reordered",
-    });
-    return adminSuccess();
-  } catch {
-    return adminError("Failed to reorder stat cards.");
+    return adminError("Failed to reorder feature cards.");
   }
 }
 

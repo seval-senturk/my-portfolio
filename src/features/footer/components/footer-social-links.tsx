@@ -7,7 +7,7 @@ interface FooterSocialLinksProps {
 
 export function FooterSocialLinks({ links }: FooterSocialLinksProps) {
   if (links.length === 0) {
-    return <div className="site-footer__social site-footer__social--empty" />;
+    return null;
   }
 
   return (

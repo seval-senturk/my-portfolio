@@ -1,17 +1,20 @@
 import { prisma } from "@/lib/prisma";
-import type {
-  AboutHomeConfigInput,
-  AboutHomeQuickInfoInput,
-  AboutHomeStatInput,
-} from "@/types/about-home";
+import type { AboutHomeConfigInput, AboutHomeFeatureCardInput } from "@/types/about-home";
 
 function hasAboutHomeModels(): boolean {
   return (
     "aboutHomeConfig" in prisma &&
-    "aboutHomeQuickInfo" in prisma &&
-    "aboutHomeStat" in prisma &&
+    "aboutHomeFeatureCard" in prisma &&
     typeof prisma.aboutHomeConfig?.findUnique === "function"
   );
+}
+
+function requireAboutHomeModels() {
+  if (!hasAboutHomeModels()) {
+    throw new Error(
+      'Prisma client is out of date. Stop the dev server, run "npx prisma generate", then restart.',
+    );
+  }
 }
 
 export async function getAboutHomeConfig() {
@@ -22,28 +25,25 @@ export async function getAboutHomeConfig() {
   return prisma.aboutHomeConfig.findUnique({ where: { locale: "en" } });
 }
 
-export async function listAboutHomeQuickInfo() {
+export async function listAboutHomeFeatureCards() {
   if (!hasAboutHomeModels()) {
     return [];
   }
 
-  return prisma.aboutHomeQuickInfo.findMany({ orderBy: { sortOrder: "asc" } });
+  return prisma.aboutHomeFeatureCard.findMany({ orderBy: { sortOrder: "asc" } });
 }
 
-export async function listAboutHomeStats() {
-  if (!hasAboutHomeModels()) {
-    return [];
-  }
+export async function getAboutHomeAdminContent() {
+  const [config, featureCards] = await Promise.all([
+    getAboutHomeConfig(),
+    listAboutHomeFeatureCards(),
+  ]);
 
-  return prisma.aboutHomeStat.findMany({ orderBy: { sortOrder: "asc" } });
+  return { config, featureCards };
 }
 
 export async function updateAboutHomeConfig(input: AboutHomeConfigInput) {
-  if (!hasAboutHomeModels()) {
-    throw new Error(
-      'Prisma client is out of date. Stop the dev server, run "npx prisma generate", then restart.',
-    );
-  }
+  requireAboutHomeModels();
 
   return prisma.aboutHomeConfig.upsert({
     where: { locale: "en" },
@@ -53,14 +53,9 @@ export async function updateAboutHomeConfig(input: AboutHomeConfigInput) {
       title: input.title,
       titleAccent: input.titleAccent,
       description: input.description,
-      profileImageUrl: input.profileImageUrl,
-      profileImageAlt: input.profileImageAlt,
-      primaryCtaLabel: input.primaryCtaLabel,
-      primaryCtaHref: input.primaryCtaHref,
-      primaryCtaVisible: input.primaryCtaVisible,
-      secondaryCtaLabel: input.secondaryCtaLabel,
-      secondaryCtaHref: input.secondaryCtaHref,
-      secondaryCtaVisible: input.secondaryCtaVisible,
+      ctaLabel: input.ctaLabel,
+      ctaHref: input.ctaHref,
+      ctaVisible: input.ctaVisible,
     },
     create: {
       locale: "en",
@@ -69,148 +64,61 @@ export async function updateAboutHomeConfig(input: AboutHomeConfigInput) {
       title: input.title,
       titleAccent: input.titleAccent,
       description: input.description,
-      profileImageUrl: input.profileImageUrl,
-      profileImageAlt: input.profileImageAlt,
-      primaryCtaLabel: input.primaryCtaLabel,
-      primaryCtaHref: input.primaryCtaHref,
-      primaryCtaVisible: input.primaryCtaVisible,
-      secondaryCtaLabel: input.secondaryCtaLabel,
-      secondaryCtaHref: input.secondaryCtaHref,
-      secondaryCtaVisible: input.secondaryCtaVisible,
+      ctaLabel: input.ctaLabel,
+      ctaHref: input.ctaHref,
+      ctaVisible: input.ctaVisible,
     },
   });
 }
 
-export async function createAboutHomeQuickInfo(input: AboutHomeQuickInfoInput) {
-  if (!hasAboutHomeModels()) {
-    throw new Error(
-      'Prisma client is out of date. Stop the dev server, run "npx prisma generate", then restart.',
-    );
-  }
+export async function createAboutHomeFeatureCard(input: AboutHomeFeatureCardInput) {
+  requireAboutHomeModels();
 
-  const count = await prisma.aboutHomeQuickInfo.count();
-  const id = input.id ?? `about-qi-${Date.now()}`;
+  const count = await prisma.aboutHomeFeatureCard.count();
+  const id = input.id ?? `about-fc-${Date.now()}`;
 
-  return prisma.aboutHomeQuickInfo.create({
+  return prisma.aboutHomeFeatureCard.create({
     data: {
       id,
+      number: input.number,
       icon: input.icon,
-      label: input.label,
-      value: input.value,
+      title: input.title,
+      description: input.description,
       visible: input.visible,
       sortOrder: count,
     },
   });
 }
 
-export async function updateAboutHomeQuickInfo(
+export async function updateAboutHomeFeatureCard(
   id: string,
-  input: AboutHomeQuickInfoInput,
+  input: AboutHomeFeatureCardInput,
 ) {
-  if (!hasAboutHomeModels()) {
-    throw new Error(
-      'Prisma client is out of date. Stop the dev server, run "npx prisma generate", then restart.',
-    );
-  }
+  requireAboutHomeModels();
 
-  return prisma.aboutHomeQuickInfo.update({
+  return prisma.aboutHomeFeatureCard.update({
     where: { id },
     data: {
+      number: input.number,
       icon: input.icon,
-      label: input.label,
-      value: input.value,
+      title: input.title,
+      description: input.description,
       visible: input.visible,
     },
   });
 }
 
-export async function deleteAboutHomeQuickInfo(id: string) {
-  if (!hasAboutHomeModels()) {
-    throw new Error(
-      'Prisma client is out of date. Stop the dev server, run "npx prisma generate", then restart.',
-    );
-  }
-
-  await prisma.aboutHomeQuickInfo.delete({ where: { id } });
+export async function deleteAboutHomeFeatureCard(id: string) {
+  requireAboutHomeModels();
+  await prisma.aboutHomeFeatureCard.delete({ where: { id } });
 }
 
-export async function reorderAboutHomeQuickInfo(orderedIds: string[]) {
-  if (!hasAboutHomeModels()) {
-    throw new Error(
-      'Prisma client is out of date. Stop the dev server, run "npx prisma generate", then restart.',
-    );
-  }
+export async function reorderAboutHomeFeatureCards(orderedIds: string[]) {
+  requireAboutHomeModels();
 
   await prisma.$transaction(
     orderedIds.map((id, index) =>
-      prisma.aboutHomeQuickInfo.update({
-        where: { id },
-        data: { sortOrder: index },
-      }),
-    ),
-  );
-}
-
-export async function createAboutHomeStat(input: AboutHomeStatInput) {
-  if (!hasAboutHomeModels()) {
-    throw new Error(
-      'Prisma client is out of date. Stop the dev server, run "npx prisma generate", then restart.',
-    );
-  }
-
-  const count = await prisma.aboutHomeStat.count();
-  const id = input.id ?? `about-stat-${Date.now()}`;
-
-  return prisma.aboutHomeStat.create({
-    data: {
-      id,
-      icon: input.icon,
-      value: input.value,
-      label: input.label,
-      visible: input.visible,
-      sortOrder: count,
-    },
-  });
-}
-
-export async function updateAboutHomeStat(id: string, input: AboutHomeStatInput) {
-  if (!hasAboutHomeModels()) {
-    throw new Error(
-      'Prisma client is out of date. Stop the dev server, run "npx prisma generate", then restart.',
-    );
-  }
-
-  return prisma.aboutHomeStat.update({
-    where: { id },
-    data: {
-      icon: input.icon,
-      value: input.value,
-      label: input.label,
-      visible: input.visible,
-    },
-  });
-}
-
-export async function deleteAboutHomeStat(id: string) {
-  if (!hasAboutHomeModels()) {
-    throw new Error(
-      'Prisma client is out of date. Stop the dev server, run "npx prisma generate", then restart.',
-    );
-  }
-
-  await prisma.aboutHomeStat.delete({ where: { id } });
-}
-
-export async function reorderAboutHomeStats(orderedIds: string[]) {
-  if (!hasAboutHomeModels()) {
-    throw new Error(
-      'Prisma client is out of date. Stop the dev server, run "npx prisma generate", then restart.',
-    );
-  }
-
-  await prisma.$transaction(
-    orderedIds.map((id, index) =>
-      prisma.aboutHomeStat.update({
+      prisma.aboutHomeFeatureCard.update({
         where: { id },
         data: { sortOrder: index },
       }),

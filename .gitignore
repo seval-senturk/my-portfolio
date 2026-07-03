@@ -44,3 +44,6 @@ next-env.d.ts
 # local media uploads (development fallback storage)
 /public/uploads/*
 !/public/uploads/.gitkeep
+
+# accidental nested project copy
+/public/my-portfolio/

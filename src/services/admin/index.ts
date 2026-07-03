@@ -107,22 +107,29 @@ export {
 
 export {
   getFooterConfig,
+  getFooterAdminContent,
+  listFooterNavLinks,
+  listFooterResourceLinks,
   updateFooterConfig,
+  createFooterNavLink,
+  updateFooterNavLink,
+  deleteFooterNavLink,
+  reorderFooterNavLinks,
+  createFooterResourceLink,
+  updateFooterResourceLink,
+  deleteFooterResourceLink,
+  reorderFooterResourceLinks,
 } from "@/services/admin/footer.admin.service";
 
 export {
   getAboutHomeConfig,
-  listAboutHomeQuickInfo,
-  listAboutHomeStats,
+  getAboutHomeAdminContent,
+  listAboutHomeFeatureCards,
   updateAboutHomeConfig,
-  createAboutHomeQuickInfo,
-  updateAboutHomeQuickInfo,
-  deleteAboutHomeQuickInfo,
-  reorderAboutHomeQuickInfo,
-  createAboutHomeStat,
-  updateAboutHomeStat,
-  deleteAboutHomeStat,
-  reorderAboutHomeStats,
+  createAboutHomeFeatureCard,
+  updateAboutHomeFeatureCard,
+  deleteAboutHomeFeatureCard,
+  reorderAboutHomeFeatureCards,
 } from "@/services/admin/about-home.admin.service";
 
 export {

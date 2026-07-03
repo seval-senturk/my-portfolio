@@ -2,8 +2,8 @@ interface FooterDecorSvgProps {
   className?: string;
 }
 
-const STROKE = "rgba(161, 166, 180, 0.08)";
-const STROKE_ACCENT = "rgba(124, 131, 255, 0.06)";
+const STROKE = "rgba(161, 166, 180, 0.12)";
+const STROKE_ACCENT = "rgba(124, 131, 255, 0.1)";
 
 export function FooterDecorSvg({ className }: FooterDecorSvgProps) {
   return (
@@ -11,19 +11,14 @@ export function FooterDecorSvg({ className }: FooterDecorSvgProps) {
       aria-hidden
       className={className}
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 1440 520"
-      preserveAspectRatio="xMidYMid slice"
+      viewBox="0 0 400 400"
       fill="none"
     >
-      <circle cx="0" cy="0" r="120" stroke={STROKE} strokeWidth="1" />
-      <circle cx="0" cy="0" r="200" stroke={STROKE} strokeWidth="1" />
-      <circle cx="0" cy="0" r="280" stroke={STROKE} strokeWidth="1" />
-      <circle cx="0" cy="0" r="360" stroke={STROKE_ACCENT} strokeWidth="1" />
-
-      <circle cx="1440" cy="0" r="120" stroke={STROKE} strokeWidth="1" />
-      <circle cx="1440" cy="0" r="200" stroke={STROKE} strokeWidth="1" />
-      <circle cx="1440" cy="0" r="280" stroke={STROKE} strokeWidth="1" />
-      <circle cx="1440" cy="0" r="360" stroke={STROKE_ACCENT} strokeWidth="1" />
+      <circle cx="400" cy="400" r="80" stroke={STROKE} strokeWidth="1" />
+      <circle cx="400" cy="400" r="140" stroke={STROKE} strokeWidth="1" />
+      <circle cx="400" cy="400" r="200" stroke={STROKE} strokeWidth="1" />
+      <circle cx="400" cy="400" r="260" stroke={STROKE_ACCENT} strokeWidth="1" />
+      <circle cx="400" cy="400" r="320" stroke={STROKE} strokeWidth="1" />
     </svg>
   );
 }

@@ -1,43 +1,23 @@
 import type { HomeCmsSection } from "@/types/section-header";
 
-export interface AboutHomeQuickInfoItem {
+export interface AboutHomeFeatureCard {
   id: string;
+  number: string;
   icon: string;
-  label: string;
-  value: string;
-  visible: boolean;
-  sortOrder: number;
-}
-
-export interface AboutHomeStatItem {
-  id: string;
-  icon: string;
-  value: string;
-  label: string;
+  title: string;
+  description: string;
   visible: boolean;
   sortOrder: number;
 }
 
 export interface AboutHomeContent {
   section: HomeCmsSection;
-  profile: {
-    imageUrl: string | null;
-    imageAlt: string;
+  cta: {
+    label: string;
+    href: string;
+    visible: boolean;
   };
-  quickInfo: readonly AboutHomeQuickInfoItem[];
-  stats: readonly AboutHomeStatItem[];
-  actions: {
-    primary: {
-      label: string;
-      href: string;
-      visible: boolean;
-    };
-    secondary: {
-      label: string;
-      href: string;
-      visible: boolean;
-    };
-  };
+  featureCards: readonly AboutHomeFeatureCard[];
 }
 
 export interface AboutHomeConfigInput {
@@ -46,28 +26,16 @@ export interface AboutHomeConfigInput {
   title: string;
   titleAccent: string | null;
   description: string;
-  profileImageUrl: string | null;
-  profileImageAlt: string;
-  primaryCtaLabel: string;
-  primaryCtaHref: string;
-  primaryCtaVisible: boolean;
-  secondaryCtaLabel: string;
-  secondaryCtaHref: string;
-  secondaryCtaVisible: boolean;
+  ctaLabel: string;
+  ctaHref: string;
+  ctaVisible: boolean;
 }
 
-export interface AboutHomeQuickInfoInput {
+export interface AboutHomeFeatureCardInput {
   id?: string;
+  number: string;
   icon: string;
-  label: string;
-  value: string;
-  visible: boolean;
-}
-
-export interface AboutHomeStatInput {
-  id?: string;
-  icon: string;
-  value: string;
-  label: string;
+  title: string;
+  description: string;
   visible: boolean;
 }

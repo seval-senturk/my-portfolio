@@ -1,33 +1,26 @@
-import { brandConfig } from "@/config/navigation.config";
+import { ChevronUp } from "lucide-react";
+import Link from "next/link";
+
+import { A11Y } from "@/lib/accessibility";
 import type { SiteFooterContent } from "@/types/footer";
 
 interface FooterBottomBarProps {
-  brand: SiteFooterContent["brand"];
+  bottom: SiteFooterContent["bottom"];
 }
 
-export function FooterBottomBar({ brand }: FooterBottomBarProps) {
-  const initials = brandConfig.shortName;
-
+export function FooterBottomBar({ bottom }: FooterBottomBarProps) {
   return (
     <div className="site-footer__bottom">
-      <p className="site-footer__copyright">{brand.copyright}</p>
-      <div className="site-footer__brand">
-        {brand.logoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={brand.logoUrl}
-            alt=""
-            width={36}
-            height={36}
-            className="site-footer__brand-logo"
-          />
-        ) : (
-          <span className="site-footer__brand-mark" aria-hidden>
-            {initials}
+      <p className="site-footer__copyright">{bottom.copyright}</p>
+
+      {bottom.backToTopEnabled ? (
+        <Link href={`#${A11Y.mainContentId}`} className="site-footer__back-to-top">
+          <span>{bottom.backToTopLabel}</span>
+          <span className="site-footer__back-to-top-icon" aria-hidden>
+            <ChevronUp size={16} />
           </span>
-        )}
-        <span className="site-footer__brand-name">{brand.siteName}</span>
-      </div>
+        </Link>
+      ) : null}
     </div>
   );
 }

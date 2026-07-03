@@ -1,9 +1,8 @@
 import type { AboutHomeContent } from "@/types/about-home";
-import { HomeSectionHeader, HomeSectionShell } from "@/components/sections";
-import { AboutHomeActions } from "@/features/about-home/components/about-home-actions";
-import { AboutHomeProfile } from "@/features/about-home/components/about-home-profile";
-import { AboutHomeQuickInfo } from "@/features/about-home/components/about-home-quick-info";
-import { AboutHomeStats } from "@/features/about-home/components/about-home-stats";
+import { HomeSectionShell } from "@/components/sections";
+import { AboutHomeDecor } from "@/features/about-home/components/about-home-decor";
+import { AboutHomeFeatureCards } from "@/features/about-home/components/about-home-feature-cards";
+import { AboutHomeIntro } from "@/features/about-home/components/about-home-intro";
 
 interface AboutHomeSectionProps {
   content: AboutHomeContent;
@@ -22,24 +21,15 @@ export function AboutHomeSection({ content }: AboutHomeSectionProps) {
       headingId={headingId}
       sectionClassName="about-home"
     >
-      <div className="about-home__layout">
-        <AboutHomeProfile profile={content.profile} />
+      <AboutHomeDecor className="about-home__decor" />
 
-        <div className="about-home__content">
-          <HomeSectionHeader
-            as="div"
-            withSectionSpacing={false}
-            label={content.section.label}
-            title={content.section.title}
-            titleAccent={content.section.titleAccent}
-            description={content.section.description}
-            headingId={headingId}
-            descriptionClassName="home-section-header__description--flow"
-          />
-          <AboutHomeQuickInfo items={content.quickInfo} />
-          <AboutHomeStats items={content.stats} />
-          <AboutHomeActions actions={content.actions} />
-        </div>
+      <div className="about-home__layout">
+        <AboutHomeIntro
+          section={content.section}
+          cta={content.cta}
+          headingId={headingId}
+        />
+        <AboutHomeFeatureCards cards={content.featureCards} />
       </div>
     </HomeSectionShell>
   );

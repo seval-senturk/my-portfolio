@@ -1,39 +1,62 @@
+export interface FooterLinkItem {
+  id: string;
+  label: string;
+  href: string;
+  sortOrder: number;
+  visible: boolean;
+}
+
+export interface FooterLinkInput {
+  id?: string;
+  label: string;
+  href: string;
+  visible: boolean;
+}
+
 export interface SiteFooterContent {
-  newsletter: {
-    enabled: boolean;
-    label: string;
-    title: string;
-    description: string | null;
-    placeholder: string;
-    buttonText: string;
-  };
-  contact: {
-    phone: string | null;
-    email: string | null;
-    address: string | null;
-  };
   brand: {
     logoUrl: string | null;
     siteName: string;
-    copyright: string;
+    role: string;
+    description: string;
   };
-  scrollToTop: {
-    enabled: boolean;
+  sectionLabels: {
+    navigation: string;
+    resources: string;
+    connect: string;
+  };
+  navigation: readonly FooterLinkItem[];
+  resources: readonly FooterLinkItem[];
+  connect: {
+    title: string;
+    description: string;
+    ctaLabel: string;
+    ctaHref: string;
+  };
+  bottom: {
+    copyright: string;
+    backToTopEnabled: boolean;
+    backToTopLabel: string;
+  };
+  decor: {
+    orbitalEnabled: boolean;
   };
 }
 
 export interface FooterConfigInput {
-  newsletterEnabled: boolean;
-  newsletterLabel: string;
-  newsletterTitle: string;
-  newsletterDescription: string | null;
-  newsletterPlaceholder: string;
-  newsletterButtonText: string;
-  phone: string | null;
-  email: string | null;
-  address: string | null;
-  copyright: string;
   brandName: string;
   brandLogoUrl: string | null;
+  brandRole: string;
+  brandDescription: string | null;
+  navSectionLabel: string;
+  resourcesSectionLabel: string;
+  connectSectionLabel: string;
+  ctaTitle: string;
+  ctaDescription: string | null;
+  ctaLabel: string;
+  ctaHref: string;
+  copyright: string;
   scrollToTopEnabled: boolean;
+  scrollToTopLabel: string;
+  orbitalDecorEnabled: boolean;
 }

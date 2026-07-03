@@ -1,15 +1,41 @@
-import type {
-  AboutHomeConfig,
-  AboutHomeQuickInfo,
-  AboutHomeStat,
-} from "@prisma/client";
+import type { AboutHomeConfig, AboutHomeFeatureCard } from "@prisma/client";
 
-import type { AboutHomeContent } from "@/types/about-home";
+import type { AboutHomeContent, AboutHomeFeatureCard as FeatureCardType } from "@/types/about-home";
+
+function mapVisibleFeatureCards(cards: AboutHomeFeatureCard[]): FeatureCardType[] {
+  return cards
+    .filter((card) => card.visible)
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((card) => ({
+      id: card.id,
+      number: card.number,
+      icon: card.icon,
+      title: card.title,
+      description: card.description,
+      visible: card.visible,
+      sortOrder: card.sortOrder,
+    }));
+}
+
+export function mapAboutHomeAdminFeatureCards(
+  cards: AboutHomeFeatureCard[],
+): FeatureCardType[] {
+  return [...cards]
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((card) => ({
+      id: card.id,
+      number: card.number,
+      icon: card.icon,
+      title: card.title,
+      description: card.description,
+      visible: card.visible,
+      sortOrder: card.sortOrder,
+    }));
+}
 
 export function mapAboutHomeToContent(
   config: AboutHomeConfig,
-  quickInfo: AboutHomeQuickInfo[],
-  stats: AboutHomeStat[],
+  featureCards: AboutHomeFeatureCard[] = [],
 ): AboutHomeContent {
   return {
     section: {
@@ -19,37 +45,32 @@ export function mapAboutHomeToContent(
       titleAccent: config.titleAccent,
       description: config.description,
     },
-    profile: {
-      imageUrl: config.profileImageUrl,
-      imageAlt: config.profileImageAlt,
+    cta: {
+      label: config.ctaLabel,
+      href: config.ctaHref,
+      visible: config.ctaVisible,
     },
-    quickInfo: quickInfo.map((item) => ({
-      id: item.id,
-      icon: item.icon,
-      label: item.label,
-      value: item.value,
-      visible: item.visible,
-      sortOrder: item.sortOrder,
-    })),
-    stats: stats.map((item) => ({
-      id: item.id,
-      icon: item.icon,
-      value: item.value,
-      label: item.label,
-      visible: item.visible,
-      sortOrder: item.sortOrder,
-    })),
-    actions: {
-      primary: {
-        label: config.primaryCtaLabel,
-        href: config.primaryCtaHref,
-        visible: config.primaryCtaVisible,
-      },
-      secondary: {
-        label: config.secondaryCtaLabel,
-        href: config.secondaryCtaHref,
-        visible: config.secondaryCtaVisible,
-      },
+    featureCards: mapVisibleFeatureCards(featureCards),
+  };
+}
+
+export function mapAboutHomeToAdminContent(
+  config: AboutHomeConfig,
+  featureCards: AboutHomeFeatureCard[] = [],
+): AboutHomeContent {
+  return {
+    section: {
+      visible: config.visible,
+      label: config.sectionLabel,
+      title: config.title,
+      titleAccent: config.titleAccent,
+      description: config.description,
     },
+    cta: {
+      label: config.ctaLabel,
+      href: config.ctaHref,
+      visible: config.ctaVisible,
+    },
+    featureCards: mapAboutHomeAdminFeatureCards(featureCards),
   };
 }

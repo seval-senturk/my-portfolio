@@ -1,32 +1,36 @@
 import { aboutContent } from "@/data/about.data";
 import { aboutHomeContent } from "@/data/about-home.data";
 import { AboutUnifiedAdminView } from "@/features/admin/components/about-unified-admin-view";
-import { mapAboutHomeToContent } from "@/repositories/prisma/mappers/about-home.mapper";
+import { mapAboutHomeToAdminContent } from "@/repositories/prisma/mappers/about-home.mapper";
 import {
-  getAboutHomeConfig,
+  getAboutHomeAdminContent,
   getAboutRecord,
-  listAboutHomeQuickInfo,
-  listAboutHomeStats,
   serializeAboutContentForForm,
   serializeAboutForForm,
 } from "@/services/admin";
 
 export default async function AdminAboutPage() {
-  const [aboutRecord, aboutHomeConfig, quickInfo, stats] = await Promise.all([
+  const [{ config, featureCards }, aboutRecord] = await Promise.all([
+    getAboutHomeAdminContent(),
     getAboutRecord(),
-    getAboutHomeConfig(),
-    listAboutHomeQuickInfo(),
-    listAboutHomeStats(),
   ]);
 
   const aboutPage =
     serializeAboutForForm(aboutRecord) ?? serializeAboutContentForForm(aboutContent);
 
-  const resolvedAboutHome = aboutHomeConfig
-    ? mapAboutHomeToContent(aboutHomeConfig, quickInfo, stats)
+  const resolvedAboutHome = config
+    ? mapAboutHomeToAdminContent(config, featureCards)
     : aboutHomeContent;
 
+  const aboutHomeWithFallback = {
+    ...resolvedAboutHome,
+    featureCards:
+      resolvedAboutHome.featureCards.length > 0
+        ? resolvedAboutHome.featureCards
+        : [...aboutHomeContent.featureCards],
+  };
+
   return (
-    <AboutUnifiedAdminView aboutHome={resolvedAboutHome} aboutPage={aboutPage} />
+    <AboutUnifiedAdminView aboutHome={aboutHomeWithFallback} aboutPage={aboutPage} />
   );
 }

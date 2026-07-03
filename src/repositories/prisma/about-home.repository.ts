@@ -7,8 +7,7 @@ import { resolveLocale } from "@/repositories/shared/locale";
 function hasAboutHomeModels(): boolean {
   return (
     "aboutHomeConfig" in prisma &&
-    "aboutHomeQuickInfo" in prisma &&
-    "aboutHomeStat" in prisma &&
+    "aboutHomeFeatureCard" in prisma &&
     typeof prisma.aboutHomeConfig?.findUnique === "function"
   );
 }
@@ -20,16 +19,21 @@ export const prismaAboutHomeRepository: AboutHomeRepository = {
     }
 
     const locale = resolveLocale(options);
-    const [config, quickInfo, stats] = await Promise.all([
+    const [config, featureCards] = await Promise.all([
       prisma.aboutHomeConfig.findUnique({ where: { locale } }),
-      prisma.aboutHomeQuickInfo.findMany({ orderBy: { sortOrder: "asc" } }),
-      prisma.aboutHomeStat.findMany({ orderBy: { sortOrder: "asc" } }),
+      prisma.aboutHomeFeatureCard.findMany({ orderBy: { sortOrder: "asc" } }),
     ]);
 
     if (!config) {
       return aboutHomeContent;
     }
 
-    return mapAboutHomeToContent(config, quickInfo, stats);
+    const mapped = mapAboutHomeToContent(config, featureCards);
+
+    return {
+      ...mapped,
+      featureCards:
+        mapped.featureCards.length > 0 ? mapped.featureCards : aboutHomeContent.featureCards,
+    };
   },
 };

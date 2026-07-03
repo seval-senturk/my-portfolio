@@ -39,7 +39,10 @@ export function HomeSectionHeader({
         className,
       )}
     >
-      <p className="home-section-header__label">{label}</p>
+      <p className="home-section-header__label">
+        <span className="home-section-header__label-line" aria-hidden />
+        {label}
+      </p>
       <SectionTitle id={headingId} title={title} titleAccent={titleAccent} />
       {description ? (
         <p

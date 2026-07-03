@@ -1,106 +1,60 @@
 import { ROUTES } from "@/constants/routes";
-import { siteConfig } from "@/config/site.config";
 import type { AboutHomeContent } from "@/types/about-home";
 
 export const aboutHomeContent: AboutHomeContent = {
   section: {
     visible: true,
-    label: "Who I Am",
-    title: "About Me",
-    titleAccent: "Me",
+    label: "ABOUT",
+    title: "I build digital\nexperiences\nthat make a difference.",
+    titleAccent: "experiences",
     description:
-      "I am a frontend and full stack developer focused on building reliable, performant web products. I combine strong UI engineering with scalable backend patterns to deliver experiences that feel polished and ship with confidence.",
+      "I don't just write code — I solve real problems and ship products that scale. From architecture to deployment, I focus on clean code, strong performance, and experiences people actually enjoy using.\n\nEvery project is an opportunity to balance engineering discipline with thoughtful design, delivering solutions that are fast, accessible, and built to grow.",
   },
-  profile: {
-    imageUrl: null,
-    imageAlt: `${siteConfig.author.name} professional portrait`,
+  cta: {
+    label: "More About My Journey",
+    href: ROUTES.about,
+    visible: true,
   },
-  quickInfo: [
+  featureCards: [
     {
-      id: "about-qi-experience",
-      icon: "briefcase",
-      label: "Experience",
-      value: "5+ Years",
+      id: "about-fc-01",
+      number: "01",
+      icon: "code",
+      title: "Clean Architecture",
+      description:
+        "Modern layered architecture, maintainable code, and scalable project structures built for long-term growth.",
       visible: true,
       sortOrder: 0,
     },
     {
-      id: "about-qi-location",
-      icon: "map-pin",
-      label: "Location",
-      value: "Turkey",
+      id: "about-fc-02",
+      number: "02",
+      icon: "zap",
+      title: "Performance First",
+      description:
+        "Core Web Vitals, Lighthouse optimization, and fast user experiences that feel instant on every device.",
       visible: true,
       sortOrder: 1,
     },
     {
-      id: "about-qi-email",
-      icon: "mail",
-      label: "Email",
-      value: siteConfig.author.email,
+      id: "about-fc-03",
+      number: "03",
+      icon: "search",
+      title: "SEO & Accessibility",
+      description:
+        "Semantic HTML, WCAG standards, and advanced SEO infrastructure that helps products reach more people.",
       visible: true,
       sortOrder: 2,
     },
     {
-      id: "about-qi-languages",
-      icon: "languages",
-      label: "Languages",
-      value: "English, Turkish",
+      id: "about-fc-04",
+      number: "04",
+      icon: "brain",
+      title: "AI Integrated Solutions",
+      description:
+        "OpenAI integrations, automation systems, and intelligent workflows that streamline how teams work.",
       visible: true,
       sortOrder: 3,
     },
-    {
-      id: "about-qi-availability",
-      icon: "calendar-check",
-      label: "Availability",
-      value: "Open to opportunities",
-      visible: true,
-      sortOrder: 4,
-    },
-    {
-      id: "about-qi-remote",
-      icon: "globe",
-      label: "Remote Work",
-      value: "Available worldwide",
-      visible: true,
-      sortOrder: 5,
-    },
   ],
-  stats: [
-    {
-      id: "about-stat-years",
-      icon: "user",
-      value: "5+",
-      label: "Years Experience",
-      visible: true,
-      sortOrder: 0,
-    },
-    {
-      id: "about-stat-projects",
-      icon: "rocket",
-      value: "40+",
-      label: "Completed Projects",
-      visible: true,
-      sortOrder: 1,
-    },
-    {
-      id: "about-stat-clients",
-      icon: "star",
-      value: "25+",
-      label: "Happy Clients",
-      visible: true,
-      sortOrder: 2,
-    },
-  ],
-  actions: {
-    primary: {
-      label: "Download Resume",
-      href: ROUTES.resume,
-      visible: true,
-    },
-    secondary: {
-      label: "Let's Talk",
-      href: ROUTES.contact,
-      visible: true,
-    },
-  },
 };
