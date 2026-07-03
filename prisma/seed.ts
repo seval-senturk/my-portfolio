@@ -6,6 +6,7 @@ import { seoConfig } from "@/config/seo.config";
 import { SEO_PAGE_DEFINITIONS } from "@/constants/seo-pages";
 import { socialLinks } from "@/config/social-links.config";
 import { aboutContent } from "@/data/about.data";
+import { blogHomeContent } from "@/data/blog-home.data";
 import { blogContent } from "@/data/blog.data";
 import { contactContent } from "@/data/contact.data";
 import { expertiseCarouselContent } from "@/data/expertise-carousel.data";
@@ -130,33 +131,99 @@ async function seedHero() {
     update: {
       eyebrow: heroContent.eyebrow,
       headline: heroContent.headline,
+      jobTitle: heroContent.jobTitle,
       summary: heroContent.summary,
       technologyHighlightsTitle: heroContent.technologyHighlightsTitle,
       technologyHighlights: toJson([...heroContent.technologyHighlights]),
       primaryCtaLabel: heroContent.primaryCta.label,
       primaryCtaHref: heroContent.primaryCta.href,
+      primaryCtaVisible: heroContent.primaryCta.visible,
       secondaryCtaLabel: heroContent.secondaryCta.label,
       secondaryCtaHref: heroContent.secondaryCta.href,
+      secondaryCtaVisible: heroContent.secondaryCta.visible,
       profileImageUrl: null,
       profileImageAlt: heroContent.profile.imageAlt,
       profileInitials: heroContent.profile.initials,
+      profileVisible: heroContent.profile.visible,
+      orbitalLinesEnabled: heroContent.orbitalLinesEnabled,
+      statsEnabled: heroContent.statsEnabled,
     },
     create: {
       locale: LOCALE,
       eyebrow: heroContent.eyebrow,
       headline: heroContent.headline,
+      jobTitle: heroContent.jobTitle,
       summary: heroContent.summary,
       technologyHighlightsTitle: heroContent.technologyHighlightsTitle,
       technologyHighlights: toJson([...heroContent.technologyHighlights]),
       primaryCtaLabel: heroContent.primaryCta.label,
       primaryCtaHref: heroContent.primaryCta.href,
+      primaryCtaVisible: heroContent.primaryCta.visible,
       secondaryCtaLabel: heroContent.secondaryCta.label,
       secondaryCtaHref: heroContent.secondaryCta.href,
+      secondaryCtaVisible: heroContent.secondaryCta.visible,
       profileImageUrl: null,
       profileImageAlt: heroContent.profile.imageAlt,
       profileInitials: heroContent.profile.initials,
+      profileVisible: heroContent.profile.visible,
+      orbitalLinesEnabled: heroContent.orbitalLinesEnabled,
+      statsEnabled: heroContent.statsEnabled,
     },
   });
+
+  const techCardIds = heroContent.technologyCards.map((item) => item.id);
+  await prisma.heroTechnologyCard.deleteMany({
+    where: { id: { notIn: techCardIds } },
+  });
+
+  for (const [index, item] of heroContent.technologyCards.entries()) {
+    await prisma.heroTechnologyCard.upsert({
+      where: { id: item.id },
+      update: {
+        icon: item.icon,
+        title: item.title,
+        href: item.href ?? null,
+        position: item.position,
+        visible: item.visible,
+        sortOrder: index,
+      },
+      create: {
+        id: item.id,
+        icon: item.icon,
+        title: item.title,
+        href: item.href ?? null,
+        position: item.position,
+        visible: item.visible,
+        sortOrder: index,
+      },
+    });
+  }
+
+  const statIds = heroContent.stats.map((item) => item.id);
+  await prisma.heroStat.deleteMany({
+    where: { id: { notIn: statIds } },
+  });
+
+  for (const [index, item] of heroContent.stats.entries()) {
+    await prisma.heroStat.upsert({
+      where: { id: item.id },
+      update: {
+        icon: item.icon,
+        value: item.value,
+        label: item.label,
+        visible: item.visible,
+        sortOrder: index,
+      },
+      create: {
+        id: item.id,
+        icon: item.icon,
+        value: item.value,
+        label: item.label,
+        visible: item.visible,
+        sortOrder: index,
+      },
+    });
+  }
 }
 
 async function seedExpertiseCarousel() {
@@ -165,6 +232,7 @@ async function seedExpertiseCarousel() {
     update: {
       label: expertiseCarouselContent.section.label,
       title: expertiseCarouselContent.section.title,
+      titleAccent: expertiseCarouselContent.section.titleAccent ?? null,
       description: expertiseCarouselContent.section.description,
       visible: expertiseCarouselContent.section.visible,
     },
@@ -172,6 +240,7 @@ async function seedExpertiseCarousel() {
       locale: LOCALE,
       label: expertiseCarouselContent.section.label,
       title: expertiseCarouselContent.section.title,
+      titleAccent: expertiseCarouselContent.section.titleAccent ?? null,
       description: expertiseCarouselContent.section.description,
       visible: expertiseCarouselContent.section.visible,
     },
@@ -273,6 +342,49 @@ async function seedTestimonials() {
       },
     });
   }
+}
+
+async function seedBlogHome() {
+  const section = blogHomeContent.section;
+
+  await prisma.blogHomeSectionConfig.upsert({
+    where: { locale: LOCALE },
+    update: {
+      label: section.label,
+      title: section.title,
+      titleAccent: section.titleAccent ?? null,
+      description: section.description,
+      sectionNumber: section.sectionNumber,
+      visible: section.visible,
+      carouselEnabled: section.carousel.enabled,
+      autoplay: section.carousel.autoplay,
+      autoplayDelayMs: section.carousel.autoplayDelayMs,
+      loop: section.carousel.loop,
+      postLimit: section.postLimit,
+      selectionMode: section.selectionMode,
+      readMoreLabel: section.readMoreLabel,
+      ctaLabel: section.ctaLabel ?? null,
+      ctaHref: section.ctaHref ?? null,
+    },
+    create: {
+      locale: LOCALE,
+      label: section.label,
+      title: section.title,
+      titleAccent: section.titleAccent ?? null,
+      description: section.description,
+      sectionNumber: section.sectionNumber,
+      visible: section.visible,
+      carouselEnabled: section.carousel.enabled,
+      autoplay: section.carousel.autoplay,
+      autoplayDelayMs: section.carousel.autoplayDelayMs,
+      loop: section.carousel.loop,
+      postLimit: section.postLimit,
+      selectionMode: section.selectionMode,
+      readMoreLabel: section.readMoreLabel,
+      ctaLabel: section.ctaLabel ?? null,
+      ctaHref: section.ctaHref ?? null,
+    },
+  });
 }
 
 async function seedFooter() {
@@ -885,6 +997,7 @@ async function seedBlog() {
     [
       { name: "Technical Articles", slug: "technical-articles", description: "Deep dives into frontend and full stack engineering." },
       { name: "Tutorials", slug: "tutorials", description: "Step-by-step guides for developers." },
+      { name: "UI/UX Design", slug: "ui-ux-design", description: "Interface craft, usability, and product polish." },
       { name: "Career Notes", slug: "career-notes", description: "Professional growth and portfolio insights." },
       { name: "AI Articles", slug: "ai-articles", description: "AI integrations and practical workflows." },
     ].map((item) =>
@@ -897,7 +1010,7 @@ async function seedBlog() {
   );
 
   const tags = await Promise.all(
-    ["Next.js", "React", "TypeScript", "PostgreSQL", "SEO", "AI"].map((name) =>
+    ["Next.js", "React", "TypeScript", "PostgreSQL", "SEO", "AI", "Performance"].map((name) =>
       prisma.tag.upsert({
         where: { slug: slugify(name) },
         update: { name },
@@ -917,6 +1030,8 @@ async function seedBlog() {
       featured: true,
       categorySlug: "technical-articles",
       tagSlugs: ["next-js", "typescript", "postgresql"],
+      readingTimeMinutes: 5,
+      publishedAt: "2026-06-20T09:00:00.000Z",
     },
     {
       slug: "seo-checklist-for-developer-blogs",
@@ -927,6 +1042,58 @@ async function seedBlog() {
       featured: false,
       categorySlug: "ai-articles",
       tagSlugs: ["seo", "next-js"],
+      readingTimeMinutes: 4,
+      publishedAt: "2026-07-10T09:00:00.000Z",
+    },
+    {
+      slug: "why-clean-ui-design-builds-better-user-trust",
+      title: "Why Clean UI Design Builds Better User Trust",
+      excerpt:
+        "Users decide whether to trust a product in seconds. Learn how spacing, hierarchy, and restrained visuals turn first impressions into confidence.",
+      content: `
+<h2>Trust starts before the first click</h2>
+<p>When someone lands on your portfolio, SaaS dashboard, or marketing page, they are not evaluating your code yet. They are reacting to visual signals: alignment, spacing, typography, contrast, and motion. Clean UI is not decoration — it is evidence that you respect the user's time and attention.</p>
+<p>In client projects and product work, I have seen the same pattern repeat: teams that invest in interface clarity ship faster later, because users need less guidance and support.</p>
+
+<h2>What “clean UI” actually means</h2>
+<p>Clean does not mean empty. It means every element earns its place. A polished interface usually shares these traits:</p>
+<ul>
+  <li><strong>Clear hierarchy</strong> — one primary action, one focal headline, predictable section rhythm.</li>
+  <li><strong>Consistent spacing</strong> — a small set of spacing tokens instead of arbitrary margins.</li>
+  <li><strong>Restrained color</strong> — a dark or neutral base with one accent used intentionally.</li>
+  <li><strong>Readable type</strong> — serif or sans pairing with comfortable line length and contrast.</li>
+  <li><strong>Subtle motion</strong> — hover and transition cues that feel responsive, not distracting.</li>
+</ul>
+
+<h2>Small details that signal professionalism</h2>
+<p>Users may not articulate why a layout feels premium, but they notice the details:</p>
+<ul>
+  <li>Cards with consistent radius, border, and shadow language</li>
+  <li>Labels and metadata styled quietly so content stays primary</li>
+  <li>Images with stable aspect ratios to prevent layout shift</li>
+  <li>Focus states that remain visible for keyboard users</li>
+</ul>
+<blockquote>
+  <p>Good UI reduces cognitive load. When people understand the interface immediately, they assume the product behind it is reliable.</p>
+</blockquote>
+
+<h2>From design intent to implementation</h2>
+<p>In Next.js projects, I keep design and engineering aligned by treating the homepage as a system:</p>
+<pre><code>Section shell → Header block → Content module → Shared tokens</code></pre>
+<p>That approach makes it easier to add new sections — testimonials, blog, expertise — without breaking visual consistency. Admin-managed content then sits on top of a stable layout foundation.</p>
+
+<h2>Performance is part of the experience</h2>
+<p>Trust also breaks when the interface feels slow. Optimized images, predictable carousel behavior, and minimal layout shift all contribute to the same impression: this builder cares about quality.</p>
+<p>If you are refining a portfolio or product landing page, start with hierarchy and spacing before adding more components. Clarity scales better than complexity.</p>
+
+<h2>Takeaway</h2>
+<p>Clean UI design is a business decision disguised as aesthetics. It helps users feel safe, helps products feel mature, and helps developers communicate competence before a single line of backend logic is discussed.</p>
+      `.trim(),
+      featured: true,
+      categorySlug: "ui-ux-design",
+      tagSlugs: ["react", "typescript", "performance"],
+      readingTimeMinutes: 7,
+      publishedAt: "2026-08-15T09:00:00.000Z",
     },
   ] as const;
 
@@ -943,12 +1110,12 @@ async function seedBlog() {
         excerpt: sample.excerpt,
         content: sample.content,
         authorName: siteConfig.author.name,
-        readingTimeMinutes: 4,
+        readingTimeMinutes: sample.readingTimeMinutes ?? 4,
         featured: sample.featured,
         locale: LOCALE,
         status: "PUBLISHED",
-        publishedAt: new Date(),
-        searchText: sample.excerpt,
+        publishedAt: new Date(sample.publishedAt ?? Date.now()),
+        searchText: `${sample.title} ${sample.excerpt}`,
       },
       create: {
         slug: sample.slug,
@@ -956,12 +1123,12 @@ async function seedBlog() {
         excerpt: sample.excerpt,
         content: sample.content,
         authorName: siteConfig.author.name,
-        readingTimeMinutes: 4,
+        readingTimeMinutes: sample.readingTimeMinutes ?? 4,
         featured: sample.featured,
         locale: LOCALE,
         status: "PUBLISHED",
-        publishedAt: new Date(),
-        searchText: sample.excerpt,
+        publishedAt: new Date(sample.publishedAt ?? Date.now()),
+        searchText: `${sample.title} ${sample.excerpt}`,
       },
     });
 
@@ -1148,6 +1315,7 @@ async function main() {
   await seedResume();
   await seedContact();
   await seedBlog();
+  await seedBlogHome();
   await seedSeoManagement();
   await seedMediaFolders();
   await seedPlatformSettings();

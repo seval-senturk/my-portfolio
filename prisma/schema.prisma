@@ -299,22 +299,57 @@ model Hero {
   locale                    String        @default("en")
   eyebrow                   String
   headline                  String
+  jobTitle                  String        @default("")
   summary                   String        @db.Text
   technologyHighlightsTitle String
   technologyHighlights      Json
   primaryCtaLabel           String
   primaryCtaHref            String
+  primaryCtaVisible         Boolean       @default(true)
   secondaryCtaLabel         String
   secondaryCtaHref          String
+  secondaryCtaVisible       Boolean       @default(true)
   profileImageUrl           String?
   profileImageAlt           String
   profileInitials           String
+  profileVisible            Boolean       @default(true)
+  orbitalLinesEnabled       Boolean       @default(true)
+  statsEnabled              Boolean       @default(true)
   status                    ContentStatus @default(PUBLISHED)
   createdAt                 DateTime      @default(now())
   updatedAt                 DateTime      @updatedAt
 
   @@unique([locale])
   @@index([status])
+}
+
+model HeroTechnologyCard {
+  id        String   @id
+  icon      String
+  title     String
+  href      String?
+  position  Int      @default(0)
+  sortOrder Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+  @@index([visible, sortOrder])
+}
+
+model HeroStat {
+  id        String   @id
+  icon      String
+  value     String
+  label     String
+  sortOrder Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+  @@index([visible, sortOrder])
 }
 
 // ─── Expertise carousel (home section 02) ───────────────────────────────────
@@ -324,6 +359,7 @@ model ExpertiseCarouselConfig {
   locale      String  @default("en")
   label       String
   title       String
+  titleAccent String?
   description String  @db.Text
   visible     Boolean @default(true)
 
@@ -835,6 +871,7 @@ model BlogPost {
   updatedAt          DateTime           @updatedAt
   categories         BlogPostCategory[]
   tags               BlogPostTag[]
+  curatedHomeEntries BlogHomeCuratedPost[]
 
   @@index([status, publishedAt])
   @@index([locale])
@@ -861,6 +898,43 @@ model BlogPostTag {
 
   @@id([blogPostId, tagId])
   @@index([tagId])
+}
+
+// ─── Blog home section (homepage carousel) ─────────────────────────────────
+
+model BlogHomeSectionConfig {
+  id              String  @id @default("default")
+  locale          String  @default("en")
+  label           String  @default("LATEST BLOG")
+  title           String
+  titleAccent     String?
+  description     String  @db.Text
+  sectionNumber   String  @default("09")
+  visible         Boolean @default(true)
+  carouselEnabled Boolean @default(true)
+  autoplay        Boolean @default(false)
+  autoplayDelayMs Int     @default(5000)
+  loop            Boolean @default(true)
+  postLimit       Int     @default(3)
+  selectionMode   String  @default("latest")
+  readMoreLabel   String  @default("Read Article")
+  ctaLabel        String?
+  ctaHref         String?
+
+  @@unique([locale])
+}
+
+model BlogHomeCuratedPost {
+  id         String   @id @default(cuid())
+  blogPostId String   @unique
+  sortOrder  Int      @default(0)
+  visible    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  blogPost   BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+
+  @@index([sortOrder])
+  @@index([visible, sortOrder])
 }
 
 // ─── Digital Asset Management (Phase 18) ───────────────────────────────────
