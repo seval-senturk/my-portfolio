@@ -222,6 +222,84 @@
   animation: spin 1s linear infinite;
 }
 
+/* ─── Interactive card hover orbitals (shared) ───────────────────────────── */
+.interactive-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--transition-slow),
+    border-color var(--transition-slow),
+    box-shadow var(--transition-slow);
+}
+
+.interactive-card > :not(.card-hover-orbitals) {
+  position: relative;
+  z-index: 1;
+}
+
+.card-hover-orbitals {
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  width: clamp(5rem, 54%, 10.5rem);
+  height: clamp(5rem, 54%, 10.5rem);
+  opacity: 0;
+  transform: scale(0.94);
+  transition:
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
+}
+
+.card-hover-orbitals__svg {
+  width: 100%;
+  height: 100%;
+}
+
+.card-hover-orbitals__ring {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.035);
+  stroke-width: 1;
+}
+
+.card-hover-orbitals__ring--accent {
+  stroke: rgb(124 131 255 / 0.08);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .interactive-card:hover {
+    transform: translateY(-3px);
+    border-color: rgb(124 131 255 / 0.35);
+    box-shadow:
+      0 12px 40px rgb(0 0 0 / 0.22),
+      0 0 0 1px rgb(124 131 255 / 0.08);
+  }
+
+  .interactive-card:hover .card-hover-orbitals {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive-card {
+    transition: border-color var(--transition-slow), box-shadow var(--transition-slow);
+  }
+
+  .interactive-card:hover {
+    transform: none;
+  }
+
+  .card-hover-orbitals {
+    transition: opacity var(--transition-slow);
+  }
+
+  .interactive-card:hover .card-hover-orbitals {
+    transform: scale(0.94);
+  }
+}
+
 /* ─── Base styles ───────────────────────────────────────────────────────── */
 body {
   background: var(--background);
@@ -861,20 +939,6 @@ main :is(h1, h2, h3, h4, h5, h6).text-foreground {
   background: rgb(37 39 52 / 0.72);
   padding: 1.35rem 1.4rem;
   box-shadow: 0 8px 32px rgb(0 0 0 / 0.18);
-  transition:
-    transform 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .career-rail-entry__card:hover {
-    transform: translateY(-3px);
-    border-color: rgb(124 131 255 / 0.35);
-    box-shadow:
-      0 12px 40px rgb(0 0 0 / 0.22),
-      0 0 0 1px rgb(124 131 255 / 0.08);
-  }
 }
 
 .career-rail-entry__meta {
@@ -1076,19 +1140,11 @@ main :is(h1, h2, h3, h4, h5, h6).text-foreground {
   background: rgb(37 39 52 / 0.78);
   padding: 1.5rem 1.4rem 1.35rem;
   box-shadow: 0 10px 36px rgb(0 0 0 / 0.2);
-  transition:
-    transform 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .testimonial-card:hover {
     transform: translateY(-4px);
-    border-color: rgb(124 131 255 / 0.35);
-    box-shadow:
-      0 16px 42px rgb(0 0 0 / 0.24),
-      0 0 0 1px rgb(124 131 255 / 0.08);
   }
 }
 
@@ -1424,26 +1480,13 @@ main :is(h1, h2, h3, h4, h5, h6).text-foreground {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
   border-radius: 1.25rem;
   border: 1px solid rgb(255 255 255 / 0.08);
   background: rgb(37 39 52 / 0.72);
   box-shadow: 0 8px 32px rgb(0 0 0 / 0.18);
-  transition:
-    transform 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .blog-home-card:hover {
-    transform: translateY(-3px);
-    border-color: rgb(124 131 255 / 0.35);
-    box-shadow:
-      0 12px 40px rgb(0 0 0 / 0.22),
-      0 0 0 1px rgb(124 131 255 / 0.08);
-  }
-
   .blog-home-card:hover .blog-home-card__image img {
     transform: scale(1.04);
   }
@@ -1684,60 +1727,12 @@ main :is(h1, h2, h3, h4, h5, h6).text-foreground {
   border: 1px solid rgb(255 255 255 / 0.08);
   background: var(--color-card-surface);
   box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  transition:
-    transform 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .expertise-card:hover {
-    transform: translateY(-3px);
-    border-color: rgb(124 131 255 / 0.35);
-    box-shadow:
-      0 12px 40px rgb(0 0 0 / 0.22),
-      0 0 0 1px rgb(124 131 255 / 0.08);
-  }
 }
 
 .expertise-card__body {
-  position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-.expertise-card__rings {
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(0.96);
-  transition:
-    opacity var(--transition-slow),
-    visibility var(--transition-slow),
-    transform var(--transition-slow);
-}
-
-.expertise-card__rings-svg {
-  width: 100%;
-  height: 100%;
-}
-
-.expertise-card__ring {
-  fill: none;
-  stroke: rgb(255 255 255 / 0.05);
-  stroke-width: 1;
-}
-
-.expertise-card:hover .expertise-card__rings {
-  opacity: 1;
-  visibility: visible;
-  transform: scale(1);
 }
 
 .expertise-card__icon-wrap {
@@ -2173,7 +2168,6 @@ main :is(h1, h2, h3, h4, h5, h6).text-foreground {
 }
 
 .about-home__feature-card {
-  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 220px;
@@ -2183,18 +2177,12 @@ main :is(h1, h2, h3, h4, h5, h6).text-foreground {
   background: rgba(255, 255, 255, 0.03);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   backdrop-filter: blur(8px);
-  transition:
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast),
-    transform var(--transition-fast);
 }
 
-.about-home__feature-card:hover {
-  border-color: rgba(124, 131, 255, 0.35);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.22),
-    0 0 0 1px rgba(124, 131, 255, 0.08);
-  transform: translateY(-4px);
+@media (hover: hover) and (pointer: fine) {
+  .about-home__feature-card:hover {
+    transform: translateY(-4px);
+  }
 }
 
 .about-home__feature-card-top {
@@ -2259,11 +2247,11 @@ main :is(h1, h2, h3, h4, h5, h6).text-foreground {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .about-home__feature-card {
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  .about-home__feature-card:hover {
+    transform: none;
   }
 
-  .about-home__feature-card:hover {
+  .testimonial-card:hover {
     transform: none;
   }
 }

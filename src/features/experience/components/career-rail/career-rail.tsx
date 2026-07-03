@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { type ReactNode } from "react";
 
+import { CardHoverOrbitals } from "@/components/shared/card-hover-orbitals";
 import { cn } from "@/lib/cn";
 
 export interface CareerRailEntryData {
@@ -33,7 +34,8 @@ export function CareerRailEntry({ entry, isLast = false }: CareerRailEntryProps)
     >
       <span className="career-rail-entry__marker" aria-hidden />
 
-      <article className="career-rail-entry__card">
+      <article className="career-rail-entry__card interactive-card">
+        <CardHoverOrbitals />
         <div className="career-rail-entry__meta">
           <time className="career-rail-entry__period" dateTime={entry.period}>
             {entry.period}

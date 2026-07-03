@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CalendarDays } from "lucide-react";
 
+import { CardHoverOrbitals } from "@/components/shared/card-hover-orbitals";
 import { ROUTES } from "@/constants/routes";
 import { formatBlogPostDate } from "@/lib/date";
 import type { BlogPost } from "@/types/blog";
@@ -17,7 +18,8 @@ export function BlogHomeCard({ post, readMoreLabel }: BlogHomeCardProps) {
   const href = `${ROUTES.blog}/${post.slug}`;
 
   return (
-    <article className="blog-home-card">
+    <article className="blog-home-card interactive-card">
+      <CardHoverOrbitals />
       <div className="blog-home-card__media">
         {post.coverImage ? (
           <BlogCoverImage

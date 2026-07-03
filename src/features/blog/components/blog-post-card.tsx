@@ -15,7 +15,7 @@ interface BlogPostCardProps {
 
 export function BlogPostCard({ post }: BlogPostCardProps) {
   return (
-    <Card className="h-full overflow-hidden">
+    <Card className="h-full overflow-hidden" interactive>
       {post.coverImage ? (
         <BlogCoverImage
           src={post.coverImage}

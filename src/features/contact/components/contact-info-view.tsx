@@ -23,7 +23,7 @@ export function ContactInfoView({ content }: ContactInfoViewProps) {
     content;
 
   return (
-    <Card className="h-full">
+    <Card className="h-full" interactive>
       <Card.Content className="space-y-6">
         <div className="space-y-3">
           <Heading as="h3" variant="h4">

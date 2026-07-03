@@ -1,5 +1,6 @@
 import { Quote, Star } from "lucide-react";
 
+import { CardHoverOrbitals } from "@/components/shared/card-hover-orbitals";
 import type { TestimonialItem } from "@/types/testimonials";
 import { cn } from "@/lib/cn";
 
@@ -33,9 +34,13 @@ export function TestimonialCard({ item, isActive = false }: TestimonialCardProps
 
   return (
     <article
-      className={cn("testimonial-card", isActive && "testimonial-card--active")}
+      className={cn(
+        "testimonial-card interactive-card",
+        isActive && "testimonial-card--active",
+      )}
       aria-label={`Testimonial from ${item.authorName}`}
     >
+      <CardHoverOrbitals />
       <Quote className="testimonial-card__quote-icon" aria-hidden />
 
       <blockquote className="testimonial-card__quote">

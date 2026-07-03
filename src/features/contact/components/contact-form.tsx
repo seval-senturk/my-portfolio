@@ -101,7 +101,7 @@ export function ContactForm({ config, messages }: ContactFormProps) {
 
   if (status === "success") {
     return (
-      <Card>
+      <Card interactive>
         <Card.Content className="space-y-3" role="status" aria-live="polite">
           <Heading as="h3" variant="h4">
             {messages.successTitle}
@@ -121,7 +121,7 @@ export function ContactForm({ config, messages }: ContactFormProps) {
   }
 
   return (
-    <Card>
+    <Card interactive>
       <Card.Content>
         <Heading as="h3" variant="h4">
           {config.title}

@@ -21,7 +21,7 @@ export function ContactSocialView({
   }
 
   return (
-    <Card>
+    <Card interactive>
       <Card.Content>
         <Heading as="h3" variant="h4">
           {title}

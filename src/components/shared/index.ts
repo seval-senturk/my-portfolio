@@ -1,4 +1,5 @@
 export { SkipLink } from "@/components/shared/skip-link";
+export { CardHoverOrbitals } from "@/components/shared/card-hover-orbitals";
 export { ContentCard } from "@/components/shared/content-card";
 export { StatGrid } from "@/components/shared/stat-grid";
 export { FeatureGrid } from "@/components/shared/feature-grid";

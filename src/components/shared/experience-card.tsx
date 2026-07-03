@@ -25,6 +25,7 @@ export function ExperienceCard({ entry, className }: ExperienceCardProps) {
         entry.current && "border-accent/30 ring-1 ring-accent/10",
         className,
       )}
+      interactive
     >
       <Card.Content className="space-y-5">
         <header className="space-y-2">

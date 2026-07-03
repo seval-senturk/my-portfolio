@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CardHoverOrbitals } from "@/components/shared/card-hover-orbitals";
 import type { ExpertiseCarouselItem } from "@/types/expertise-carousel";
 import { resolveExpertiseIcon } from "@/features/expertise-carousel/config/expertise-icons.config";
 import { cn } from "@/lib/cn";
@@ -18,23 +19,8 @@ export function ExpertiseCarouselCard({
   const hasDescription = Boolean(item.description?.trim());
 
   return (
-    <article className={cn("expertise-card group", className)}>
-      <div className="expertise-card__rings" aria-hidden="true">
-        <svg
-          className="expertise-card__rings-svg"
-          viewBox="0 0 400 533"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="none"
-        >
-          <circle cx="400" cy="0" r="56" className="expertise-card__ring" />
-          <circle cx="400" cy="0" r="96" className="expertise-card__ring" />
-          <circle cx="400" cy="0" r="136" className="expertise-card__ring" />
-          <circle cx="400" cy="533" r="56" className="expertise-card__ring" />
-          <circle cx="400" cy="533" r="96" className="expertise-card__ring" />
-          <circle cx="400" cy="533" r="136" className="expertise-card__ring" />
-        </svg>
-      </div>
+    <article className={cn("expertise-card interactive-card group", className)}>
+      <CardHoverOrbitals />
 
       <div className="expertise-card__body">
         <div className="expertise-card__icon-wrap" aria-hidden="true">

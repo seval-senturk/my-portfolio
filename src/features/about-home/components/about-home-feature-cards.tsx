@@ -1,5 +1,7 @@
 import { AboutHomeIcon } from "@/features/about-home/components/about-home-icon";
+import { CardHoverOrbitals } from "@/components/shared/card-hover-orbitals";
 import type { AboutHomeFeatureCard } from "@/types/about-home";
+import { cn } from "@/lib/cn";
 
 interface AboutHomeFeatureCardsProps {
   cards: readonly AboutHomeFeatureCard[];
@@ -15,7 +17,12 @@ export function AboutHomeFeatureCards({ cards }: AboutHomeFeatureCardsProps) {
   return (
     <div className="about-home__features" role="list">
       {visibleCards.map((card) => (
-        <article key={card.id} className="about-home__feature-card" role="listitem">
+        <article
+          key={card.id}
+          className={cn("about-home__feature-card interactive-card")}
+          role="listitem"
+        >
+          <CardHoverOrbitals />
           <div className="about-home__feature-card-top">
             <span className="about-home__feature-card-icon" aria-hidden>
               <AboutHomeIcon name={card.icon} size={22} />

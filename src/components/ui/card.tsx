@@ -1,5 +1,6 @@
 import { type HTMLAttributes, type ReactNode } from "react";
 
+import { CardHoverOrbitals } from "@/components/shared/card-hover-orbitals";
 import { cn } from "@/lib/cn";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
@@ -17,11 +18,12 @@ function CardRoot({
     <div
       className={cn(
         "rounded-xl border border-border bg-surface shadow-sm",
-        interactive && "transition-base hover:border-border/80 hover:shadow-md",
+        interactive && "interactive-card",
         className,
       )}
       {...props}
     >
+      {interactive ? <CardHoverOrbitals /> : null}
       {children}
     </div>
   );

@@ -18,7 +18,7 @@ export function ContentCard({
   headingLevel = "h4",
 }: ContentCardProps) {
   return (
-    <Card className="h-full">
+    <Card className="h-full" interactive>
       <Card.Content>
         <Heading as={headingLevel} variant="h4">
           {title}
