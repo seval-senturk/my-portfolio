@@ -28,7 +28,7 @@ export function Header({ className }: HeaderProps) {
               href={headerCta.href}
               variant="outline"
               size="sm"
-              className="hidden rounded-full border-border/70 bg-surface/20 px-5 hover:border-accent/40 hover:bg-surface/40 sm:inline-flex"
+              className="hidden rounded-full border-border/70 bg-surface/20 px-5 hover:border-accent/40 hover:bg-surface/40 lg:inline-flex"
             >
               {headerCta.label}
               <span aria-hidden className="ml-0.5 opacity-70">

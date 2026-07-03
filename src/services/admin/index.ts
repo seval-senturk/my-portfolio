@@ -20,7 +20,7 @@ export {
 } from "@/services/admin/about.admin.service";
 export type { UpdateAboutInput } from "@/services/admin/about.admin.service";
 
-export { getHeroRecord, updateHero } from "@/services/admin/hero.admin.service";
+export { getHeroRecord, getHeroTechnologyCard, getHeroAdminContent, updateHero, listHeroTechnologyCards, listHeroStats, createHeroTechnologyCard, updateHeroTechnologyCard, deleteHeroTechnologyCard, reorderHeroTechnologyCards, createHeroStat, updateHeroStat, deleteHeroStat, reorderHeroStats } from "@/services/admin/hero.admin.service";
 export type { UpdateHeroInput } from "@/services/admin/hero.admin.service";
 
 export {
@@ -94,6 +94,16 @@ export {
   updateExpertiseCarouselConfig,
   updateExpertiseCarouselItem,
 } from "@/services/admin/expertise-carousel.admin.service";
+
+export {
+  addBlogHomeCuratedPost,
+  getBlogHomeConfig,
+  listBlogHomeCuratedPosts,
+  listPublishedBlogPostsForPicker,
+  removeBlogHomeCuratedPost,
+  reorderBlogHomeCuratedPosts,
+  updateBlogHomeConfig,
+} from "@/services/admin/blog-home.admin.service";
 
 export {
   getFooterConfig,

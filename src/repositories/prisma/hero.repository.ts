@@ -21,6 +21,11 @@ export const prismaHeroRepository: HeroRepository = {
       throw new ContentNotFoundError("Hero", locale);
     }
 
-    return mapHeroToContent(hero);
+    const [technologyCards, stats] = await Promise.all([
+      prisma.heroTechnologyCard.findMany({ orderBy: { sortOrder: "asc" } }),
+      prisma.heroStat.findMany({ orderBy: { sortOrder: "asc" } }),
+    ]);
+
+    return mapHeroToContent(hero, technologyCards, stats);
   },
 };

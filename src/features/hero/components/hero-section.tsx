@@ -1,40 +1,37 @@
 import type { HeroContent } from "@/types/hero";
-import type { SiteSocialLink } from "@/types/social";
 
-import { HeroDecorSvg } from "@/features/hero/components/hero-decor-svg";
 import { HeroContentBlock } from "@/features/hero/components/hero-content";
 import { HeroLayout } from "@/features/hero/components/hero-layout";
+import { HeroNetworkBackground } from "@/features/hero/components/hero-network-background";
 import { HeroPortrait } from "@/features/hero/components/hero-portrait";
-import { HeroSocialLinks } from "@/features/hero/components/hero-social-links";
+import { HeroStatsBar } from "@/features/hero/components/hero-stats-bar";
 import { Container } from "@/components/ui/container";
 
 interface HeroSectionProps {
   content: HeroContent;
-  socialLinks: readonly SiteSocialLink[];
 }
 
-export function HeroSection({ content, socialLinks }: HeroSectionProps) {
+export function HeroSection({ content }: HeroSectionProps) {
+  const showStats = content.statsEnabled && content.stats.length > 0;
+
   return (
     <section
       aria-labelledby="hero-heading"
-      className="hero-section relative -mt-16 min-h-[100svh] pt-16 lg:-mt-[4.5rem] lg:pt-[4.5rem]"
+      className="hero-section relative isolate -mt-16 min-h-[100svh] pt-16 lg:-mt-[4.5rem] lg:pt-[4.5rem]"
     >
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <HeroDecorSvg className="h-full w-full" />
-      </div>
+      <HeroNetworkBackground />
+      <div className="hero-section__backdrop" aria-hidden />
 
-      <Container
-        size="wide"
-        className="hero-section__container relative pb-0 pt-0"
-      >
+      <Container size="wide" className="hero-section__container relative z-[2]">
         <HeroLayout
-          content={
-            <HeroContentBlock content={content} socialLinks={socialLinks} />
+          content={<HeroContentBlock content={content} />}
+          media={
+            <HeroPortrait
+              profile={content.profile}
+              technologyCards={content.technologyCards}
+            />
           }
-          media={<HeroPortrait profile={content.profile} />}
-          aside={
-            <HeroSocialLinks links={socialLinks} variant="portrait-rail" />
-          }
+          footer={showStats ? <HeroStatsBar stats={content.stats} /> : null}
         />
       </Container>
     </section>

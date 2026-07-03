@@ -28,14 +28,21 @@ import type {
   MediaUploadInput,
 } from "@/types/media-management";
 
+const TECH_ICON_FOLDER_SLUG = "tech-icons";
+
+function allowsSvgUpload(folderSlug: string | undefined): boolean {
+  return folderSlug === TECH_ICON_FOLDER_SLUG;
+}
+
 export async function uploadMediaAsset(input: MediaUploadInput): Promise<MediaAssetRecord> {
-  const validation = validateUploadFile(input.mimeType, input.size, input.originalName);
+  const folderSlug = input.folderSlug ?? getMediaFolderSlug(input.category);
+  const validation = validateUploadFile(input.mimeType, input.size, input.originalName, {
+    allowSvg: allowsSvgUpload(folderSlug),
+  });
 
   if (!validation.valid) {
     throw new Error(validation.errors.join(" "));
   }
-
-  const folderSlug = input.folderSlug ?? getMediaFolderSlug(input.category);
   const folder = await findMediaFolderBySlug(folderSlug);
   const filename = normalizeFilename(input.originalName);
   const storageProvider = resolveDefaultStorageProvider();
@@ -82,12 +89,15 @@ export async function uploadMediaAssetVersion(
 
   await markAssetAsNotLatest(parentAssetId);
 
-  const validation = validateUploadFile(input.mimeType, input.size, input.originalName);
+  const folderSlug = parent.folder?.slug ?? getMediaFolderSlug(parent.category);
+  const validation = validateUploadFile(input.mimeType, input.size, input.originalName, {
+    allowSvg: allowsSvgUpload(folderSlug),
+  });
+
   if (!validation.valid) {
     throw new Error(validation.errors.join(" "));
   }
 
-  const folderSlug = parent.folder?.slug ?? getMediaFolderSlug(parent.category);
   const filename = normalizeFilename(input.originalName);
   const provider = getStorageProvider(parent.storageProvider);
 

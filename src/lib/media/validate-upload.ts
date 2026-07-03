@@ -36,11 +36,24 @@ const BLOCKED_EXTENSIONS = new Set([
   ".rar",
 ]);
 
-export function resolveAssetType(mimeType: string, filename: string): MediaAssetType {
-  const lower = filename.toLowerCase();
+export interface UploadValidationOptions {
+  allowSvg?: boolean;
+}
 
-  if (mimeType === "image/svg+xml" || lower.endsWith(".svg")) {
-    throw new Error("SVG uploads are disabled for security reasons.");
+export function resolveAssetType(
+  mimeType: string,
+  filename: string,
+  options: UploadValidationOptions = {},
+): MediaAssetType {
+  const lower = filename.toLowerCase();
+  const isSvg = mimeType === "image/svg+xml" || lower.endsWith(".svg");
+
+  if (isSvg) {
+    if (!options.allowSvg) {
+      throw new Error("SVG uploads are disabled for security reasons.");
+    }
+
+    return "SVG";
   }
 
   if (IMAGE_MIMES.has(mimeType)) {
@@ -68,22 +81,25 @@ export function validateUploadFile(
   mimeType: string,
   size: number,
   filename: string,
+  options: UploadValidationOptions = {},
 ): UploadValidationResult {
   const errors: string[] = [];
   const extension = filename.includes(".")
     ? filename.slice(filename.lastIndexOf(".")).toLowerCase()
     : "";
+  const isSvg = mimeType === "image/svg+xml" || filename.toLowerCase().endsWith(".svg");
 
   if (BLOCKED_EXTENSIONS.has(extension)) {
     errors.push(`File extension ${extension} is not allowed.`);
   }
 
-  if (mimeType === "image/svg+xml" || filename.toLowerCase().endsWith(".svg")) {
+  if (isSvg && !options.allowSvg) {
     errors.push("SVG uploads are disabled for security reasons.");
   }
 
   const allowed =
     IMAGE_MIMES.has(mimeType) ||
+    (isSvg && options.allowSvg) ||
     PDF_MIMES.has(mimeType) ||
     mimeType.startsWith("video/");
 
@@ -93,12 +109,14 @@ export function validateUploadFile(
 
   let assetType: MediaAssetType = "DOCUMENT";
   if (errors.length === 0) {
-    assetType = resolveAssetType(mimeType, filename);
+    assetType = resolveAssetType(mimeType, filename, options);
   }
 
   let maxSize = MEDIA_SIZE_LIMITS.default;
 
-  if (IMAGE_MIMES.has(mimeType)) {
+  if (isSvg && options.allowSvg) {
+    maxSize = MEDIA_SIZE_LIMITS.svg;
+  } else if (IMAGE_MIMES.has(mimeType)) {
     maxSize = MEDIA_SIZE_LIMITS.image;
   } else if (PDF_MIMES.has(mimeType)) {
     maxSize = MEDIA_SIZE_LIMITS.pdf;

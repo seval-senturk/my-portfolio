@@ -1,23 +1,44 @@
-import { HeroNameUnderline } from "@/features/hero/components/hero-name-underline";
-
 interface HeroHeadlineProps {
   greeting: string;
   name: string;
+  jobTitle?: string;
 }
 
-export function HeroHeadline({ greeting, name }: HeroHeadlineProps) {
+function splitDisplayName(name: string): { first: string; last: string } {
+  const trimmed = name.trim();
+  const spaceIndex = trimmed.indexOf(" ");
+
+  if (spaceIndex === -1) {
+    return { first: trimmed, last: "" };
+  }
+
+  return {
+    first: trimmed.slice(0, spaceIndex),
+    last: trimmed.slice(spaceIndex + 1),
+  };
+}
+
+export function HeroHeadline({ greeting, name, jobTitle }: HeroHeadlineProps) {
+  const { first, last } = splitDisplayName(name);
+
   return (
-    <div className="max-w-xl">
-      <p className="font-serif-display text-display text-foreground">{greeting}</p>
-      <h1
-        id="hero-heading"
-        className="font-serif-display text-display mt-1 text-foreground"
-      >
-        <span className="relative inline-block">
-          {name}
-          <HeroNameUnderline className="absolute -bottom-1 left-0 h-3 w-full min-w-[12rem] sm:min-w-[16rem]" />
-        </span>
+    <div className="hero-headline">
+      <p className="hero-headline__greeting">
+        <span className="hero-headline__greeting-line" aria-hidden />
+        <span>{greeting}</span>
+      </p>
+
+      <h1 id="hero-heading" className="hero-headline__title">
+        <span className="hero-headline__name-first">{first}</span>
+        {last ? (
+          <>
+            <br />
+            <span className="hero-headline__name-last">{last}</span>
+          </>
+        ) : null}
       </h1>
+
+      {jobTitle ? <p className="hero-headline__job-title">{jobTitle}</p> : null}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { FolderOpen, HardDriveUpload, Loader2, Upload } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { MediaPickerModal, type MediaSelection } from "@/features/admin/media/components/media-picker-modal";
 import { adminTr } from "@/features/admin/i18n/tr";
@@ -55,6 +55,10 @@ export function AdminUploadField({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string>();
   const [previewUrl, setPreviewUrl] = useState(value ?? defaultValue ?? "");
+
+  useEffect(() => {
+    setPreviewUrl(value ?? defaultValue ?? "");
+  }, [value, defaultValue]);
 
   const handleLibrarySelect = (asset: MediaAssetRecord) => {
     setPreviewUrl(asset.publicUrl);
@@ -136,13 +140,11 @@ export function AdminUploadField({
             <div className="flex-1 space-y-3">
               <input
                 id={id}
-                name={name}
                 type="text"
                 inputMode="url"
                 spellCheck={false}
                 placeholder="https://... veya /uploads/..."
-                value={value ?? previewUrl}
-                defaultValue={value === undefined ? defaultValue : undefined}
+                value={previewUrl}
                 disabled={disabled || isUploading}
                 onChange={(event) => {
                   setPreviewUrl(event.target.value);
@@ -151,6 +153,10 @@ export function AdminUploadField({
                 }}
                 className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-small"
               />
+
+              {name ? (
+                <input type="hidden" name={name} value={previewUrl} readOnly />
+              ) : null}
 
               {mediaId ? (
                 <input type="hidden" name={`${name ?? id}MediaId`} value={mediaId} />

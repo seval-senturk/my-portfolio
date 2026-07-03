@@ -48,6 +48,21 @@ export function getOptionalString(formData: FormData, key: string): string | und
   return value || undefined;
 }
 
+/** Keeps the existing URL when the form submits an empty image field. */
+export function getProfileImageUrl(
+  formData: FormData,
+  key: string,
+  existingUrl?: string | null,
+): string | null {
+  const incoming = getString(formData, key);
+
+  if (incoming) {
+    return incoming;
+  }
+
+  return existingUrl ?? null;
+}
+
 export function getBoolean(formData: FormData, key: string): boolean {
   return formData.get(key) === "on" || formData.get(key) === "true";
 }

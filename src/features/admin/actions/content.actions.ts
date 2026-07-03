@@ -8,6 +8,8 @@ import { AuditActions, recordAudit } from "@/lib/platform/audit";
 import {
   getOptionalString,
   getString,
+  getBoolean,
+  getProfileImageUrl,
   validateRequired,
 } from "@/lib/admin/validation";
 import { requireAdminUser } from "@/lib/auth/session";
@@ -16,6 +18,16 @@ import {
   parseMultilineList,
   updateAbout,
   updateHero,
+  getHeroRecord,
+  getHeroTechnologyCard,
+  createHeroTechnologyCard,
+  updateHeroTechnologyCard,
+  deleteHeroTechnologyCard,
+  reorderHeroTechnologyCards,
+  createHeroStat,
+  updateHeroStat,
+  deleteHeroStat,
+  reorderHeroStats,
   updateResume,
   upsertDefaultResumePdf,
   createExperienceEntry,
@@ -47,6 +59,7 @@ import {
   parseExpertiseBulletList,
   updateFooterConfig,
   updateAboutHomeConfig,
+  getAboutHomeConfig,
   createAboutHomeQuickInfo,
   updateAboutHomeQuickInfo,
   deleteAboutHomeQuickInfo,
@@ -56,6 +69,12 @@ import {
   deleteAboutHomeStat,
   reorderAboutHomeStats,
 } from "@/services/admin";
+import {
+  addBlogHomeCuratedPost,
+  removeBlogHomeCuratedPost,
+  reorderBlogHomeCuratedPosts,
+  updateBlogHomeConfig,
+} from "@/services/admin/blog-home.admin.service";
 import { replaceSocialLinks } from "@/services/admin/social.admin.service";
 
 function revalidatePublicContent() {
@@ -136,6 +155,7 @@ export async function saveHeroAction(formData: FormData) {
 
     const eyebrow = getString(formData, "eyebrow");
     const headline = getString(formData, "headline");
+    const jobTitle = getString(formData, "jobTitle");
     const summary = getString(formData, "summary");
     const technologyHighlightsTitle = getString(formData, "technologyHighlightsTitle");
     const primaryCtaLabel = getString(formData, "primaryCtaLabel");
@@ -144,19 +164,28 @@ export async function saveHeroAction(formData: FormData) {
     const secondaryCtaHref = getString(formData, "secondaryCtaHref");
     const profileImageAlt = getString(formData, "profileImageAlt");
     const profileInitials = getString(formData, "profileInitials");
+    const existingHero = await getHeroRecord();
 
     await updateHero({
       eyebrow,
       headline,
+      jobTitle,
       summary,
       technologyHighlightsTitle,
       primaryCtaLabel,
       primaryCtaHref,
+      primaryCtaVisible: getBoolean(formData, "primaryCtaVisible"),
       secondaryCtaLabel,
       secondaryCtaHref,
-      profileImageUrl: getOptionalString(formData, "profileImageUrl"),
+      secondaryCtaVisible: getBoolean(formData, "secondaryCtaVisible"),
+      profileImageUrl:
+        getProfileImageUrl(formData, "profileImageUrl", existingHero?.profileImageUrl) ??
+        undefined,
       profileImageAlt,
       profileInitials,
+      profileVisible: getBoolean(formData, "profileVisible"),
+      orbitalLinesEnabled: getBoolean(formData, "orbitalLinesEnabled"),
+      statsEnabled: getBoolean(formData, "statsEnabled"),
     });
 
     revalidatePublicContent();
@@ -170,6 +199,160 @@ export async function saveHeroAction(formData: FormData) {
     return adminSuccess();
   } catch {
     return adminError("Failed to save hero content.");
+  }
+}
+
+export async function saveHeroTechnologyCardAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+    const id = getOptionalString(formData, "id");
+    const existing = id ? await getHeroTechnologyCard(id) : null;
+    const positionRaw = getString(formData, "position");
+    const icon = getString(formData, "icon") || existing?.icon || "";
+
+    if (!icon) {
+      return adminError("Technology card icon is required.");
+    }
+
+    const input = {
+      icon,
+      title: getString(formData, "title"),
+      href: getOptionalString(formData, "href"),
+      position: Number.parseInt(positionRaw, 10) || 0,
+      visible: formData.get("visible") === "on",
+    };
+
+    if (id) {
+      await updateHeroTechnologyCard(id, input);
+    } else {
+      await createHeroTechnologyCard(input);
+    }
+
+    revalidatePublicContent();
+    revalidatePath("/");
+    revalidatePath("/admin/hero");
+    await recordAudit({
+      user,
+      action: AuditActions.HERO_UPDATED,
+      category: "CONTENT",
+      entityType: "hero_technology_card",
+      entityId: id ?? undefined,
+      summary: id ? "Hero technology card updated" : "Hero technology card created",
+    });
+
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save technology card.");
+  }
+}
+
+export async function deleteHeroTechnologyCardAction(id: string) {
+  try {
+    const user = await requireAdminUser();
+    await deleteHeroTechnologyCard(id);
+    revalidatePublicContent();
+    revalidatePath("/admin/hero");
+    await recordAudit({
+      user,
+      action: AuditActions.HERO_UPDATED,
+      category: "CONTENT",
+      entityType: "hero_technology_card",
+      entityId: id,
+      summary: "Hero technology card deleted",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to delete technology card.");
+  }
+}
+
+export async function reorderHeroTechnologyCardsAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderHeroTechnologyCards(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/hero");
+    await recordAudit({
+      user,
+      action: AuditActions.HERO_UPDATED,
+      category: "CONTENT",
+      summary: "Hero technology cards reordered",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder technology cards.");
+  }
+}
+
+export async function saveHeroStatAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+    const id = getOptionalString(formData, "id");
+    const input = {
+      icon: getString(formData, "icon"),
+      value: getString(formData, "value"),
+      label: getString(formData, "label"),
+      visible: formData.get("visible") === "on",
+    };
+
+    if (id) {
+      await updateHeroStat(id, input);
+    } else {
+      await createHeroStat(input);
+    }
+
+    revalidatePublicContent();
+    revalidatePath("/admin/hero");
+    await recordAudit({
+      user,
+      action: AuditActions.HERO_UPDATED,
+      category: "CONTENT",
+      entityType: "hero_stat",
+      entityId: id ?? undefined,
+      summary: id ? "Hero stat updated" : "Hero stat created",
+    });
+
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save hero stat.");
+  }
+}
+
+export async function deleteHeroStatAction(id: string) {
+  try {
+    const user = await requireAdminUser();
+    await deleteHeroStat(id);
+    revalidatePublicContent();
+    revalidatePath("/admin/hero");
+    await recordAudit({
+      user,
+      action: AuditActions.HERO_UPDATED,
+      category: "CONTENT",
+      entityType: "hero_stat",
+      entityId: id,
+      summary: "Hero stat deleted",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to delete hero stat.");
+  }
+}
+
+export async function reorderHeroStatsAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderHeroStats(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/hero");
+    await recordAudit({
+      user,
+      action: AuditActions.HERO_UPDATED,
+      category: "CONTENT",
+      summary: "Hero stats reordered",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder hero stats.");
   }
 }
 
@@ -790,6 +973,7 @@ export async function saveExpertiseCarouselConfigAction(formData: FormData) {
     await updateExpertiseCarouselConfig({
       label: getString(formData, "label"),
       title: getString(formData, "title"),
+      titleAccent: getOptionalString(formData, "titleAccent") ?? null,
       description: getString(formData, "description"),
       visible: formData.get("visible") === "on",
     });
@@ -986,6 +1170,7 @@ export async function subscribeNewsletterAction(formData: FormData) {
 export async function saveAboutHomeConfigAction(formData: FormData) {
   try {
     const user = await requireAdminUser();
+    const existingAboutHome = await getAboutHomeConfig();
 
     await updateAboutHomeConfig({
       visible: formData.get("visible") === "on",
@@ -993,7 +1178,11 @@ export async function saveAboutHomeConfigAction(formData: FormData) {
       title: getString(formData, "title"),
       titleAccent: getOptionalString(formData, "titleAccent") ?? null,
       description: getString(formData, "description"),
-      profileImageUrl: getOptionalString(formData, "profileImageUrl") ?? null,
+      profileImageUrl: getProfileImageUrl(
+        formData,
+        "profileImageUrl",
+        existingAboutHome?.profileImageUrl,
+      ),
       profileImageAlt: getString(formData, "profileImageAlt"),
       primaryCtaLabel: getString(formData, "primaryCtaLabel"),
       primaryCtaHref: getString(formData, "primaryCtaHref"),
@@ -1160,5 +1349,110 @@ export async function reorderAboutHomeStatsAction(orderedIds: string[]) {
     return adminSuccess();
   } catch {
     return adminError("Failed to reorder stat cards.");
+  }
+}
+
+export async function saveBlogHomeConfigAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+    const selectionMode = getString(formData, "selectionMode");
+    const postLimitRaw = Number(getString(formData, "postLimit") || "3");
+    const postLimit = [3, 6, 9].includes(postLimitRaw) ? postLimitRaw : 3;
+
+    await updateBlogHomeConfig({
+      label: getString(formData, "label"),
+      title: getString(formData, "title"),
+      titleAccent: getOptionalString(formData, "titleAccent") ?? null,
+      description: getString(formData, "description"),
+      sectionNumber: getString(formData, "sectionNumber"),
+      visible: formData.get("visible") === "on",
+      carouselEnabled: formData.get("carouselEnabled") === "on",
+      autoplay: formData.get("autoplay") === "on",
+      autoplayDelayMs: Number(getString(formData, "autoplayDelayMs") || "5000"),
+      loop: formData.get("loop") === "on",
+      postLimit,
+      selectionMode:
+        selectionMode === "featured" || selectionMode === "curated"
+          ? selectionMode
+          : "latest",
+      readMoreLabel: getString(formData, "readMoreLabel"),
+      ctaLabel: getOptionalString(formData, "ctaLabel") ?? null,
+      ctaHref: getOptionalString(formData, "ctaHref") ?? null,
+    });
+
+    revalidatePublicContent();
+    revalidatePath("/admin/blog/home-section");
+    revalidatePath("/admin/blog-home");
+    await recordAudit({
+      user,
+      action: AuditActions.BLOG_HOME_CONFIG_UPDATED,
+      category: "CONTENT",
+      entityType: "blog_home_section_config",
+      summary: "Blog home section updated",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save blog home section.");
+  }
+}
+
+export async function addBlogHomeCuratedPostAction(blogPostId: string) {
+  try {
+    const user = await requireAdminUser();
+    await addBlogHomeCuratedPost(blogPostId);
+    revalidatePublicContent();
+    revalidatePath("/admin/blog/home-section");
+    revalidatePath("/admin/blog-home");
+    await recordAudit({
+      user,
+      action: AuditActions.BLOG_HOME_CURATED_ADDED,
+      category: "CONTENT",
+      entityType: "blog_home_curated_post",
+      entityId: blogPostId,
+      summary: "Blog post added to home carousel",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to add blog post to home section.");
+  }
+}
+
+export async function removeBlogHomeCuratedPostAction(id: string) {
+  try {
+    const user = await requireAdminUser();
+    await removeBlogHomeCuratedPost(id);
+    revalidatePublicContent();
+    revalidatePath("/admin/blog/home-section");
+    revalidatePath("/admin/blog-home");
+    await recordAudit({
+      user,
+      action: AuditActions.BLOG_HOME_CURATED_REMOVED,
+      category: "CONTENT",
+      entityType: "blog_home_curated_post",
+      entityId: id,
+      summary: "Blog post removed from home carousel",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to remove blog post from home section.");
+  }
+}
+
+export async function reorderBlogHomeCuratedPostsAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderBlogHomeCuratedPosts(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/blog/home-section");
+    revalidatePath("/admin/blog-home");
+    await recordAudit({
+      user,
+      action: AuditActions.BLOG_HOME_CURATED_REORDERED,
+      category: "CONTENT",
+      summary: "Blog home curated posts reordered",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder curated blog posts.");
   }
 }
