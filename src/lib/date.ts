@@ -34,3 +34,15 @@ export function formatEmploymentPeriod(
 
   return `${start} – ${end}`;
 }
+
+export function formatBlogPostDate(iso?: string | null): string {
+  if (!iso) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(iso));
+}

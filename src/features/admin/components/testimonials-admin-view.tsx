@@ -9,6 +9,7 @@ import {
   saveTestimonialItemAction,
   saveTestimonialsConfigAction,
 } from "@/features/admin/actions/content.actions";
+import { AdminSectionHeaderFields } from "@/features/admin/components/admin-section-header-fields";
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
@@ -177,50 +178,39 @@ export function TestimonialsAdminView({ config, items }: TestimonialsAdminViewPr
           title={adminTr.testimonials.sections.config}
           description={adminTr.testimonials.sections.configDesc}
         >
-          <div className="grid gap-4 md:grid-cols-2">
-            <AdminTextField
-              id="testimonials-label"
-              name="label"
-              label={adminTr.testimonials.fields.label}
-              defaultValue={config.label}
-              required
-            />
-            <AdminTextField
-              id="testimonials-section-number"
-              name="sectionNumber"
-              label={adminTr.testimonials.fields.sectionNumber}
-              defaultValue={config.sectionNumber}
-              required
-            />
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <AdminTextField
-              id="testimonials-title"
-              name="title"
-              label={adminTr.testimonials.fields.title}
-              defaultValue={config.title}
-              required
-            />
-            <AdminTextField
-              id="testimonials-title-accent"
-              name="titleAccent"
-              label={adminTr.testimonials.fields.titleAccent}
-              defaultValue={config.titleAccent}
-            />
-          </div>
-          <AdminTextareaField
-            id="testimonials-description"
-            name="description"
-            label={adminTr.testimonials.fields.description}
-            defaultValue={config.description}
-            rows={3}
-            required
-          />
-          <AdminSwitchField
-            id="testimonials-visible"
-            name="visible"
-            label={adminTr.testimonials.fields.visible}
-            defaultChecked={config.visible}
+          <AdminSectionHeaderFields
+            idPrefix="testimonials"
+            labels={{
+              label: adminTr.testimonials.fields.label,
+              title: adminTr.testimonials.fields.title,
+              titleAccent: adminTr.testimonials.fields.titleAccent,
+              description: adminTr.testimonials.fields.description,
+            }}
+            values={{
+              label: config.label,
+              title: config.title,
+              titleAccent: config.titleAccent,
+              description: config.description,
+            }}
+            labelRowEnd={
+              <AdminTextField
+                id="testimonials-section-number"
+                name="sectionNumber"
+                label={adminTr.testimonials.fields.sectionNumber}
+                defaultValue={config.sectionNumber}
+                required
+              />
+            }
+            titleFieldsInGrid
+            descriptionRequired
+            afterDescription={
+              <AdminSwitchField
+                id="testimonials-visible"
+                name="visible"
+                label={adminTr.testimonials.fields.visible}
+                defaultChecked={config.visible}
+              />
+            }
           />
         </AdminFormSection>
 

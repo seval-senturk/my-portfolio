@@ -1,10 +1,9 @@
 import type { AboutHomeContent } from "@/types/about-home";
-import { Container } from "@/components/ui/container";
+import { HomeSectionHeader, HomeSectionShell } from "@/components/sections";
 import { AboutHomeActions } from "@/features/about-home/components/about-home-actions";
 import { AboutHomeProfile } from "@/features/about-home/components/about-home-profile";
 import { AboutHomeQuickInfo } from "@/features/about-home/components/about-home-quick-info";
 import { AboutHomeStats } from "@/features/about-home/components/about-home-stats";
-import { AboutHomeTitle } from "@/features/about-home/components/about-home-title";
 
 interface AboutHomeSectionProps {
   content: AboutHomeContent;
@@ -18,29 +17,30 @@ export function AboutHomeSection({ content }: AboutHomeSectionProps) {
   const headingId = "about-home-heading";
 
   return (
-    <section
+    <HomeSectionShell
       id="about"
-      aria-labelledby={headingId}
-      className="about-home"
+      headingId={headingId}
+      sectionClassName="about-home"
     >
-      <Container size="wide" className="about-home__container">
-        <div className="about-home__layout">
-          <AboutHomeProfile profile={content.profile} />
+      <div className="about-home__layout">
+        <AboutHomeProfile profile={content.profile} />
 
-          <div className="about-home__content">
-            <p className="about-home__label">{content.section.label}</p>
-            <AboutHomeTitle
-              id={headingId}
-              title={content.section.title}
-              titleAccent={content.section.titleAccent}
-            />
-            <p className="about-home__description">{content.section.description}</p>
-            <AboutHomeQuickInfo items={content.quickInfo} />
-            <AboutHomeStats items={content.stats} />
-            <AboutHomeActions actions={content.actions} />
-          </div>
+        <div className="about-home__content">
+          <HomeSectionHeader
+            as="div"
+            withSectionSpacing={false}
+            label={content.section.label}
+            title={content.section.title}
+            titleAccent={content.section.titleAccent}
+            description={content.section.description}
+            headingId={headingId}
+            descriptionClassName="home-section-header__description--flow"
+          />
+          <AboutHomeQuickInfo items={content.quickInfo} />
+          <AboutHomeStats items={content.stats} />
+          <AboutHomeActions actions={content.actions} />
         </div>
-      </Container>
-    </section>
+      </div>
+    </HomeSectionShell>
   );
 }

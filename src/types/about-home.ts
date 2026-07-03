@@ -1,3 +1,5 @@
+import type { HomeCmsSection } from "@/types/section-header";
+
 export interface AboutHomeQuickInfoItem {
   id: string;
   icon: string;
@@ -17,13 +19,7 @@ export interface AboutHomeStatItem {
 }
 
 export interface AboutHomeContent {
-  section: {
-    visible: boolean;
-    label: string;
-    title: string;
-    titleAccent: string | null;
-    description: string;
-  };
+  section: HomeCmsSection;
   profile: {
     imageUrl: string | null;
     imageAlt: string;

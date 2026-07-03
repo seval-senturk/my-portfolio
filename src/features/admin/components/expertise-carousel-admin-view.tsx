@@ -9,6 +9,7 @@ import {
   saveExpertiseCarouselConfigAction,
   saveExpertiseCarouselItemAction,
 } from "@/features/admin/actions/content.actions";
+import { AdminSectionHeaderFields } from "@/features/admin/components/admin-section-header-fields";
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
@@ -33,6 +34,7 @@ import { Badge } from "@/components/ui/badge";
 export interface ExpertiseCarouselConfigRow {
   label: string;
   title: string;
+  titleAccent: string;
   description: string;
   visible: boolean;
 }
@@ -169,34 +171,28 @@ export function ExpertiseCarouselAdminView({
           title={adminTr.expertiseCarousel.sections.config}
           description={adminTr.expertiseCarousel.sections.configDesc}
         >
-          <div className="grid gap-4 md:grid-cols-2">
-            <AdminTextField
-              id="expertise-label"
-              name="label"
-              label={adminTr.expertiseCarousel.fields.label}
-              defaultValue={config.label}
-              required
-            />
-            <AdminSwitchField
-              id="expertise-visible"
-              name="visible"
-              label={adminTr.expertiseCarousel.fields.visible}
-              defaultChecked={config.visible}
-            />
-          </div>
-          <AdminTextField
-            id="expertise-title"
-            name="title"
-            label={adminTr.expertiseCarousel.fields.title}
-            defaultValue={config.title}
-            required
-          />
-          <AdminTextareaField
-            id="expertise-description"
-            name="description"
-            label={adminTr.expertiseCarousel.fields.description}
-            defaultValue={config.description}
-            rows={3}
+          <AdminSectionHeaderFields
+            idPrefix="expertise"
+            labels={{
+              label: adminTr.expertiseCarousel.fields.label,
+              title: adminTr.expertiseCarousel.fields.title,
+              titleAccent: adminTr.expertiseCarousel.fields.titleAccent,
+              description: adminTr.expertiseCarousel.fields.description,
+            }}
+            values={{
+              label: config.label,
+              title: config.title,
+              titleAccent: config.titleAccent,
+              description: config.description,
+            }}
+            labelRowEnd={
+              <AdminSwitchField
+                id="expertise-visible"
+                name="visible"
+                label={adminTr.expertiseCarousel.fields.visible}
+                defaultChecked={config.visible}
+              />
+            }
           />
         </AdminFormSection>
 

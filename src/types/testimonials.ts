@@ -1,3 +1,5 @@
+import type { HomeCmsSection } from "@/types/section-header";
+
 export interface TestimonialsCarouselSettings {
   enabled: boolean;
   autoplay: boolean;
@@ -5,13 +7,8 @@ export interface TestimonialsCarouselSettings {
   loop: boolean;
 }
 
-export interface TestimonialsSection {
-  label: string;
-  title: string;
-  titleAccent?: string | null;
-  description: string;
+export interface TestimonialsSection extends HomeCmsSection {
   sectionNumber: string;
-  visible: boolean;
   carousel: TestimonialsCarouselSettings;
 }
 

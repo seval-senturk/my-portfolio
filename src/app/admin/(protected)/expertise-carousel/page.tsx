@@ -38,6 +38,8 @@ export default async function AdminExpertiseCarouselPage() {
       config={{
         label: config?.label ?? fallback.section.label,
         title: config?.title ?? fallback.section.title,
+        titleAccent:
+          config?.titleAccent ?? fallback.section.titleAccent ?? "",
         description: config?.description ?? fallback.section.description,
         visible: config?.visible ?? fallback.section.visible,
       }}

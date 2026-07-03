@@ -4,6 +4,7 @@ export const expertiseCarouselContent: ExpertiseCarouselContent = {
   section: {
     label: "My Expertise",
     title: "Building Modern Digital Products.",
+    titleAccent: "Products",
     description:
       "Full-stack engineering with a focus on polished interfaces, scalable systems, and thoughtful product craft.",
     visible: true,

@@ -52,6 +52,7 @@ export async function updateExpertiseCarouselConfig(
     update: {
       label: input.label,
       title: input.title,
+      titleAccent: input.titleAccent || null,
       description: input.description,
       visible: input.visible,
     },
@@ -59,6 +60,7 @@ export async function updateExpertiseCarouselConfig(
       locale: "en",
       label: input.label,
       title: input.title,
+      titleAccent: input.titleAccent || null,
       description: input.description,
       visible: input.visible,
     },

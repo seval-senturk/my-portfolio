@@ -37,6 +37,7 @@ export function mapExpertiseCarouselToContent(
     section: {
       label: config.label,
       title: config.title,
+      titleAccent: config.titleAccent,
       description: config.description,
       visible: config.visible,
     },

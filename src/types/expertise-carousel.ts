@@ -1,9 +1,6 @@
-export interface ExpertiseCarouselSection {
-  label: string;
-  title: string;
-  description: string;
-  visible: boolean;
-}
+import type { HomeCmsSection } from "@/types/section-header";
+
+export interface ExpertiseCarouselSection extends HomeCmsSection {}
 
 export interface ExpertiseCarouselItem {
   id: string;
@@ -36,6 +33,7 @@ export interface ExpertiseCarouselItemInput {
 export interface ExpertiseCarouselConfigInput {
   label: string;
   title: string;
+  titleAccent?: string | null;
   description: string;
   visible: boolean;
 }

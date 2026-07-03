@@ -12,6 +12,7 @@ import {
   saveAboutHomeQuickInfoAction,
   saveAboutHomeStatAction,
 } from "@/features/admin/actions/content.actions";
+import { AdminSectionHeaderFields } from "@/features/admin/components/admin-section-header-fields";
 import { AdminConfirmDialog } from "@/features/admin/ui/modal/admin-confirm-dialog";
 import { AdminFormStatus } from "@/features/admin/components/admin-form-status";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
@@ -237,40 +238,32 @@ export function AboutHomeAdminView({
           title={adminTr.aboutHome.sections.config}
           description={adminTr.aboutHome.sections.configDesc}
         >
-          <AdminSwitchField
-            id="visible"
-            name="visible"
-            label={adminTr.aboutHome.fields.visible}
-            defaultChecked={initialConfig.section.visible}
-          />
-          <AdminTextField
-            id="sectionLabel"
-            name="sectionLabel"
-            label={adminTr.aboutHome.fields.sectionLabel}
-            defaultValue={initialConfig.section.label}
-            required
-          />
-          <AdminTextField
-            id="title"
-            name="title"
-            label={adminTr.aboutHome.fields.title}
-            defaultValue={initialConfig.section.title}
-            required
-          />
-          <AdminTextField
-            id="titleAccent"
-            name="titleAccent"
-            label={adminTr.aboutHome.fields.titleAccent}
-            defaultValue={initialConfig.section.titleAccent ?? ""}
-            hint={adminTr.aboutHome.fields.titleAccentHint}
-          />
-          <AdminTextareaField
-            id="description"
-            name="description"
-            label={adminTr.aboutHome.fields.description}
-            defaultValue={initialConfig.section.description}
-            rows={5}
-            required
+          <AdminSectionHeaderFields
+            idPrefix="about-home"
+            labelFieldName="sectionLabel"
+            descriptionRows={5}
+            descriptionRequired
+            labels={{
+              label: adminTr.aboutHome.fields.sectionLabel,
+              title: adminTr.aboutHome.fields.title,
+              titleAccent: adminTr.aboutHome.fields.titleAccent,
+              titleAccentHint: adminTr.aboutHome.fields.titleAccentHint,
+              description: adminTr.aboutHome.fields.description,
+            }}
+            values={{
+              label: initialConfig.section.label,
+              title: initialConfig.section.title,
+              titleAccent: initialConfig.section.titleAccent,
+              description: initialConfig.section.description,
+            }}
+            beforeTitle={
+              <AdminSwitchField
+                id="visible"
+                name="visible"
+                label={adminTr.aboutHome.fields.visible}
+                defaultChecked={initialConfig.section.visible}
+              />
+            }
           />
         </AdminFormSection>
 
