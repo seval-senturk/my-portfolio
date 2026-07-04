@@ -22,24 +22,20 @@ interface TestimonialsCarouselProps {
   labelId: string;
 }
 
-function getClosestSlideIndex(track: HTMLDivElement): number {
-  const slides = Array.from(track.children) as HTMLElement[];
-  if (slides.length === 0) return 0;
+function getSlidesPerView(width: number): number {
+  if (width >= 1024) return 3;
+  if (width >= 768) return 2;
+  return 1;
+}
 
-  const trackCenter = track.scrollLeft + track.clientWidth / 2;
-  let closestIndex = 0;
-  let closestDistance = Number.POSITIVE_INFINITY;
+function getStepSize(track: HTMLDivElement): number {
+  const firstSlide = track.children.item(0) as HTMLElement | null;
+  if (!firstSlide) return 0;
 
-  slides.forEach((slide, index) => {
-    const slideCenter = slide.offsetLeft + slide.offsetWidth / 2;
-    const distance = Math.abs(trackCenter - slideCenter);
-    if (distance < closestDistance) {
-      closestDistance = distance;
-      closestIndex = index;
-    }
-  });
-
-  return closestIndex;
+  const gapValue =
+    getComputedStyle(track).gap || getComputedStyle(track).columnGap || "0";
+  const gap = Number.parseFloat(gapValue) || 0;
+  return firstSlide.offsetWidth + gap;
 }
 
 export function TestimonialsCarousel({
@@ -49,32 +45,49 @@ export function TestimonialsCarousel({
 }: TestimonialsCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const carouselId = useId();
-  const [activeIndex, setActiveIndex] = useState(0);
   const autoplayTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [slidesPerView, setSlidesPerView] = useState(1);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const pageCount = Math.max(1, items.length - slidesPerView + 1);
+
+  useEffect(() => {
+    const updateSlidesPerView = () => {
+      setSlidesPerView(getSlidesPerView(window.innerWidth));
+    };
+
+    updateSlidesPerView();
+    window.addEventListener("resize", updateSlidesPerView, { passive: true });
+    return () => window.removeEventListener("resize", updateSlidesPerView);
+  }, []);
+
+  useEffect(() => {
+    setActiveIndex((current) => Math.min(current, pageCount - 1));
+  }, [pageCount]);
 
   const scrollToIndex = useCallback(
-    (index: number, behavior: ScrollBehavior = "smooth") => {
+    (index: number) => {
       const track = trackRef.current;
       if (!track || items.length === 0) return;
 
       let targetIndex = index;
-      if (settings.loop) {
-        if (targetIndex < 0) targetIndex = items.length - 1;
-        if (targetIndex >= items.length) targetIndex = 0;
+      if (settings.loop && pageCount > 1) {
+        if (targetIndex < 0) targetIndex = pageCount - 1;
+        if (targetIndex >= pageCount) targetIndex = 0;
       } else {
-        targetIndex = Math.min(Math.max(index, 0), items.length - 1);
+        targetIndex = Math.min(Math.max(index, 0), pageCount - 1);
       }
 
-      const slide = track.children.item(targetIndex) as HTMLElement | null;
-      if (!slide) return;
-
-      const offset =
-        slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2;
-
-      track.scrollTo({ left: offset, behavior });
+      const target = track.children.item(targetIndex) as HTMLElement | null;
+      target?.scrollIntoView({
+        behavior: "smooth",
+        inline: "start",
+        block: "nearest",
+      });
       setActiveIndex(targetIndex);
     },
-    [items.length, settings.loop],
+    [items.length, pageCount, settings.loop],
   );
 
   useEffect(() => {
@@ -82,22 +95,32 @@ export function TestimonialsCarousel({
     if (!track) return;
 
     const onScroll = () => {
-      window.requestAnimationFrame(() => {
-        setActiveIndex(getClosestSlideIndex(track));
-      });
+      const step = getStepSize(track);
+      if (step <= 0) return;
+
+      const index = Math.round(track.scrollLeft / step);
+      setActiveIndex(Math.min(Math.max(index, 0), pageCount - 1));
     };
 
     track.addEventListener("scroll", onScroll, { passive: true });
     return () => track.removeEventListener("scroll", onScroll);
-  }, [items.length]);
+  }, [pageCount]);
 
   useEffect(() => {
-    if (!settings.enabled || !settings.autoplay || items.length <= 1) {
-      return undefined;
+    if (!settings.enabled || !settings.autoplay || isPaused || pageCount <= 1) {
+      if (autoplayTimerRef.current) {
+        clearInterval(autoplayTimerRef.current);
+        autoplayTimerRef.current = null;
+      }
+      return;
     }
 
     autoplayTimerRef.current = setInterval(() => {
-      scrollToIndex(activeIndex + 1);
+      setActiveIndex((current) => {
+        const next = current + 1;
+        scrollToIndex(next >= pageCount ? 0 : next);
+        return next >= pageCount ? 0 : next;
+      });
     }, Math.max(settings.autoplayDelayMs, 2000));
 
     return () => {
@@ -106,8 +129,8 @@ export function TestimonialsCarousel({
       }
     };
   }, [
-    activeIndex,
-    items.length,
+    isPaused,
+    pageCount,
     scrollToIndex,
     settings.autoplay,
     settings.autoplayDelayMs,
@@ -138,62 +161,55 @@ export function TestimonialsCarousel({
       aria-labelledby={labelId}
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      onMouseEnter={() => {
-        if (autoplayTimerRef.current) {
-          clearInterval(autoplayTimerRef.current);
-        }
-      }}
-      onMouseLeave={() => {
-        if (!settings.enabled || !settings.autoplay || items.length <= 1) return;
-
-        autoplayTimerRef.current = setInterval(() => {
-          scrollToIndex(activeIndex + 1);
-        }, Math.max(settings.autoplayDelayMs, 2000));
-      }}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={() => setIsPaused(false)}
     >
       <div className="testimonials-carousel__viewport">
-        <div ref={trackRef} className="testimonials-carousel__track" id={`${carouselId}-track`}>
+        <div
+          ref={trackRef}
+          className="testimonials-carousel__track"
+          id={`${carouselId}-track`}
+        >
           {items.map((item, index) => (
             <div
               key={item.id}
               id={`${carouselId}-slide-${index}`}
-              className={cn(
-                "testimonials-carousel__slide",
-                index === activeIndex && "is-active",
-              )}
+              className="testimonials-carousel__slide"
               role="group"
               aria-roledescription="slide"
               aria-label={`${index + 1} of ${items.length}`}
-              aria-hidden={index !== activeIndex}
             >
-              <TestimonialCard item={item} isActive={index === activeIndex} />
+              <TestimonialCard
+                item={item}
+                isActive={index >= activeIndex && index < activeIndex + slidesPerView}
+              />
             </div>
           ))}
         </div>
       </div>
 
-      {items.length > 1 ? (
+      {pageCount > 1 ? (
         <div
           className="testimonials-carousel__pagination"
           role="tablist"
           aria-label="Testimonial slides"
         >
-          {items.map((item, index) => (
+          {Array.from({ length: pageCount }, (_, pageIndex) => (
             <button
-              key={item.id}
+              key={pageIndex}
               type="button"
               role="tab"
-              aria-selected={index === activeIndex}
-              aria-controls={`${carouselId}-slide-${index}`}
+              aria-selected={pageIndex === activeIndex}
+              aria-controls={`${carouselId}-slide-${pageIndex}`}
               className={cn(
                 "testimonials-carousel__dot",
-                index === activeIndex && "is-active",
+                pageIndex === activeIndex && "is-active",
               )}
-              onClick={() => scrollToIndex(index)}
+              onClick={() => scrollToIndex(pageIndex)}
             >
-              <span className="sr-only">
-                Go to testimonial {index + 1} from {item.authorName}
-              </span>
+              <span className="sr-only">Go to slide {pageIndex + 1}</span>
             </button>
           ))}
         </div>
