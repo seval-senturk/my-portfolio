@@ -1,7 +1,7 @@
 import type { ExperienceContent } from "@/types/experience";
 import type { HeadingLevel } from "@/types/ui";
 
-import { ExperienceRailView } from "@/features/experience/components/career-rail/experience-rail-view";
+import { ExperienceDetailView } from "@/features/experience/components/experience-detail-view";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
@@ -17,6 +17,10 @@ export function ExperienceSection({
 }: ExperienceSectionProps) {
   const { section, entries } = content;
 
+  if (!section.visible || entries.length === 0) {
+    return null;
+  }
+
   return (
     <Section
       id="experience"
@@ -24,11 +28,11 @@ export function ExperienceSection({
       description={section.description}
       titleAs={titleAs}
       headingId="experience-section-heading"
-      headerContainerSize="default"
+      headerContainerSize="wide"
       spacing="default"
     >
-      <Container size="default">
-        <ExperienceRailView entries={entries} />
+      <Container size="wide">
+        <ExperienceDetailView entries={entries} />
 
         {section.cta.visible ? (
           <div className="mt-10 border-t border-border pt-6">
