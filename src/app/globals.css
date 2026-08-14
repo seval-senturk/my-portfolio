@@ -2303,7 +2303,7 @@ html {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 1.25rem;
   margin-bottom: 1.25rem;
 }
 
@@ -2396,12 +2396,15 @@ html {
 
 .expertise-card__footer {
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding-top: 0;
 }
 
 .expertise-card__divider {
   height: 1px;
-  margin-bottom: 0.625rem;
+  margin-bottom: 1rem;
   background: rgba(255, 255, 255, 0.07);
 }
 
@@ -2411,6 +2414,7 @@ html {
   justify-content: space-between;
   gap: 1rem;
   width: 100%;
+  min-height: 1.875rem;
   text-decoration: none;
   transition: opacity var(--transition-fast);
 }
@@ -2420,9 +2424,13 @@ html {
 }
 
 .expertise-card__cta-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.875rem;
   font-family: var(--font-inter), system-ui, sans-serif;
   font-size: 1rem;
   font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(124, 131, 255, 0.92);

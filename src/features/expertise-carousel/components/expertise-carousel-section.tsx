@@ -24,7 +24,6 @@ export function ExpertiseCarouselSection({
         label: content.section.label,
         title: content.section.title,
         titleAccent: content.section.titleAccent,
-        description: content.section.description,
       }}
     >
       <ExpertiseGrid items={content.items} />
