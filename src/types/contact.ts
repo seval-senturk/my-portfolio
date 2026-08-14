@@ -1,4 +1,5 @@
 import type { SocialPlatform } from "@/config/social-links.config";
+import type { HomeCmsSection } from "@/types/section-header";
 
 export type AvailabilityStatus =
   | "Available for Opportunities"
@@ -8,6 +9,7 @@ export type AvailabilityStatus =
 export type ContactFormField =
   | "name"
   | "email"
+  | "phone"
   | "subject"
   | "message"
   | "company"
@@ -21,11 +23,46 @@ export interface ContactSocialLink {
   label: string;
   href: string;
   visible: boolean;
+  sortOrder: number;
 }
 
 export interface ContactProjectTypeOption {
   id: string;
   label: string;
+}
+
+export interface ContactFormFieldSettings {
+  enabled: boolean;
+  label: string;
+  placeholder: string;
+  required: boolean;
+}
+
+export interface ContactInfoFieldSettings {
+  label: string;
+  visible: boolean;
+}
+
+export interface ContactFormConfig {
+  name: ContactFormFieldSettings;
+  email: ContactFormFieldSettings;
+  phone: ContactFormFieldSettings;
+  projectType: ContactFormFieldSettings;
+  message: ContactFormFieldSettings;
+  submitLabel: string;
+  projectTypeOptions: readonly ContactProjectTypeOption[];
+  securityNote: {
+    text: string;
+    visible: boolean;
+  };
+}
+
+export interface ContactFormMessages {
+  successTitle: string;
+  successMessage: string;
+  errorTitle: string;
+  errorMessage: string;
+  loadingLabel: string;
 }
 
 export interface ContactInformation {
@@ -37,36 +74,20 @@ export interface ContactInformation {
   github: string;
 }
 
-export interface ContactFormConfig {
-  title: string;
-  nameLabel: string;
-  emailLabel: string;
-  subjectLabel: string;
-  messageLabel: string;
-  companyLabel: string;
-  projectTypeLabel: string;
-  submitLabel: string;
-  showCompanyField: boolean;
-  showProjectTypeField: boolean;
-  projectTypeOptions: readonly ContactProjectTypeOption[];
+export interface ContactInfoLabels {
+  email: ContactInfoFieldSettings;
+  phone: ContactInfoFieldSettings;
+  location: ContactInfoFieldSettings;
 }
 
-export interface ContactFormMessages {
-  successTitle: string;
-  successMessage: string;
-  errorTitle: string;
-  errorMessage: string;
-  loadingLabel: string;
-}
-
-export interface ContactSectionHeader {
-  title: string;
+export interface ContactSectionConfig extends HomeCmsSection {
   description: string;
 }
 
 export interface ContactContent {
-  section: ContactSectionHeader;
+  section: ContactSectionConfig;
   information: ContactInformation;
+  infoLabels: ContactInfoLabels;
   availabilityStatus: AvailabilityStatus;
   responseTime: string;
   calendarUrl?: string;
@@ -80,6 +101,7 @@ export interface ContactContent {
 export interface ContactFormInput {
   name: string;
   email: string;
+  phone?: string;
   subject: string;
   message: string;
   company?: string;
@@ -104,6 +126,7 @@ export interface ContactLeadRecord {
   email: string;
   subject: string;
   message: string;
+  phone?: string;
   company?: string;
   projectType?: string;
   status: LeadStatus;
@@ -114,4 +137,27 @@ export interface ContactSubmissionResult {
   success: boolean;
   leadId?: string;
   error?: string;
+}
+
+export interface ContactConfigInput {
+  sectionVisible: boolean;
+  sectionLabel: string;
+  sectionTitle: string;
+  sectionTitleAccent: string;
+  sectionDescription: string;
+  email: string;
+  phone: string;
+  location: string;
+  website: string;
+  linkedin: string;
+  github: string;
+  availabilityStatus: string;
+  responseTime: string;
+  calendarUrl: string;
+  resumeHref: string;
+  resumeLabel: string;
+  formConfig: ContactFormConfig;
+  messagesConfig: ContactFormMessages;
+  infoLabels: ContactInfoLabels;
+  socialLinks: ContactSocialLink[];
 }

@@ -12,7 +12,7 @@ export class AboutHomeService {
 
   get(options?: ContentQueryOptions): Promise<AboutHomeContent> {
     const locale = resolveLocale(options);
-    return cacheContent("about-home", [locale], () =>
+    return cacheContent("about-home-v2", [locale], () =>
       this.repository.get({ ...options, locale }),
     );
   }

@@ -19,5 +19,5 @@ export async function generateMetadata() {
 export default async function ContactPage() {
   const contact = await requestContactContent();
 
-  return <ContactSection content={contact} titleAs="h1" />;
+  return <ContactSection content={contact} />;
 }

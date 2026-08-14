@@ -1,6 +1,6 @@
 import type { HomeCmsSection } from "@/types/section-header";
 
-export interface ExpertiseCarouselSection extends HomeCmsSection {}
+export type ExpertiseCarouselSection = HomeCmsSection;
 
 export interface ExpertiseCarouselItem {
   id: string;

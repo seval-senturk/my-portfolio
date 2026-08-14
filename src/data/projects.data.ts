@@ -1,17 +1,85 @@
 import type { ProjectsContent } from "@/types/project";
 
 export const projectsContent = {
-  section: {
-    title: "Projects",
+  hero: {
+    label: "PROJECTS",
+    title: "Selected Projects",
+    titleAccent: "Precision.",
     description:
-      "Selected projects demonstrating full stack development, performance optimization, and AI integration across real-world applications.",
+      "Explore production-ready applications focused on performance, scalability, clean architecture and exceptional user experience.",
   },
   featured: {
     title: "Featured Projects",
   },
-  additional: {
-    title: "More Projects",
+  home: {
+    visible: true,
+    label: "PROJECTS",
+    title: "Featured Projects",
+    titleAccent: "Precision.",
+    description:
+      "Production-ready applications focused on performance, scalability, and exceptional user experience.",
+    featuredLimit: 3,
+    ctaLabel: "View All Projects",
+    ctaHref: "/projects",
   },
+  grid: {
+    title: "All Projects",
+  },
+  cta: {
+    title: "Have an idea?",
+    description: "Let's build something amazing together.",
+    buttonLabel: "Contact Me",
+    buttonHref: "/contact",
+    visible: true,
+  },
+  visible: true,
+  filters: [
+    {
+      id: "pf-frontend",
+      label: "Frontend",
+      slug: "frontend",
+      matchType: "category",
+      matchValue: "Frontend",
+      visible: true,
+      sortOrder: 0,
+    },
+    {
+      id: "pf-fullstack",
+      label: "Full Stack",
+      slug: "full-stack",
+      matchType: "category",
+      matchValue: "Full Stack",
+      visible: true,
+      sortOrder: 1,
+    },
+    {
+      id: "pf-ai",
+      label: "AI",
+      slug: "ai",
+      matchType: "category",
+      matchValue: "AI",
+      visible: true,
+      sortOrder: 2,
+    },
+    {
+      id: "pf-open-source",
+      label: "Open Source",
+      slug: "open-source",
+      matchType: "projectType",
+      matchValue: "Open Source",
+      visible: true,
+      sortOrder: 3,
+    },
+    {
+      id: "pf-commercial",
+      label: "Commercial",
+      slug: "commercial",
+      matchType: "projectType",
+      matchValue: "Commercial",
+      visible: true,
+      sortOrder: 4,
+    },
+  ],
   entries: [
     {
       id: "proj-001",
@@ -25,6 +93,9 @@ export const projectsContent = {
       status: "Live",
       client: "TechVenture Solutions",
       role: "Frontend & Full Stack Developer",
+      projectType: "Commercial",
+      visible: true,
+      startDate: { month: 3, year: 2024 },
       technologies: [
         "React",
         "Next.js",
@@ -83,6 +154,10 @@ export const projectsContent = {
       category: "E-Commerce",
       status: "Live",
       role: "Frontend Developer",
+      projectType: "Commercial",
+      visible: true,
+      startDate: { month: 1, year: 2023 },
+      endDate: { month: 12, year: 2023 },
       technologies: [
         "Next.js",
         "TypeScript",
@@ -133,6 +208,10 @@ export const projectsContent = {
       status: "Live",
       client: "DigitalCraft Agency",
       role: "Frontend Developer",
+      projectType: "Commercial",
+      visible: true,
+      startDate: { month: 6, year: 2022 },
+      endDate: { month: 8, year: 2023 },
       technologies: [
         "React",
         "TypeScript",
@@ -174,6 +253,9 @@ export const projectsContent = {
       category: "CMS",
       status: "Private",
       role: "Full Stack Developer",
+      projectType: "Commercial",
+      visible: true,
+      startDate: { month: 2, year: 2023 },
       technologies: [
         "Next.js",
         "TypeScript",
@@ -214,12 +296,17 @@ export const projectsContent = {
       category: "Full Stack",
       status: "In Progress",
       role: "Frontend & Full Stack Developer",
+      projectType: "Open Source",
+      visible: true,
+      startDate: { month: 1, year: 2024 },
       technologies: [
         "Next.js",
         "TypeScript",
         "Tailwind CSS",
         "React",
         "Vercel",
+        "Prisma",
+        "PostgreSQL",
       ],
       githubUrl: "https://github.com/sevalsenturk",
       featured: false,

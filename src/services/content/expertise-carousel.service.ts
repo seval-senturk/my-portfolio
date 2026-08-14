@@ -12,7 +12,7 @@ export class ExpertiseCarouselService {
 
   get(options?: ContentQueryOptions): Promise<ExpertiseCarouselContent> {
     const locale = resolveLocale(options);
-    return cacheContent("expertise-carousel", [locale], () =>
+    return cacheContent("expertise-carousel-v2", [locale], () =>
       this.repository.get({ ...options, locale }),
     );
   }

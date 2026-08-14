@@ -20,7 +20,6 @@ import {
   AdminSelectField,
   AdminSwitchField,
   AdminTextField,
-  AdminTextareaField,
 } from "@/features/admin/ui";
 import { AboutHomeIcon } from "@/features/about-home/components/about-home-icon";
 import { ABOUT_HOME_FEATURE_ICON_OPTIONS } from "@/features/about-home/config/about-home-icons.config";
@@ -68,11 +67,6 @@ export function AboutHomeItemsAdminSection({
         ),
       },
       {
-        id: "number",
-        header: adminTr.aboutHome.columns.number,
-        accessor: (row) => row.number,
-      },
-      {
         id: "title",
         header: adminTr.aboutHome.columns.cardTitle,
         sortValue: (row) => row.title,
@@ -82,6 +76,12 @@ export function AboutHomeItemsAdminSection({
             <span>{row.title}</span>
           </div>
         ),
+      },
+      {
+        id: "value",
+        header: adminTr.aboutHome.columns.cardValue,
+        sortValue: (row) => row.description,
+        accessor: (row) => row.description,
       },
       {
         id: "visible",
@@ -173,7 +173,7 @@ export function AboutHomeItemsAdminSection({
           }}
         >
           <Plus className="mr-1.5 h-4 w-4" />
-          {adminTr.aboutHome.addFeatureCard}
+          {adminTr.aboutHome.addInfoCard}
         </Button>
       </div>
 
@@ -183,7 +183,7 @@ export function AboutHomeItemsAdminSection({
         searchFilter={(row, query) =>
           `${row.title} ${row.number} ${row.description}`.toLowerCase().includes(query)
         }
-        emptyTitle={adminTr.aboutHome.emptyFeatureCards}
+        emptyTitle={adminTr.aboutHome.emptyInfoCards}
         getRowProps={(row) => ({
           onDragOver: (event: DragEvent<HTMLTableRowElement>) => {
             event.preventDefault();
@@ -216,21 +216,16 @@ export function AboutHomeItemsAdminSection({
       <AdminModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selectedCard ? adminTr.aboutHome.editFeatureCard : adminTr.aboutHome.addFeatureCard}
+        title={selectedCard ? adminTr.aboutHome.editInfoCard : adminTr.aboutHome.addInfoCard}
       >
         <form action={handleSubmit} className="space-y-4">
           {selectedCard ? <input type="hidden" name="id" value={selectedCard.id} /> : null}
-          <AdminTextField
-            id="number"
-            name="number"
-            label={adminTr.aboutHome.fields.number}
-            defaultValue={selectedCard?.number ?? "01"}
-          />
+          <input type="hidden" name="number" value={selectedCard?.number ?? ""} />
           <AdminSelectField
             id="icon"
             name="icon"
             label={adminTr.aboutHome.fields.icon}
-            defaultValue={selectedCard?.icon ?? "code"}
+            defaultValue={selectedCard?.icon ?? "briefcase"}
             options={ABOUT_HOME_FEATURE_ICON_OPTIONS.map((option) => ({
               value: option.value,
               label: option.label,
@@ -239,15 +234,14 @@ export function AboutHomeItemsAdminSection({
           <AdminTextField
             id="title"
             name="title"
-            label={adminTr.aboutHome.fields.cardTitle}
+            label={adminTr.aboutHome.fields.cardLabel}
             defaultValue={selectedCard?.title ?? ""}
           />
-          <AdminTextareaField
+          <AdminTextField
             id="description"
             name="description"
-            label={adminTr.aboutHome.fields.cardDescription}
+            label={adminTr.aboutHome.fields.cardValue}
             defaultValue={selectedCard?.description ?? ""}
-            rows={3}
           />
           <AdminSwitchField
             id="visible"
@@ -266,7 +260,7 @@ export function AboutHomeItemsAdminSection({
       <AdminConfirmDialog
         isOpen={Boolean(deleteId)}
         onClose={() => setDeleteId(null)}
-        title={adminTr.aboutHome.deleteFeatureCardTitle}
+        title={adminTr.aboutHome.deleteInfoCardTitle}
         description={adminTr.aboutHome.deleteDesc}
         confirmLabel={adminTr.common.delete}
         onConfirm={handleDelete}

@@ -395,7 +395,7 @@ model TestimonialsSectionConfig {
   sectionNumber   String  @default("06")
   visible         Boolean @default(true)
   carouselEnabled Boolean @default(true)
-  autoplay        Boolean @default(true)
+  autoplay        Boolean @default(false)
   autoplayDelayMs Int     @default(5000)
   loop            Boolean @default(true)
 
@@ -509,9 +509,16 @@ model AboutHomeConfig {
   title        String
   titleAccent  String?
   description  String  @db.Text
-  ctaLabel     String
-  ctaHref      String
+  ctaLabel     String  @default("Let's Talk")
+  ctaHref      String  @default("#contact")
   ctaVisible   Boolean @default(true)
+  secondaryCtaLabel   String  @default("Download Resume")
+  secondaryCtaHref    String  @default("/resume")
+  secondaryCtaVisible Boolean @default(true)
+  profileImageUrl     String?
+  profileImageAlt     String  @default("")
+  profileInitials     String  @default("SŞ")
+  profileVisible      Boolean @default(true)
 
   @@unique([locale])
 }
@@ -625,14 +632,41 @@ model ExperienceTechnology {
 // ─── Projects ───────────────────────────────────────────────────────────────
 
 model ProjectsPageConfig {
-  id                 String @id @default("default")
-  locale             String @default("en")
+  id                 String  @id @default("default")
+  locale             String  @default("en")
+  label              String  @default("PROJECTS")
   sectionTitle       String
-  sectionDescription String @db.Text
+  titleAccent        String?
+  sectionDescription String  @db.Text
   featuredTitle      String
   additionalTitle    String
+  ctaTitle           String  @default("Have an idea?")
+  ctaDescription     String  @default("Let's build something amazing together.") @db.Text
+  ctaButtonLabel     String  @default("Contact Me")
+  ctaButtonHref      String  @default("/contact")
+  ctaVisible         Boolean @default(true)
+  sectionVisible     Boolean @default(true)
+  homeSectionVisible Boolean @default(true)
+  homeFeaturedLimit  Int     @default(3)
+  homeSectionDescription String? @db.Text
+  homeCtaLabel       String  @default("View All Projects")
+  homeCtaHref        String  @default("/projects")
 
   @@unique([locale])
+}
+
+model ProjectPageFilter {
+  id         String  @id
+  locale     String  @default("en")
+  label      String
+  slug       String
+  matchType  String
+  matchValue String
+  sortOrder  Int     @default(0)
+  visible    Boolean @default(true)
+
+  @@unique([locale, slug])
+  @@index([locale, sortOrder])
 }
 
 model Project {
@@ -645,13 +679,17 @@ model Project {
   status           String?
   client           String?
   role             String
+  projectType      String?
   featured         Boolean             @default(false)
+  visible          Boolean             @default(true)
   coverImageUrl    String?
+  coverImageAlt    String?
   gallery          Json?
   startMonth       Int?
   startYear        Int?
   endMonth         Int?
   endYear          Int?
+  publishedAt      DateTime?
   highlights       String[]
   githubUrl        String?
   liveUrl          String?
@@ -664,6 +702,7 @@ model Project {
 
   @@index([featured, sortOrder])
   @@index([category])
+  @@index([visible, sortOrder])
 }
 
 model ProjectTechnology {
@@ -798,7 +837,10 @@ model ResumeLanguage {
 model ContactPageConfig {
   id                 String  @id @default("default")
   locale             String  @default("en")
+  sectionVisible     Boolean @default(true)
+  sectionLabel       String  @default("CONTACT ME")
   sectionTitle       String
+  sectionTitleAccent String?
   sectionDescription String  @db.Text
   email              String
   phone              String?
@@ -813,6 +855,8 @@ model ContactPageConfig {
   resumeLabel        String
   formConfig         Json
   messagesConfig     Json
+  infoLabelsConfig   Json?
+  socialLinksConfig  Json?
 
   @@unique([locale])
 }
@@ -823,6 +867,7 @@ model ContactMessage {
   email       String
   subject     String
   message     String               @db.Text
+  phone       String?
   company     String?
   projectType String?
   status      ContactMessageStatus @default(NEW)

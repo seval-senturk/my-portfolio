@@ -1,12 +1,23 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import {
+  ArrowUpRight,
+  BriefcaseBusiness,
+  ChevronDown,
+  Lock,
+  Mail,
+  MessageSquare,
+  Phone,
+  UserRound,
+} from "lucide-react";
+import { type FormEvent, type ReactNode, useState } from "react";
 
+import { CardHoverOrbitals } from "@/components/shared/card-hover-orbitals";
 import { FOCUS_RING_CLASS } from "@/lib/accessibility";
 import { cn } from "@/lib/cn";
-
 import { CONTACT_API_ROUTE, CONTACT_FIELD_LIMITS } from "@/lib/contact/constants";
 import {
+  buildContactSubject,
   getFieldErrorMessage,
   validateContactForm,
 } from "@/lib/contact/validation";
@@ -16,15 +27,10 @@ import type {
   ContactFormMessages,
   ContactFormValidationError,
 } from "@/types/contact";
-
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { FieldError } from "@/components/ui/field-error";
 import { Heading } from "@/components/ui/heading";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Text } from "@/components/ui/text";
-import { Textarea } from "@/components/ui/textarea";
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
@@ -36,12 +42,53 @@ interface ContactFormProps {
 const INITIAL_FORM: ContactFormInput = {
   name: "",
   email: "",
+  phone: "",
   subject: "",
   message: "",
-  company: "",
   projectType: "",
   website: "",
 };
+
+interface ContactFieldProps {
+  id: string;
+  label: string;
+  required?: boolean;
+  error?: string;
+  icon: ReactNode;
+  className?: string;
+  children: ReactNode;
+}
+
+function ContactField({
+  id,
+  label,
+  required,
+  error,
+  icon,
+  className,
+  children,
+}: ContactFieldProps) {
+  return (
+    <div className={cn("contact-form__field", className)}>
+      <label htmlFor={id} className="sr-only">
+        {label}
+        {required ? " (required)" : ""}
+      </label>
+      <div
+        className={cn(
+          "contact-form__control",
+          error && "contact-form__control--error",
+        )}
+      >
+        <span className="contact-form__control-icon" aria-hidden>
+          {icon}
+        </span>
+        {children}
+      </div>
+      <FieldError id={`${id}-error`} message={error} />
+    </div>
+  );
+}
 
 export function ContactForm({ config, messages }: ContactFormProps) {
   const [form, setForm] = useState<ContactFormInput>(INITIAL_FORM);
@@ -62,7 +109,12 @@ export function ContactForm({ config, messages }: ContactFormProps) {
     event.preventDefault();
     setServerError(undefined);
 
-    const validation = validateContactForm(form);
+    const payload: ContactFormInput = {
+      ...form,
+      subject: buildContactSubject(form.projectType ?? ""),
+    };
+
+    const validation = validateContactForm(payload, config);
 
     if (!validation.success) {
       setErrors(validation.errors);
@@ -77,7 +129,7 @@ export function ContactForm({ config, messages }: ContactFormProps) {
       const response = await fetch(CONTACT_API_ROUTE, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(validation.data),
       });
 
       const result = (await response.json()) as {
@@ -101,12 +153,15 @@ export function ContactForm({ config, messages }: ContactFormProps) {
 
   if (status === "success") {
     return (
-      <Card interactive>
-        <Card.Content className="space-y-3" role="status" aria-live="polite">
+      <article className={cn("contact-form-panel", "interactive-card")}>
+        <CardHoverOrbitals />
+        <div className="contact-form-panel__inner" role="status" aria-live="polite">
           <Heading as="h3" variant="h4">
             {messages.successTitle}
           </Heading>
-          <Text tone="muted">{messages.successMessage}</Text>
+          <Text tone="muted" className="contact-form-panel__success-copy">
+            {messages.successMessage}
+          </Text>
           <Button
             type="button"
             variant="outline"
@@ -115,22 +170,19 @@ export function ContactForm({ config, messages }: ContactFormProps) {
           >
             Send another message
           </Button>
-        </Card.Content>
-      </Card>
+        </div>
+      </article>
     );
   }
 
   return (
-    <Card interactive>
-      <Card.Content>
-        <Heading as="h3" variant="h4">
-          {config.title}
-        </Heading>
-
-        <form className="mt-6 space-y-5" onSubmit={handleSubmit} noValidate>
+    <article className={cn("contact-form-panel", "interactive-card")}>
+      <CardHoverOrbitals />
+      <div className="contact-form-panel__inner">
+        <form className="contact-form" onSubmit={handleSubmit} noValidate>
           <div className="absolute -left-[9999px]" aria-hidden>
-            <Label htmlFor="contact-website">Website</Label>
-            <Input
+            <label htmlFor="contact-website">Website</label>
+            <input
               id="contact-website"
               name="website"
               tabIndex={-1}
@@ -140,179 +192,145 @@ export function ContactForm({ config, messages }: ContactFormProps) {
             />
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div>
-              <Label htmlFor="contact-name" required>
-                {config.nameLabel}
-              </Label>
-              <Input
+          <div className="contact-form__grid">
+            {config.name.enabled ? (
+              <ContactField
                 id="contact-name"
-                name="name"
-                required
-                autoComplete="name"
-                maxLength={CONTACT_FIELD_LIMITS.name.max}
-                hasError={Boolean(getFieldErrorMessage(errors, "name"))}
-                aria-invalid={
-                  getFieldErrorMessage(errors, "name") ? true : undefined
-                }
-                aria-describedby={
-                  getFieldErrorMessage(errors, "name")
-                    ? "contact-name-error"
-                    : undefined
-                }
-                value={form.name}
-                onChange={(event) => updateField("name", event.target.value)}
-                className="mt-2"
-              />
-              <FieldError
-                id="contact-name-error"
-                message={getFieldErrorMessage(errors, "name")}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="contact-email" required>
-                {config.emailLabel}
-              </Label>
-              <Input
-                id="contact-email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                maxLength={CONTACT_FIELD_LIMITS.email.max}
-                hasError={Boolean(getFieldErrorMessage(errors, "email"))}
-                aria-invalid={
-                  getFieldErrorMessage(errors, "email") ? true : undefined
-                }
-                aria-describedby={
-                  getFieldErrorMessage(errors, "email")
-                    ? "contact-email-error"
-                    : undefined
-                }
-                value={form.email}
-                onChange={(event) => updateField("email", event.target.value)}
-                className="mt-2"
-              />
-              <FieldError
-                id="contact-email-error"
-                message={getFieldErrorMessage(errors, "email")}
-              />
-            </div>
-          </div>
-
-          {config.showCompanyField && (
-            <div>
-              <Label htmlFor="contact-company">{config.companyLabel}</Label>
-              <Input
-                id="contact-company"
-                name="company"
-                autoComplete="organization"
-                maxLength={CONTACT_FIELD_LIMITS.company.max}
-                hasError={Boolean(getFieldErrorMessage(errors, "company"))}
-                aria-invalid={
-                  getFieldErrorMessage(errors, "company") ? true : undefined
-                }
-                aria-describedby={
-                  getFieldErrorMessage(errors, "company")
-                    ? "contact-company-error"
-                    : undefined
-                }
-                value={form.company}
-                onChange={(event) => updateField("company", event.target.value)}
-                className="mt-2"
-              />
-              <FieldError
-                id="contact-company-error"
-                message={getFieldErrorMessage(errors, "company")}
-              />
-            </div>
-          )}
-
-          {config.showProjectTypeField && (
-            <div>
-              <Label htmlFor="contact-project-type">
-                {config.projectTypeLabel}
-              </Label>
-              <select
-                id="contact-project-type"
-                name="projectType"
-                value={form.projectType}
-                onChange={(event) =>
-                  updateField("projectType", event.target.value)
-                }
-                className={cn(
-                  "mt-2 w-full rounded-lg border border-border bg-surface px-3 py-2 text-body text-foreground",
-                  FOCUS_RING_CLASS,
-                )}
+                label={config.name.label}
+                required={config.name.required}
+                error={getFieldErrorMessage(errors, "name")}
+                icon={<UserRound size={18} strokeWidth={1.75} />}
               >
-                <option value="">Select a project type</option>
-                {config.projectTypeOptions.map((option) => (
-                  <option key={option.id} value={option.label}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+                <input
+                  id="contact-name"
+                  name="name"
+                  required={config.name.required}
+                  autoComplete="name"
+                  placeholder={config.name.placeholder}
+                  maxLength={CONTACT_FIELD_LIMITS.name.max}
+                  aria-invalid={getFieldErrorMessage(errors, "name") ? true : undefined}
+                  aria-describedby={
+                    getFieldErrorMessage(errors, "name") ? "contact-name-error" : undefined
+                  }
+                  value={form.name}
+                  onChange={(event) => updateField("name", event.target.value)}
+                  className="contact-form__input"
+                />
+              </ContactField>
+            ) : null}
 
-          <div>
-            <Label htmlFor="contact-subject" required>
-              {config.subjectLabel}
-            </Label>
-            <Input
-              id="contact-subject"
-              name="subject"
-              required
-              maxLength={CONTACT_FIELD_LIMITS.subject.max}
-              hasError={Boolean(getFieldErrorMessage(errors, "subject"))}
-              aria-invalid={
-                getFieldErrorMessage(errors, "subject") ? true : undefined
-              }
-              aria-describedby={
-                getFieldErrorMessage(errors, "subject")
-                  ? "contact-subject-error"
-                  : undefined
-              }
-              value={form.subject}
-              onChange={(event) => updateField("subject", event.target.value)}
-              className="mt-2"
-            />
-            <FieldError
-              id="contact-subject-error"
-              message={getFieldErrorMessage(errors, "subject")}
-            />
+            {config.email.enabled ? (
+              <ContactField
+                id="contact-email"
+                label={config.email.label}
+                required={config.email.required}
+                error={getFieldErrorMessage(errors, "email")}
+                icon={<Mail size={18} strokeWidth={1.75} />}
+              >
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  required={config.email.required}
+                  autoComplete="email"
+                  placeholder={config.email.placeholder}
+                  maxLength={CONTACT_FIELD_LIMITS.email.max}
+                  aria-invalid={getFieldErrorMessage(errors, "email") ? true : undefined}
+                  aria-describedby={
+                    getFieldErrorMessage(errors, "email") ? "contact-email-error" : undefined
+                  }
+                  value={form.email}
+                  onChange={(event) => updateField("email", event.target.value)}
+                  className="contact-form__input"
+                />
+              </ContactField>
+            ) : null}
+
+            {config.phone.enabled ? (
+              <ContactField
+                id="contact-phone"
+                label={config.phone.label}
+                required={config.phone.required}
+                error={getFieldErrorMessage(errors, "phone")}
+                icon={<Phone size={18} strokeWidth={1.75} />}
+              >
+                <input
+                  id="contact-phone"
+                  name="phone"
+                  type="tel"
+                  required={config.phone.required}
+                  autoComplete="tel"
+                  placeholder={config.phone.placeholder}
+                  maxLength={CONTACT_FIELD_LIMITS.phone.max}
+                  aria-invalid={getFieldErrorMessage(errors, "phone") ? true : undefined}
+                  aria-describedby={
+                    getFieldErrorMessage(errors, "phone") ? "contact-phone-error" : undefined
+                  }
+                  value={form.phone}
+                  onChange={(event) => updateField("phone", event.target.value)}
+                  className="contact-form__input"
+                />
+              </ContactField>
+            ) : null}
+
+            {config.projectType.enabled ? (
+              <ContactField
+                id="contact-project-type"
+                label={config.projectType.label}
+                required={config.projectType.required}
+                icon={<BriefcaseBusiness size={18} strokeWidth={1.75} />}
+              >
+                <select
+                  id="contact-project-type"
+                  name="projectType"
+                  value={form.projectType}
+                  onChange={(event) => updateField("projectType", event.target.value)}
+                  className={cn("contact-form__input contact-form__select", FOCUS_RING_CLASS)}
+                >
+                  <option value="">{config.projectType.placeholder}</option>
+                  {config.projectTypeOptions.map((option) => (
+                    <option key={option.id} value={option.label}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown
+                  size={16}
+                  className="contact-form__select-chevron"
+                  aria-hidden
+                />
+              </ContactField>
+            ) : null}
           </div>
 
-          <div>
-            <Label htmlFor="contact-message" required>
-              {config.messageLabel}
-            </Label>
-            <Textarea
+          {config.message.enabled ? (
+            <ContactField
               id="contact-message"
-              name="message"
-              required
-              maxLength={CONTACT_FIELD_LIMITS.message.max}
-              hasError={Boolean(getFieldErrorMessage(errors, "message"))}
-              aria-invalid={
-                getFieldErrorMessage(errors, "message") ? true : undefined
-              }
-              aria-describedby={
-                getFieldErrorMessage(errors, "message")
-                  ? "contact-message-error"
-                  : undefined
-              }
-              value={form.message}
-              onChange={(event) => updateField("message", event.target.value)}
-              className="mt-2"
-            />
-            <FieldError
-              id="contact-message-error"
-              message={getFieldErrorMessage(errors, "message")}
-            />
-          </div>
+              label={config.message.label}
+              required={config.message.required}
+              error={getFieldErrorMessage(errors, "message")}
+              icon={<MessageSquare size={18} strokeWidth={1.75} />}
+              className="contact-form__field--full"
+            >
+              <textarea
+                id="contact-message"
+                name="message"
+                required={config.message.required}
+                placeholder={config.message.placeholder}
+                maxLength={CONTACT_FIELD_LIMITS.message.max}
+                aria-invalid={getFieldErrorMessage(errors, "message") ? true : undefined}
+                aria-describedby={
+                  getFieldErrorMessage(errors, "message") ? "contact-message-error" : undefined
+                }
+                value={form.message}
+                onChange={(event) => updateField("message", event.target.value)}
+                className="contact-form__textarea"
+                rows={5}
+              />
+            </ContactField>
+          ) : null}
 
-          {status === "error" && serverError && (
+          {status === "error" && serverError ? (
             <Text
               as="p"
               variant="small"
@@ -322,18 +340,29 @@ export function ContactForm({ config, messages }: ContactFormProps) {
             >
               {serverError}
             </Text>
-          )}
+          ) : null}
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="md"
-            isLoading={status === "loading"}
-          >
-            {status === "loading" ? messages.loadingLabel : config.submitLabel}
-          </Button>
+          <div className="contact-form__actions">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              isLoading={status === "loading"}
+              className="contact-form__submit rounded-full px-7 shadow-[0_12px_32px_rgba(124,131,255,0.28)]"
+            >
+              {status === "loading" ? messages.loadingLabel : config.submitLabel}
+              <ArrowUpRight size={18} aria-hidden />
+            </Button>
+
+            {config.securityNote.visible ? (
+              <p className="contact-form__security">
+                <Lock size={14} aria-hidden />
+                <span>{config.securityNote.text}</span>
+              </p>
+            ) : null}
+          </div>
         </form>
-      </Card.Content>
-    </Card>
+      </div>
+    </article>
   );
 }

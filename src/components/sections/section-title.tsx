@@ -2,18 +2,20 @@ interface SectionTitleProps {
   id: string;
   title: string;
   titleAccent?: string | null;
+  as?: "h1" | "h2";
 }
 
 export function SectionTitle({
   id,
   title,
   titleAccent = null,
+  as: Heading = "h2",
 }: SectionTitleProps) {
   if (!titleAccent) {
     return (
-      <h2 id={id} className="home-section-header__title">
+      <Heading id={id} className="home-section-header__title">
         {title}
-      </h2>
+      </Heading>
     );
   }
 
@@ -21,9 +23,9 @@ export function SectionTitle({
 
   if (accentIndex === -1) {
     return (
-      <h2 id={id} className="home-section-header__title">
+      <Heading id={id} className="home-section-header__title">
         {title}
-      </h2>
+      </Heading>
     );
   }
 
@@ -31,10 +33,10 @@ export function SectionTitle({
   const after = title.slice(accentIndex + titleAccent.length);
 
   return (
-    <h2 id={id} className="home-section-header__title">
+    <Heading id={id} className="home-section-header__title">
       {before}
       <span className="home-section-header__title-accent">{titleAccent}</span>
       {after}
-    </h2>
+    </Heading>
   );
 }

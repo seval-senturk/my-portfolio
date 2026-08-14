@@ -1,34 +1,37 @@
 import type { ContactContent } from "@/types/contact";
-import type { HeadingLevel } from "@/types/ui";
 
-import { ContactHubView } from "@/features/contact/components/contact-hub-view";
-import { Container } from "@/components/ui/container";
-import { Section } from "@/components/ui/section";
+import { HomeSectionShell } from "@/components/sections";
+import { ContactLayout } from "@/features/contact/components/contact-layout";
+import { ContactSectionDecor } from "@/features/contact/components/contact-section-decor";
 
 interface ContactSectionProps {
   content: ContactContent;
-  titleAs?: HeadingLevel;
 }
 
-export function ContactSection({
-  content,
-  titleAs = "h2",
-}: ContactSectionProps) {
+export function ContactSection({ content }: ContactSectionProps) {
   const { section } = content;
 
+  if (!section.visible) {
+    return null;
+  }
+
+  const headingId = "contact-section-heading";
+
   return (
-    <Section
+    <HomeSectionShell
       id="contact"
-      title={section.title}
-      description={section.description}
-      titleAs={titleAs}
-      headingId="contact-section-heading"
-      headerContainerSize="default"
-      spacing="default"
+      headingId={headingId}
+      sectionClassName="contact-section"
+      header={{
+        label: section.label,
+        title: section.title,
+        titleAccent: section.titleAccent,
+        description: section.description,
+        descriptionClassName: "home-section-header__description--muted",
+      }}
+      backdrop={<ContactSectionDecor />}
     >
-      <Container size="default">
-        <ContactHubView content={content} />
-      </Container>
-    </Section>
+      <ContactLayout content={content} />
+    </HomeSectionShell>
   );
 }

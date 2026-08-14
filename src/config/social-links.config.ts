@@ -2,6 +2,7 @@ export type SocialPlatform =
   | "github"
   | "linkedin"
   | "email"
+  | "whatsapp"
   | "x"
   | "instagram"
   | "medium"

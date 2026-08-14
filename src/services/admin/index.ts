@@ -72,9 +72,23 @@ export {
   listProjectEntries,
   parseCommaList,
   parseMultilineList,
+  reorderProjectEntries,
   updateProjectEntry,
 } from "@/services/admin/project.admin.service";
 export type { ProjectEntryInput } from "@/services/admin/project.admin.service";
+
+export {
+  deleteProjectPageFilter,
+  getProjectsPageConfig,
+  listProjectPageFilters,
+  reorderProjectPageFilters,
+  saveProjectPageFilter,
+  updateProjectsPageConfig,
+} from "@/services/admin/projects-page.admin.service";
+export type {
+  ProjectPageFilterInput,
+  ProjectsPageConfigInput,
+} from "@/services/admin/projects-page.admin.service";
 
 export {
   createSkillEntry,

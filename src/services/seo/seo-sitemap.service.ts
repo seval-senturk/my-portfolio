@@ -10,7 +10,7 @@ export async function buildDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
   const globalSettings = await seoRepository.getGlobalSettings(DEFAULT_LOCALE);
   const siteUrl = seoRepository.resolveSiteUrl(globalSettings);
 
-  const [seoPages, blogPosts, resume] = await Promise.all([
+  const [seoPages, blogPosts, projects, resume] = await Promise.all([
     prisma.seoPage.findMany({
       where: {
         locale: DEFAULT_LOCALE,
@@ -20,6 +20,11 @@ export async function buildDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
     }),
     prisma.blogPost.findMany({
       where: { status: "PUBLISHED" },
+      select: { slug: true, updatedAt: true, publishedAt: true },
+      orderBy: { updatedAt: "desc" },
+    }),
+    prisma.project.findMany({
+      where: { visible: true },
       select: { slug: true, updatedAt: true, publishedAt: true },
       orderBy: { updatedAt: "desc" },
     }),
@@ -47,6 +52,13 @@ export async function buildDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  const projectEntries: MetadataRoute.Sitemap = projects.map((project) => ({
+    url: `${siteUrl}/projects/${project.slug}`,
+    lastModified: project.publishedAt ?? project.updatedAt,
+    changeFrequency: "monthly",
+    priority: 0.75,
+  }));
+
   const resumeEntry: MetadataRoute.Sitemap = resume
     ? [
         {
@@ -58,7 +70,7 @@ export async function buildDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
       ]
     : [];
 
-  return [...staticEntries, ...blogEntries, ...resumeEntry];
+  return [...staticEntries, ...blogEntries, ...projectEntries, ...resumeEntry];
 }
 
 export async function buildDynamicRobots(): Promise<MetadataRoute.Robots> {

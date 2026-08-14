@@ -12,6 +12,7 @@ export interface HomeSectionHeaderProps extends SectionHeaderContent {
   /** Adds standard spacing below the header block for standalone sections. */
   withSectionSpacing?: boolean;
   align?: "start" | "center";
+  headingLevel?: "h1" | "h2";
   descriptionClassName?: string;
   className?: string;
 }
@@ -25,6 +26,7 @@ export function HomeSectionHeader({
   as = "header",
   withSectionSpacing = true,
   align = "start",
+  headingLevel = "h2",
   descriptionClassName,
   className,
 }: HomeSectionHeaderProps) {
@@ -43,7 +45,12 @@ export function HomeSectionHeader({
         <span className="home-section-header__label-line" aria-hidden />
         {label}
       </p>
-      <SectionTitle id={headingId} title={title} titleAccent={titleAccent} />
+      <SectionTitle
+        id={headingId}
+        title={title}
+        titleAccent={titleAccent}
+        as={headingLevel}
+      />
       {description ? (
         <p
           className={cn(

@@ -1,6 +1,7 @@
 import { aboutContent } from "@/data/about.data";
 import { aboutHomeContent } from "@/data/about-home.data";
 import { AboutUnifiedAdminView } from "@/features/admin/components/about-unified-admin-view";
+import { normalizeAboutHomeContent } from "@/lib/content/normalize-about-home-content";
 import { mapAboutHomeToAdminContent } from "@/repositories/prisma/mappers/about-home.mapper";
 import {
   getAboutHomeAdminContent,
@@ -22,13 +23,7 @@ export default async function AdminAboutPage() {
     ? mapAboutHomeToAdminContent(config, featureCards)
     : aboutHomeContent;
 
-  const aboutHomeWithFallback = {
-    ...resolvedAboutHome,
-    featureCards:
-      resolvedAboutHome.featureCards.length > 0
-        ? resolvedAboutHome.featureCards
-        : [...aboutHomeContent.featureCards],
-  };
+  const aboutHomeWithFallback = normalizeAboutHomeContent(resolvedAboutHome);
 
   return (
     <AboutUnifiedAdminView aboutHome={aboutHomeWithFallback} aboutPage={aboutPage} />

@@ -18,18 +18,23 @@ export const prismaTestimonialsRepository: TestimonialsRepository = {
       return testimonialsContent;
     }
 
-    const locale = resolveLocale(options);
-    const [config, items] = await Promise.all([
-      prisma.testimonialsSectionConfig.findUnique({ where: { locale } }),
-      prisma.testimonial.findMany({
-        orderBy: { sortOrder: "asc" },
-      }),
-    ]);
+    try {
+      const locale = resolveLocale(options);
+      const [config, items] = await Promise.all([
+        prisma.testimonialsSectionConfig.findUnique({ where: { locale } }),
+        prisma.testimonial.findMany({
+          orderBy: { sortOrder: "asc" },
+        }),
+      ]);
 
-    if (!config) {
+      if (!config) {
+        return testimonialsContent;
+      }
+
+      return mapTestimonialsToContent(config, items);
+    } catch (error) {
+      console.error("[testimonials.repository] Falling back to static testimonials content.", error);
       return testimonialsContent;
     }
-
-    return mapTestimonialsToContent(config, items);
   },
 };

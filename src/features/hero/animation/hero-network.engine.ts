@@ -64,7 +64,7 @@ export function createHeroNetworkEngine(
   let height = 0;
   let dpr = 1;
   let density = options.density;
-  let palette = options.palette;
+  const palette = options.palette;
   let reducedMotion = options.reducedMotion;
   let nodes = createNodes(density.nodeCount, 1, 1);
   let pointer: HeroNetworkPointer = { x: -9999, y: -9999, active: false };

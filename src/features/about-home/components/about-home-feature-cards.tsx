@@ -15,26 +15,21 @@ export function AboutHomeFeatureCards({ cards }: AboutHomeFeatureCardsProps) {
   }
 
   return (
-    <div className="about-home__features" role="list">
+    <div className="about-home__info-grid" role="list">
       {visibleCards.map((card) => (
         <article
           key={card.id}
-          className={cn("about-home__feature-card interactive-card")}
+          className={cn("about-home__info-card interactive-card")}
           role="listitem"
         >
           <CardHoverOrbitals />
-          <div className="about-home__feature-card-top">
-            <span className="about-home__feature-card-icon" aria-hidden>
-              <AboutHomeIcon name={card.icon} size={22} />
-            </span>
-            <span className="about-home__feature-card-number" aria-hidden>
-              {card.number}
-            </span>
+          <span className="about-home__info-card-icon" aria-hidden>
+            <AboutHomeIcon name={card.icon} size={20} />
+          </span>
+          <div className="about-home__info-card-copy">
+            <p className="about-home__info-card-label">{card.title}</p>
+            <p className="about-home__info-card-value">{card.description}</p>
           </div>
-
-          <h3 className="about-home__feature-card-title">{card.title}</h3>
-          <p className="about-home__feature-card-description">{card.description}</p>
-          <span className="about-home__feature-card-accent" aria-hidden />
         </article>
       ))}
     </div>

@@ -1,5 +1,18 @@
 import type { HomeCmsSection } from "@/types/section-header";
 
+export interface AboutHomeProfile {
+  imageSrc?: string;
+  imageAlt: string;
+  initials: string;
+  visible: boolean;
+}
+
+export interface AboutHomeCta {
+  label: string;
+  href: string;
+  visible: boolean;
+}
+
 export interface AboutHomeFeatureCard {
   id: string;
   number: string;
@@ -12,11 +25,9 @@ export interface AboutHomeFeatureCard {
 
 export interface AboutHomeContent {
   section: HomeCmsSection;
-  cta: {
-    label: string;
-    href: string;
-    visible: boolean;
-  };
+  profile: AboutHomeProfile;
+  cta: AboutHomeCta;
+  secondaryCta: AboutHomeCta;
   featureCards: readonly AboutHomeFeatureCard[];
 }
 
@@ -29,6 +40,13 @@ export interface AboutHomeConfigInput {
   ctaLabel: string;
   ctaHref: string;
   ctaVisible: boolean;
+  secondaryCtaLabel: string;
+  secondaryCtaHref: string;
+  secondaryCtaVisible: boolean;
+  profileImageUrl?: string;
+  profileImageAlt: string;
+  profileInitials: string;
+  profileVisible: boolean;
 }
 
 export interface AboutHomeFeatureCardInput {

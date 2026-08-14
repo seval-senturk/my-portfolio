@@ -1,5 +1,6 @@
 import { CONTACT_FIELD_LIMITS } from "@/lib/contact/constants";
 import type {
+  ContactFormConfig,
   ContactFormInput,
   ContactFormValidationError,
   ContactFormValidationResult,
@@ -31,7 +32,12 @@ function validateLength(
   value: string,
   field: keyof typeof CONTACT_FIELD_LIMITS,
   label: string,
+  required = true,
 ): string | undefined {
+  if (!value && !required) {
+    return undefined;
+  }
+
   const limits = CONTACT_FIELD_LIMITS[field];
 
   if ("min" in limits && value.length < limits.min) {
@@ -45,40 +51,79 @@ function validateLength(
   return undefined;
 }
 
+export function buildContactSubject(
+  projectType: string,
+  fallback = "Website inquiry",
+): string {
+  return projectType.length > 0 ? projectType : fallback;
+}
+
 export function validateContactForm(
   input: ContactFormInput,
+  config?: ContactFormConfig,
 ): ContactFormValidationResult {
   const errors: ContactFormValidationError[] = [];
+  const form = config;
 
   const name = trimValue(input.name);
   const email = trimValue(input.email);
+  const phone = trimValue(input.phone);
   const subject = trimValue(input.subject);
   const message = trimValue(input.message);
   const company = trimValue(input.company);
   const projectType = trimValue(input.projectType);
 
-  const nameError = validateLength(name, "name", "Name");
-  if (nameError) {
-    errors.push({ field: "name", message: nameError });
+  if (!form || form.name.enabled) {
+    const nameError = validateLength(
+      name,
+      "name",
+      form?.name.label ?? "Name",
+      form?.name.required ?? true,
+    );
+    if (nameError) {
+      errors.push({ field: "name", message: nameError });
+    }
   }
 
-  const emailError = validateEmail(email);
-  if (emailError) {
-    errors.push({ field: "email", message: emailError });
+  if (!form || form.email.enabled) {
+    const emailError = validateEmail(email);
+    if (emailError) {
+      errors.push({ field: "email", message: emailError });
+    }
   }
 
-  const subjectError = validateLength(subject, "subject", "Subject");
+  if (!form || form.phone.enabled) {
+    const phoneError = validateLength(
+      phone,
+      "phone",
+      form?.phone.label ?? "Phone",
+      form?.phone.required ?? false,
+    );
+    if (phoneError) {
+      errors.push({ field: "phone", message: phoneError });
+    }
+  }
+
+  const resolvedSubject = subject || buildContactSubject(projectType);
+  const subjectError = validateLength(resolvedSubject, "subject", "Subject");
   if (subjectError) {
     errors.push({ field: "subject", message: subjectError });
   }
 
-  const messageError = validateLength(message, "message", "Message");
-  if (messageError) {
-    errors.push({ field: "message", message: messageError });
+  if (!form || form.message.enabled) {
+    const messageError = validateLength(
+      message,
+      "message",
+      form?.message.label ?? "Message",
+      form?.message.required ?? true,
+    );
+    if (messageError) {
+      errors.push({ field: "message", message: messageError });
+    }
   }
 
   if (company) {
-    const companyError = validateLength(company, "company", "Company");
+    const companyError = validateLength(company, "company", "Company", false);
     if (companyError) {
       errors.push({ field: "company", message: companyError });
     }
@@ -94,8 +139,9 @@ export function validateContactForm(
     data: {
       name,
       email,
-      subject,
+      subject: resolvedSubject,
       message,
+      ...(phone ? { phone } : {}),
       ...(company ? { company } : {}),
       ...(projectType ? { projectType } : {}),
     },

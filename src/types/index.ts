@@ -100,7 +100,7 @@ export type {
   ContactInformation,
   ContactLeadRecord,
   ContactProjectTypeOption,
-  ContactSectionHeader,
+  ContactSectionConfig,
   ContactSocialLink,
   ContactSubmissionResult,
   LeadStatus,

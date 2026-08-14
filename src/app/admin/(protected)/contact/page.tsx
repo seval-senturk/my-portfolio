@@ -1,18 +1,8 @@
-import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
-import { adminTr } from "@/features/admin/i18n/tr";
-import { Text } from "@/components/ui/text";
+import { ContactAdminView } from "@/features/admin/components/contact-admin-view";
+import { getContactConfigForAdmin } from "@/services/admin/contact.admin.service";
 
-export default function AdminContactPage() {
-  return (
-    <div>
-      <AdminPageHeader
-        title={adminTr.contact.title}
-        description={adminTr.contact.description}
-      />
-      <div className="admin-surface p-6">
-        <Text tone="muted">{adminTr.contact.placeholder}</Text>
-      </div>
-    </div>
-  );
+export default async function AdminContactPage() {
+  const config = await getContactConfigForAdmin();
+
+  return <ContactAdminView initial={config} />;
 }
-

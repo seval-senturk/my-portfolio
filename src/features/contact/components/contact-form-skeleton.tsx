@@ -1,14 +1,16 @@
 export function ContactFormSkeleton() {
   return (
-    <div
-      className="animate-pulse space-y-4 rounded-xl border border-border bg-surface p-6"
-      aria-hidden
-    >
-      <div className="h-5 w-32 rounded bg-muted" />
-      <div className="h-10 w-full rounded bg-muted" />
-      <div className="h-10 w-full rounded bg-muted" />
-      <div className="h-24 w-full rounded bg-muted" />
-      <div className="h-10 w-28 rounded bg-muted" />
+    <div className="contact-form-panel animate-pulse" aria-hidden>
+      <div className="contact-form-panel__inner space-y-4">
+        <div className="contact-form__grid">
+          <div className="h-[3.25rem] rounded-[0.85rem] bg-muted/40" />
+          <div className="h-[3.25rem] rounded-[0.85rem] bg-muted/40" />
+          <div className="h-[3.25rem] rounded-[0.85rem] bg-muted/40" />
+          <div className="h-[3.25rem] rounded-[0.85rem] bg-muted/40" />
+        </div>
+        <div className="h-32 rounded-[0.85rem] bg-muted/40" />
+        <div className="h-12 w-40 rounded-full bg-muted/40" />
+      </div>
     </div>
   );
 }

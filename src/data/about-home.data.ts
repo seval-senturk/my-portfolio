@@ -1,60 +1,85 @@
 import { ROUTES } from "@/constants/routes";
+import { siteConfig } from "@/config/site.config";
 import type { AboutHomeContent } from "@/types/about-home";
 
 export const aboutHomeContent: AboutHomeContent = {
   section: {
     visible: true,
-    label: "ABOUT",
-    title: "I build digital\nexperiences\nthat make a difference.",
-    titleAccent: "experiences",
+    label: "WHO I AM",
+    title: "About Me",
+    titleAccent: "Me",
     description:
-      "I don't just write code — I solve real problems and ship products that scale. From architecture to deployment, I focus on clean code, strong performance, and experiences people actually enjoy using.\n\nEvery project is an opportunity to balance engineering discipline with thoughtful design, delivering solutions that are fast, accessible, and built to grow.",
+      "I'm a Frontend Developer & UI/UX Designer with 8+ years of experience crafting clean, high-performance digital products. I focus on thoughtful interfaces, scalable architecture, and experiences that feel fast, accessible, and genuinely useful.",
+  },
+  profile: {
+    imageAlt: `${siteConfig.author.name} professional portrait`,
+    initials: "SŞ",
+    visible: true,
   },
   cta: {
-    label: "More About My Journey",
-    href: ROUTES.about,
+    label: "Let's Talk",
+    href: "#contact",
+    visible: true,
+  },
+  secondaryCta: {
+    label: "Download Resume",
+    href: ROUTES.resume,
     visible: true,
   },
   featureCards: [
     {
-      id: "about-fc-01",
-      number: "01",
-      icon: "code",
-      title: "Clean Architecture",
-      description:
-        "Modern layered architecture, maintainable code, and scalable project structures built for long-term growth.",
+      id: "about-info-01",
+      number: "",
+      icon: "briefcase",
+      title: "Experience",
+      description: "8+ Years",
       visible: true,
       sortOrder: 0,
     },
     {
-      id: "about-fc-02",
-      number: "02",
-      icon: "zap",
-      title: "Performance First",
-      description:
-        "Core Web Vitals, Lighthouse optimization, and fast user experiences that feel instant on every device.",
+      id: "about-info-02",
+      number: "",
+      icon: "rocket",
+      title: "Availability",
+      description: "Open to Opportunities",
       visible: true,
       sortOrder: 1,
     },
     {
-      id: "about-fc-03",
-      number: "03",
-      icon: "search",
-      title: "SEO & Accessibility",
-      description:
-        "Semantic HTML, WCAG standards, and advanced SEO infrastructure that helps products reach more people.",
+      id: "about-info-03",
+      number: "",
+      icon: "map-pin",
+      title: "Location",
+      description: "Istanbul, Turkey",
       visible: true,
       sortOrder: 2,
     },
     {
-      id: "about-fc-04",
-      number: "04",
-      icon: "brain",
-      title: "AI Integrated Solutions",
-      description:
-        "OpenAI integrations, automation systems, and intelligent workflows that streamline how teams work.",
+      id: "about-info-04",
+      number: "",
+      icon: "languages",
+      title: "Languages",
+      description: "English, Turkish",
       visible: true,
       sortOrder: 3,
+    },
+    {
+      id: "about-info-05",
+      number: "",
+      icon: "mail",
+      title: "Email",
+      description: siteConfig.author.email,
+      visible: true,
+      sortOrder: 4,
+    },
+    {
+      id: "about-info-06",
+      number: "",
+      icon: "globe",
+      title: "Remote Work",
+      description: "Available Worldwide",
+      visible: true,
+      sortOrder: 5,
     },
   ],
 };
