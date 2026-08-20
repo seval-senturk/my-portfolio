@@ -16,6 +16,7 @@ export function HeroSection({ content }: HeroSectionProps) {
 
   return (
     <section
+      id="hero"
       aria-labelledby="hero-heading"
       className="hero-section relative isolate -mt-16 min-h-[100svh] pt-16 lg:-mt-[4.5rem] lg:pt-[4.5rem]"
     >

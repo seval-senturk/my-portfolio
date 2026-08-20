@@ -48,6 +48,11 @@ import {
   createProjectEntry,
   updateProjectEntry,
   deleteProjectEntry,
+  reorderProjectEntries,
+  updateProjectsPageConfig,
+  saveProjectPageFilter,
+  deleteProjectPageFilter,
+  reorderProjectPageFilters,
   createSkillEntry,
   updateSkillEntry,
   deleteSkillEntry,
@@ -73,13 +78,15 @@ import {
   deleteAboutHomeFeatureCard,
   reorderAboutHomeFeatureCards,
 } from "@/services/admin";
+import { updateContactConfig } from "@/services/admin/contact.admin.service";
 import {
   addBlogHomeCuratedPost,
   removeBlogHomeCuratedPost,
   reorderBlogHomeCuratedPosts,
   updateBlogHomeConfig,
 } from "@/services/admin/blog-home.admin.service";
-import { replaceSocialLinks } from "@/services/admin/social.admin.service";
+import type { ContactConfigInput, ContactSocialLink } from "@/types/contact";
+import type { SocialPlatform } from "@/config/social-links.config";
 
 function revalidatePublicContent() {
   revalidateTag(CACHE_TAGS.content);
@@ -88,6 +95,7 @@ function revalidatePublicContent() {
   revalidatePath("/about");
   revalidatePath("/experience");
   revalidatePath("/projects");
+  revalidatePath("/projects", "layout");
   revalidatePath("/skills");
   revalidatePath("/resume");
   revalidatePath("/blog");
@@ -98,6 +106,7 @@ const SOCIAL_PLATFORMS = [
   "github",
   "linkedin",
   "email",
+  "whatsapp",
   "x",
   "instagram",
   "medium",
@@ -863,8 +872,11 @@ export async function saveProjectAction(formData: FormData) {
       status: getOptionalString(formData, "status"),
       client: getOptionalString(formData, "client"),
       role: getString(formData, "role"),
+      projectType: getOptionalString(formData, "projectType"),
       featured: formData.get("featured") === "on",
+      visible: formData.get("visible") !== "off",
       coverImageUrl: getOptionalString(formData, "coverImageUrl"),
+      coverImageAlt: getOptionalString(formData, "coverImageAlt"),
       githubUrl: getOptionalString(formData, "githubUrl"),
       liveUrl: getOptionalString(formData, "liveUrl"),
       technologies: parseCommaList(getString(formData, "technologies")),
@@ -910,6 +922,133 @@ export async function deleteProjectAction(id: string) {
     return adminSuccess();
   } catch {
     return adminError("Failed to delete project.");
+  }
+}
+
+export async function saveProjectsPageConfigAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+
+    await updateProjectsPageConfig({
+      label: getString(formData, "label"),
+      sectionTitle: getString(formData, "sectionTitle"),
+      titleAccent: getOptionalString(formData, "titleAccent"),
+      sectionDescription: getString(formData, "sectionDescription"),
+      featuredTitle: getString(formData, "featuredTitle"),
+      additionalTitle: getString(formData, "additionalTitle"),
+      ctaTitle: getString(formData, "ctaTitle"),
+      ctaDescription: getString(formData, "ctaDescription"),
+      ctaButtonLabel: getString(formData, "ctaButtonLabel"),
+      ctaButtonHref: getString(formData, "ctaButtonHref"),
+      ctaVisible: formData.get("ctaVisible") === "on",
+      sectionVisible: formData.get("sectionVisible") === "on",
+      homeSectionVisible: formData.get("homeSectionVisible") === "on",
+      homeFeaturedLimit: Number(getString(formData, "homeFeaturedLimit") || "3"),
+      homeSectionDescription: getOptionalString(formData, "homeSectionDescription"),
+      homeCtaLabel: getString(formData, "homeCtaLabel"),
+      homeCtaHref: getString(formData, "homeCtaHref"),
+    });
+
+    revalidatePublicContent();
+    revalidatePath("/admin/projects");
+    await recordAudit({
+      user,
+      action: AuditActions.PROJECTS_PAGE_CONFIG_UPDATED,
+      category: "CONTENT",
+      entityType: "projects_page_config",
+      summary: "Projects page section updated",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save projects page section.");
+  }
+}
+
+export async function saveProjectFilterAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+    const id = getOptionalString(formData, "id");
+
+    const filter = await saveProjectPageFilter({
+      id: id ?? undefined,
+      label: getString(formData, "label"),
+      slug: getString(formData, "slug"),
+      matchType: getString(formData, "matchType"),
+      matchValue: getString(formData, "matchValue"),
+      visible: formData.get("visible") !== "off",
+    });
+
+    revalidatePublicContent();
+    revalidatePath("/admin/projects");
+    await recordAudit({
+      user,
+      action: AuditActions.PROJECT_FILTER_SAVED,
+      category: "CONTENT",
+      entityType: "project_page_filter",
+      entityId: filter.id,
+      summary: id ? "Project filter updated" : "Project filter created",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save project filter.");
+  }
+}
+
+export async function deleteProjectFilterAction(id: string) {
+  try {
+    const user = await requireAdminUser();
+    await deleteProjectPageFilter(id);
+    revalidatePublicContent();
+    revalidatePath("/admin/projects");
+    await recordAudit({
+      user,
+      action: AuditActions.PROJECT_FILTER_DELETED,
+      category: "CONTENT",
+      entityType: "project_page_filter",
+      entityId: id,
+      summary: "Project filter deleted",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to delete project filter.");
+  }
+}
+
+export async function reorderProjectFiltersAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderProjectPageFilters(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/projects");
+    await recordAudit({
+      user,
+      action: AuditActions.PROJECT_FILTERS_REORDERED,
+      category: "CONTENT",
+      entityType: "project_page_filter",
+      summary: "Project filters reordered",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder project filters.");
+  }
+}
+
+export async function reorderProjectEntriesAction(orderedIds: string[]) {
+  try {
+    const user = await requireAdminUser();
+    await reorderProjectEntries(orderedIds);
+    revalidatePublicContent();
+    revalidatePath("/admin/projects");
+    await recordAudit({
+      user,
+      action: AuditActions.PROJECTS_REORDERED,
+      category: "CONTENT",
+      entityType: "project",
+      summary: "Projects reordered",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to reorder projects.");
   }
 }
 
@@ -1324,6 +1463,7 @@ export async function subscribeNewsletterAction(formData: FormData) {
 export async function saveAboutHomeConfigAction(formData: FormData) {
   try {
     const user = await requireAdminUser();
+    const existingAboutHome = await getAboutHomeConfig();
 
     await updateAboutHomeConfig({
       visible: formData.get("visible") === "on",
@@ -1334,6 +1474,18 @@ export async function saveAboutHomeConfigAction(formData: FormData) {
       ctaLabel: getString(formData, "ctaLabel"),
       ctaHref: getString(formData, "ctaHref"),
       ctaVisible: formData.get("ctaVisible") === "on",
+      secondaryCtaLabel: getString(formData, "secondaryCtaLabel"),
+      secondaryCtaHref: getString(formData, "secondaryCtaHref"),
+      secondaryCtaVisible: formData.get("secondaryCtaVisible") === "on",
+      profileImageUrl:
+        getProfileImageUrl(
+          formData,
+          "profileImageUrl",
+          existingAboutHome?.profileImageUrl,
+        ) ?? undefined,
+      profileImageAlt: getString(formData, "profileImageAlt"),
+      profileInitials: getString(formData, "profileInitials"),
+      profileVisible: formData.get("profileVisible") === "on",
     });
 
     revalidatePublicContent();
@@ -1530,4 +1682,142 @@ export async function reorderBlogHomeCuratedPostsAction(orderedIds: string[]) {
   } catch {
     return adminError("Failed to reorder curated blog posts.");
   }
+}
+
+function parseContactSocialLinks(formData: FormData): ContactSocialLink[] {
+  const links: ContactSocialLink[] = [];
+
+  for (let index = 0; index < 6; index += 1) {
+    const platform = getString(formData, `social_${index}_platform`);
+    const label = getString(formData, `social_${index}_label`);
+    const href = getString(formData, `social_${index}_href`);
+    const visible = formData.get(`social_${index}_visible`) === "on";
+
+    if (!platform || !label || !href) {
+      continue;
+    }
+
+    if (!SOCIAL_PLATFORMS.includes(platform as (typeof SOCIAL_PLATFORMS)[number])) {
+      continue;
+    }
+
+    links.push({
+      id: getString(formData, `social_${index}_id`) || `contact-social-${index}`,
+      platform: platform as SocialPlatform,
+      label,
+      href,
+      visible,
+      sortOrder: Number(getString(formData, `social_${index}_sortOrder`) || String(index)),
+    });
+  }
+
+  return links;
+}
+
+export async function saveContactConfigAction(formData: FormData) {
+  try {
+    const user = await requireAdminUser();
+
+    const projectTypeOptions = [0, 1, 2, 3].map((index) => ({
+      id: `option-${index + 1}`,
+      label: getString(formData, `projectTypeOption_${index}`) || `Option ${index + 1}`,
+    }));
+
+    const input: ContactConfigInput = {
+      sectionVisible: formData.get("sectionVisible") === "on",
+      sectionLabel: getString(formData, "sectionLabel"),
+      sectionTitle: getString(formData, "title"),
+      sectionTitleAccent: getOptionalString(formData, "titleAccent") ?? "",
+      sectionDescription: getString(formData, "description"),
+      email: getString(formData, "email"),
+      phone: getString(formData, "phone"),
+      location: getString(formData, "location"),
+      website: getString(formData, "website") || absoluteUrlFallback(),
+      linkedin: getString(formData, "linkedin"),
+      github: getString(formData, "github"),
+      availabilityStatus: getString(formData, "availabilityStatus") || "Available for Opportunities",
+      responseTime: getString(formData, "responseTime") || "",
+      calendarUrl: getOptionalString(formData, "calendarUrl") ?? "",
+      resumeHref: getString(formData, "resumeHref") || "/resume",
+      resumeLabel: getString(formData, "resumeLabel") || "Resume",
+      infoLabels: {
+        email: {
+          label: getString(formData, "infoEmailLabel"),
+          visible: formData.get("emailVisible") === "on",
+        },
+        phone: {
+          label: getString(formData, "infoPhoneLabel"),
+          visible: formData.get("phoneVisible") === "on",
+        },
+        location: {
+          label: getString(formData, "infoLocationLabel"),
+          visible: formData.get("locationVisible") === "on",
+        },
+      },
+      socialLinks: parseContactSocialLinks(formData),
+      formConfig: {
+        name: {
+          enabled: formData.get("nameEnabled") === "on",
+          label: getString(formData, "nameLabel"),
+          placeholder: getString(formData, "namePlaceholder"),
+          required: formData.get("nameRequired") === "on",
+        },
+        email: {
+          enabled: formData.get("emailEnabled") === "on",
+          label: getString(formData, "emailLabel"),
+          placeholder: getString(formData, "emailPlaceholder"),
+          required: formData.get("emailRequired") === "on",
+        },
+        phone: {
+          enabled: formData.get("phoneEnabled") === "on",
+          label: getString(formData, "phoneLabel"),
+          placeholder: getString(formData, "phonePlaceholder"),
+          required: formData.get("phoneRequired") === "on",
+        },
+        projectType: {
+          enabled: formData.get("projectTypeEnabled") === "on",
+          label: getString(formData, "projectTypeLabel"),
+          placeholder: getString(formData, "projectTypePlaceholder"),
+          required: formData.get("projectTypeRequired") === "on",
+        },
+        message: {
+          enabled: formData.get("messageEnabled") === "on",
+          label: getString(formData, "messageLabel"),
+          placeholder: getString(formData, "messagePlaceholder"),
+          required: formData.get("messageRequired") === "on",
+        },
+        submitLabel: getString(formData, "submitLabel"),
+        projectTypeOptions,
+        securityNote: {
+          visible: formData.get("securityNoteVisible") === "on",
+          text: getString(formData, "securityNoteText"),
+        },
+      },
+      messagesConfig: {
+        successTitle: getString(formData, "successTitle"),
+        successMessage: getString(formData, "successMessage"),
+        errorTitle: getString(formData, "errorTitle"),
+        errorMessage: getString(formData, "errorMessage"),
+        loadingLabel: getString(formData, "loadingLabel"),
+      },
+    };
+
+    await updateContactConfig(input);
+    revalidatePublicContent();
+    revalidatePath("/admin/contact");
+    await recordAudit({
+      user,
+      action: AuditActions.CONTACT_CONFIG_UPDATED,
+      category: "CONTENT",
+      entityType: "contact_page_config",
+      summary: "Contact section updated",
+    });
+    return adminSuccess();
+  } catch {
+    return adminError("Failed to save contact section.");
+  }
+}
+
+function absoluteUrlFallback(): string {
+  return process.env.NEXT_PUBLIC_SITE_URL ?? "https://sevalsenturk.com";
 }

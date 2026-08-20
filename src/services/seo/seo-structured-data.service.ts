@@ -1,6 +1,7 @@
 import { siteConfig } from "@/config/site.config";
 import { socialLinks } from "@/config/social-links.config";
 import { ROUTES } from "@/constants/routes";
+import { getProjectDetailPath } from "@/lib/projects";
 import { CACHE_TAGS, cachedQuery } from "@/lib/cache/server";
 import { resolveSeoImageUrl } from "@/lib/seo/resolve-image-url";
 import { absoluteUrl } from "@/lib/url";
@@ -254,12 +255,12 @@ export async function buildProjectsStructuredData(input: {
         "@type": "ListItem",
         position: index + 1,
         name: project.title,
-        url: `${url}#${project.slug}`,
+        url: absoluteUrl(getProjectDetailPath(project.slug)),
         item: {
           "@type": "CreativeWork",
           name: project.title,
           description: project.shortDescription,
-          url: project.liveUrl ?? project.githubUrl ?? `${url}#${project.slug}`,
+          url: project.liveUrl ?? project.githubUrl ?? absoluteUrl(getProjectDetailPath(project.slug)),
           keywords: project.technologies.join(", "),
         },
       })),
@@ -267,6 +268,44 @@ export async function buildProjectsStructuredData(input: {
   }
 
   return schemas;
+}
+
+export async function buildProjectDetailStructuredData(
+  project: ProjectEntry,
+): Promise<StructuredDataSchema[]> {
+  const projectUrl = absoluteUrl(getProjectDetailPath(project.slug));
+  const projectsUrl = absoluteUrl(ROUTES.projects);
+
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: project.title,
+      description: project.shortDescription,
+      url: projectUrl,
+      applicationCategory: project.category,
+      operatingSystem: "Web",
+      keywords: project.technologies.join(", "),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Projects",
+          item: projectsUrl,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: project.title,
+          item: projectUrl,
+        },
+      ],
+    },
+  ];
 }
 
 export async function buildProfilePageStructuredData(input: {

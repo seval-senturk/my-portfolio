@@ -29,7 +29,7 @@ export interface SiteVisitPoint {
   value: number;
 }
 
-const DISTRIBUTION_COLORS = ["#7c3aed", "#a855f7", "#6366f1", "#8b5cf6", "#c084fc"];
+const DISTRIBUTION_COLORS = ["#7c83ff", "#9aa0ff", "#5b63e8", "#a1a6b4", "#6b72e8"];
 
 export async function getDashboardStats(): Promise<DashboardStats> {
   const [
@@ -120,7 +120,7 @@ export function buildContentDistribution(stats: DashboardStats): ContentDistribu
 
   return slices.map((slice, index) => ({
     ...slice,
-    color: DISTRIBUTION_COLORS[index % DISTRIBUTION_COLORS.length] ?? "#7c3aed",
+    color: DISTRIBUTION_COLORS[index % DISTRIBUTION_COLORS.length] ?? "#7c83ff",
   }));
 }
 

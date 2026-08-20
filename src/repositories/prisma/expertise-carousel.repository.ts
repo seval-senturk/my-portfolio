@@ -1,5 +1,6 @@
 import type { ExpertiseCarouselRepository } from "@/content/domains/expertise-carousel/repository";
 import { expertiseCarouselContent } from "@/data/expertise-carousel.data";
+import { normalizeExpertiseCarouselContent } from "@/lib/content/normalize-expertise-carousel-content";
 import { prisma } from "@/lib/prisma";
 import { mapExpertiseCarouselToContent } from "@/repositories/prisma/mappers/expertise-carousel.mapper";
 import { resolveLocale } from "@/repositories/shared/locale";
@@ -18,18 +19,28 @@ export const prismaExpertiseCarouselRepository: ExpertiseCarouselRepository = {
       return expertiseCarouselContent;
     }
 
-    const locale = resolveLocale(options);
-    const [config, items] = await Promise.all([
-      prisma.expertiseCarouselConfig.findUnique({ where: { locale } }),
-      prisma.expertiseCarouselItem.findMany({
-        orderBy: { sortOrder: "asc" },
-      }),
-    ]);
+    try {
+      const locale = resolveLocale(options);
+      const [config, items] = await Promise.all([
+        prisma.expertiseCarouselConfig.findUnique({ where: { locale } }),
+        prisma.expertiseCarouselItem.findMany({
+          orderBy: { sortOrder: "asc" },
+        }),
+      ]);
 
-    if (!config) {
+      if (!config) {
+        return expertiseCarouselContent;
+      }
+
+      return normalizeExpertiseCarouselContent(
+        mapExpertiseCarouselToContent(config, items),
+      );
+    } catch (error) {
+      console.error(
+        "[expertise-carousel.repository] Falling back to static expertise carousel content.",
+        error,
+      );
       return expertiseCarouselContent;
     }
-
-    return mapExpertiseCarouselToContent(config, items);
   },
 };

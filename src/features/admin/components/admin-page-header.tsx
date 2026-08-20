@@ -1,8 +1,5 @@
 import type { ReactNode } from "react";
 
-import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
-
 interface AdminPageHeaderProps {
   title: string;
   description?: string;
@@ -15,12 +12,14 @@ export function AdminPageHeader({
   actions,
 }: AdminPageHeaderProps) {
   return (
-    <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-      <div className="space-y-2">
-        <Heading as="h1">{title}</Heading>
-        {description ? <Text tone="muted">{description}</Text> : null}
+    <header className="admin-page-header">
+      <div className="admin-page-header__content">
+        <h1 className="admin-page-header__title">{title}</h1>
+        {description ? (
+          <p className="admin-page-header__description">{description}</p>
+        ) : null}
       </div>
-      {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
-    </div>
+      {actions ? <div className="admin-page-header__actions">{actions}</div> : null}
+    </header>
   );
 }

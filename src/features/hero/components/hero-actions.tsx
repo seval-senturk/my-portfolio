@@ -28,7 +28,7 @@ export function HeroActions({ primaryCta, secondaryCta }: HeroActionsProps) {
           variant="primary"
           size="lg"
           className={cn(
-            "hero-actions__primary rounded-full px-7 shadow-[0_12px_32px_rgba(124,131,255,0.28)]",
+            "hero-actions__primary shadow-[0_12px_32px_rgba(124,131,255,0.28)]",
             FOCUS_RING_CLASS,
           )}
         >
@@ -43,7 +43,7 @@ export function HeroActions({ primaryCta, secondaryCta }: HeroActionsProps) {
           variant="outline"
           size="lg"
           className={cn(
-            "hero-actions__secondary rounded-full border-border/70 bg-transparent px-7 hover:border-accent/40 hover:bg-surface/30",
+            "hero-actions__secondary border-border/70 bg-transparent hover:border-accent/40 hover:bg-surface/30",
             FOCUS_RING_CLASS,
           )}
         >

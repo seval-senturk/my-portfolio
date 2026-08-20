@@ -13,6 +13,7 @@ import {
   AdminSwitchField,
   AdminTextField,
   AdminTextareaField,
+  AdminUploadField,
 } from "@/features/admin/ui";
 import { Button } from "@/components/ui/button";
 import type { AboutHomeContent } from "@/types/about-home";
@@ -66,12 +67,11 @@ export function AboutHomeAdminView({
             label={adminTr.aboutHome.fields.sectionLabel}
             defaultValue={config.section.label}
           />
-          <AdminTextareaField
+          <AdminTextField
             id="title"
             name="title"
             label={adminTr.aboutHome.fields.title}
             defaultValue={config.section.title}
-            rows={3}
             hint={adminTr.aboutHome.fields.titleHint}
           />
           <AdminTextField
@@ -92,8 +92,42 @@ export function AboutHomeAdminView({
         </AdminFormSection>
 
         <AdminFormSection
-          title={adminTr.aboutHome.sections.cta}
-          description={adminTr.aboutHome.sections.ctaDesc}
+          title={adminTr.aboutHome.sections.profile}
+          description={adminTr.aboutHome.sections.profileDesc}
+        >
+          <AdminUploadField
+            id="profileImageUrl"
+            name="profileImageUrl"
+            label={adminTr.aboutHome.fields.profileImage}
+            defaultValue={config.profile.imageSrc ?? ""}
+            accept="image/png,image/webp,image/jpeg"
+            category="About"
+          />
+          <div className="grid gap-4 md:grid-cols-2">
+            <AdminTextField
+              id="profileImageAlt"
+              name="profileImageAlt"
+              label={adminTr.aboutHome.fields.profileAlt}
+              defaultValue={config.profile.imageAlt}
+            />
+            <AdminTextField
+              id="profileInitials"
+              name="profileInitials"
+              label={adminTr.aboutHome.fields.profileInitials}
+              defaultValue={config.profile.initials}
+            />
+            <AdminSwitchField
+              id="profileVisible"
+              name="profileVisible"
+              label={adminTr.aboutHome.fields.profileVisible}
+              defaultChecked={config.profile.visible}
+            />
+          </div>
+        </AdminFormSection>
+
+        <AdminFormSection
+          title={adminTr.aboutHome.sections.primaryCta}
+          description={adminTr.aboutHome.sections.primaryCtaDesc}
         >
           <AdminTextField
             id="ctaLabel"
@@ -115,6 +149,30 @@ export function AboutHomeAdminView({
           />
         </AdminFormSection>
 
+        <AdminFormSection
+          title={adminTr.aboutHome.sections.secondaryCta}
+          description={adminTr.aboutHome.sections.secondaryCtaDesc}
+        >
+          <AdminTextField
+            id="secondaryCtaLabel"
+            name="secondaryCtaLabel"
+            label={adminTr.aboutHome.fields.secondaryCtaLabel}
+            defaultValue={config.secondaryCta.label}
+          />
+          <AdminTextField
+            id="secondaryCtaHref"
+            name="secondaryCtaHref"
+            label={adminTr.aboutHome.fields.secondaryCtaHref}
+            defaultValue={config.secondaryCta.href}
+          />
+          <AdminSwitchField
+            id="secondaryCtaVisible"
+            name="secondaryCtaVisible"
+            label={adminTr.aboutHome.fields.secondaryCtaVisible}
+            defaultChecked={config.secondaryCta.visible}
+          />
+        </AdminFormSection>
+
         <AdminFormStatus error={status.error} success={status.success} />
 
         <AdminFormActions>
@@ -125,8 +183,8 @@ export function AboutHomeAdminView({
       </form>
 
       <AdminFormSection
-        title={adminTr.aboutHome.sections.featureCards}
-        description={adminTr.aboutHome.sections.featureCardsDesc}
+        title={adminTr.aboutHome.sections.infoCards}
+        description={adminTr.aboutHome.sections.infoCardsDesc}
       >
         <AboutHomeItemsAdminSection initialFeatureCards={[...config.featureCards]} />
       </AdminFormSection>

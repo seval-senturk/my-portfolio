@@ -31,13 +31,12 @@ export function AdminResetPasswordForm({ email, token }: AdminResetPasswordFormP
 
   if (state?.success) {
     return (
-      <div className="space-y-4 text-center">
-        <h1 className="text-h3 font-semibold">{adminTr.resetPassword.title}</h1>
-        <p className="text-small text-success">{adminTr.resetPassword.success}</p>
-        <Link
-          href={ADMIN_ROUTES.login}
-          className="inline-block text-small text-[var(--admin-brand,#7c3aed)] hover:underline"
-        >
+      <div className="admin-login-form">
+        <div className="admin-login-form__header">
+          <h1 className="admin-login-form__title">{adminTr.resetPassword.title}</h1>
+          <p className="admin-login-form__success">{adminTr.resetPassword.success}</p>
+        </div>
+        <Link href={ADMIN_ROUTES.login} className="admin-link text-center text-small">
           {adminTr.forgotPassword.backToLogin}
         </Link>
       </div>
@@ -45,20 +44,18 @@ export function AdminResetPasswordForm({ email, token }: AdminResetPasswordFormP
   }
 
   return (
-    <div>
-      <div className="mb-6 text-center">
-        <h1 className="text-h3 font-semibold">{adminTr.resetPassword.title}</h1>
-        <p className="mt-2 text-small text-muted-foreground">
-          {adminTr.resetPassword.description}
-        </p>
+    <div className="admin-login-form">
+      <div className="admin-login-form__header">
+        <h1 className="admin-login-form__title">{adminTr.resetPassword.title}</h1>
+        <p className="admin-login-form__description">{adminTr.resetPassword.description}</p>
       </div>
 
-      <form action={formAction} className="space-y-5" noValidate>
+      <form action={formAction} className="admin-login-form__fields" noValidate>
         <input type="hidden" name="email" value={email} />
         <input type="hidden" name="token" value={token} />
 
-        <div>
-          <Label htmlFor="reset-password" required>
+        <div className="admin-login-form__field">
+          <Label htmlFor="reset-password" required className="admin-login-form__label">
             {adminTr.resetPassword.password}
           </Label>
           <Input
@@ -66,12 +63,12 @@ export function AdminResetPasswordForm({ email, token }: AdminResetPasswordFormP
             name="password"
             type="password"
             autoComplete="new-password"
-            className="mt-2"
+            className="admin-login-form__input"
           />
         </div>
 
-        <div>
-          <Label htmlFor="reset-confirm-password" required>
+        <div className="admin-login-form__field">
+          <Label htmlFor="reset-confirm-password" required className="admin-login-form__label">
             {adminTr.resetPassword.confirmPassword}
           </Label>
           <Input
@@ -79,7 +76,7 @@ export function AdminResetPasswordForm({ email, token }: AdminResetPasswordFormP
             name="confirmPassword"
             type="password"
             autoComplete="new-password"
-            className="mt-2"
+            className="admin-login-form__input"
           />
         </div>
 
@@ -89,7 +86,7 @@ export function AdminResetPasswordForm({ email, token }: AdminResetPasswordFormP
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full bg-[var(--admin-brand,#7c3aed)] hover:bg-[var(--admin-brand-hover,#6d28d9)]"
+          className="admin-login-form__submit"
           isLoading={isPending}
         >
           {adminTr.resetPassword.submit}

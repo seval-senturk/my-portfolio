@@ -45,3 +45,7 @@ export const requestSiteSocialLinks = cache(() =>
 export const requestBlogPostBySlug = cache((slug: string) =>
   blogContentService.getPostBySlug(slug),
 );
+
+export const requestProjectBySlug = cache((slug: string) =>
+  projectsContentService.getBySlug(slug),
+);

@@ -5,6 +5,7 @@ export interface CreateLeadInput {
   email: string;
   subject: string;
   message: string;
+  phone?: string;
   company?: string;
   projectType?: string;
   status?: LeadStatus;

@@ -1,6 +1,6 @@
 import type { ExpertiseCarouselContent } from "@/types/expertise-carousel";
 import { HomeSectionShell } from "@/components/sections";
-import { ExpertiseCarousel } from "@/features/expertise-carousel/components/expertise-carousel";
+import { ExpertiseGrid } from "@/features/expertise-carousel/components/expertise-grid";
 
 interface ExpertiseCarouselSectionProps {
   content: ExpertiseCarouselContent;
@@ -19,14 +19,14 @@ export function ExpertiseCarouselSection({
     <HomeSectionShell
       id="expertise"
       headingId={headingId}
+      sectionClassName="expertise-section"
       header={{
         label: content.section.label,
         title: content.section.title,
         titleAccent: content.section.titleAccent,
-        description: content.section.description,
       }}
     >
-      <ExpertiseCarousel items={content.items} labelId={headingId} />
+      <ExpertiseGrid items={content.items} />
     </HomeSectionShell>
   );
 }

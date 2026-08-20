@@ -11,8 +11,11 @@ export interface ProjectEntryInput {
   status?: string;
   client?: string;
   role: string;
+  projectType?: string;
   featured: boolean;
+  visible: boolean;
   coverImageUrl?: string;
+  coverImageAlt?: string;
   githubUrl?: string;
   liveUrl?: string;
   technologies: string[];
@@ -60,8 +63,11 @@ export async function createProjectEntry(input: ProjectEntryInput) {
       status: input.status ?? null,
       client: input.client ?? null,
       role: input.role,
+      projectType: input.projectType ?? null,
       featured: input.featured,
+      visible: input.visible ?? true,
       coverImageUrl: input.coverImageUrl ?? null,
+      coverImageAlt: input.coverImageAlt ?? null,
       githubUrl: input.githubUrl ?? null,
       liveUrl: input.liveUrl ?? null,
       highlights: input.highlights,
@@ -85,8 +91,11 @@ export async function updateProjectEntry(id: string, input: ProjectEntryInput) {
       status: input.status ?? null,
       client: input.client ?? null,
       role: input.role,
+      projectType: input.projectType ?? null,
       featured: input.featured,
+      visible: input.visible ?? true,
       coverImageUrl: input.coverImageUrl ?? null,
+      coverImageAlt: input.coverImageAlt ?? null,
       githubUrl: input.githubUrl ?? null,
       liveUrl: input.liveUrl ?? null,
       highlights: input.highlights,
@@ -99,6 +108,17 @@ export async function updateProjectEntry(id: string, input: ProjectEntryInput) {
 
 export async function deleteProjectEntry(id: string) {
   await prisma.project.delete({ where: { id } });
+}
+
+export async function reorderProjectEntries(ids: readonly string[]) {
+  await Promise.all(
+    ids.map((id, index) =>
+      prisma.project.update({
+        where: { id },
+        data: { sortOrder: index },
+      }),
+    ),
+  );
 }
 
 export function parseCommaList(value: string): string[] {

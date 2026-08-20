@@ -34,7 +34,7 @@ export default async function SeoOverviewPage() {
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
           <div className="admin-surface rounded-xl border p-5">
             <h3 className="text-small font-semibold">{adminTr.seo.overview.healthScore}</h3>
-            <p className="mt-2 text-h2 font-semibold text-[var(--admin-brand,#7c3aed)]">
+            <p className="mt-2 text-h2 font-semibold text-[var(--admin-brand)]">
               {overview.healthScore}/100
             </p>
             <p className="mt-1 text-caption text-muted-foreground">
@@ -42,7 +42,7 @@ export default async function SeoOverviewPage() {
             </p>
             <Link
               href={`${ADMIN_ROUTES.seo}/health`}
-              className="mt-4 inline-block text-caption text-[var(--admin-brand,#7c3aed)] hover:underline"
+              className="admin-link mt-4 inline-block text-caption"
             >
               {adminTr.seo.overview.viewHealth}
             </Link>

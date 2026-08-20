@@ -149,7 +149,7 @@ export function MediaUploadZone({
         className={cn(
           "rounded-xl border border-dashed p-6 transition-base",
           isDragging
-            ? "border-[var(--admin-brand,#7c3aed)] bg-[var(--admin-brand-muted,rgb(124_58_237_/_0.12))]"
+            ? "border-[var(--admin-brand)] bg-[var(--admin-brand-muted)]"
             : "border-border bg-muted/30",
         )}
       >
@@ -212,7 +212,7 @@ export function MediaUploadZone({
                     <div
                       className={cn(
                         "h-full transition-all",
-                        item.status === "success" ? "bg-green-500" : "bg-[var(--admin-brand,#7c3aed)]",
+                        item.status === "success" ? "bg-green-500" : "bg-[var(--admin-brand)]",
                       )}
                       style={{ width: `${item.progress}%` }}
                     />

@@ -23,11 +23,11 @@ export function CareerJourneySection({
     return null;
   }
 
-  const headingId = "career-journey-heading";
+  const headingId = "experience-heading";
 
   return (
     <HomeSectionShell
-      id="career-journey"
+      id="experience"
       headingId={headingId}
       header={{
         label: careerJourneySectionConfig.label,

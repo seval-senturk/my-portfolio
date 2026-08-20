@@ -11,7 +11,7 @@ export const testimonialsContent: TestimonialsContent = {
     visible: true,
     carousel: {
       enabled: true,
-      autoplay: true,
+      autoplay: false,
       autoplayDelayMs: 5000,
       loop: true,
     },

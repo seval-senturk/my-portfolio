@@ -1,11 +1,12 @@
 "use client";
 
-import { Bell, LogOut, Search, UserCircle2 } from "lucide-react";
+import { Bell, ExternalLink, LogOut, Search, UserCircle2 } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
+import { ROUTES } from "@/constants/routes";
 import { adminTr } from "@/features/admin/i18n/tr";
 import { cn } from "@/lib/cn";
 import { FOCUS_RING_CLASS } from "@/lib/accessibility";
@@ -56,14 +57,14 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
   }, [query, runSearch]);
 
   return (
-    <header className="sticky top-0 z-20 border-b border-border bg-surface/95 backdrop-blur">
-      <div className="flex flex-col gap-4 px-4 py-4 lg:flex-row lg:items-center lg:justify-between lg:px-6">
-        <div className="relative max-w-md flex-1">
-          <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+    <header className="admin-topbar">
+      <div className="admin-topbar__inner">
+        <div className="admin-topbar__search">
+          <Search className="admin-topbar__search-icon" aria-hidden />
           <Input
             type="search"
             placeholder={adminTr.topbar.searchPlaceholder}
-            className="pl-9"
+            className="admin-topbar__search-input"
             aria-label={adminTr.topbar.searchLabel}
             value={query}
             onChange={(event) => {
@@ -77,18 +78,22 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
           />
 
           {showResults && query.trim().length >= 2 ? (
-            <div className="absolute top-full z-30 mt-2 w-full rounded-xl border border-border bg-surface shadow-lg">
+            <div className="admin-topbar__search-results">
               {isSearching ? (
-                <p className="px-4 py-3 text-caption text-muted-foreground">{adminTr.common.searching}</p>
+                <p className="px-4 py-3 text-caption text-muted-foreground">
+                  {adminTr.common.searching}
+                </p>
               ) : results.length === 0 ? (
-                <p className="px-4 py-3 text-caption text-muted-foreground">{adminTr.common.noResults}</p>
+                <p className="px-4 py-3 text-caption text-muted-foreground">
+                  {adminTr.common.noResults}
+                </p>
               ) : (
-                <ul className="max-h-72 overflow-y-auto py-2">
+                <ul className="max-h-72 overflow-y-auto py-1">
                   {results.map((result) => (
                     <li key={`${result.type}-${result.id}`}>
                       <Link
                         href={result.href}
-                        className="block px-4 py-2 text-small hover:bg-muted"
+                        className="admin-topbar__search-result"
                         onClick={() => setShowResults(false)}
                       >
                         <span className="font-medium">{result.title}</span>
@@ -104,7 +109,12 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
           ) : null}
         </div>
 
-        <div className="flex items-center justify-end gap-2">
+        <div className="admin-topbar__actions">
+          <Link href={ROUTES.home} className="admin-topbar__view-site" target="_blank">
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+            {adminTr.topbar.viewSite}
+          </Link>
+
           <Button
             type="button"
             variant="ghost"
@@ -120,10 +130,7 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
             <button
               type="button"
               onClick={() => setIsMenuOpen((current) => !current)}
-              className={cn(
-                "flex items-center gap-3 rounded-xl border border-border bg-background px-3 py-2 text-left transition-base hover:bg-muted",
-                FOCUS_RING_CLASS,
-              )}
+              className={cn("admin-topbar__user-trigger", FOCUS_RING_CLASS)}
               aria-expanded={isMenuOpen}
               aria-haspopup="menu"
             >
@@ -135,18 +142,15 @@ export function AdminTopbar({ userName, userEmail }: AdminTopbarProps) {
             </button>
 
             {isMenuOpen ? (
-              <div
-                role="menu"
-                className="absolute right-0 mt-2 w-56 rounded-xl border border-border bg-surface p-2 shadow-lg"
-              >
-                <div className="border-b border-border px-3 py-2">
+              <div role="menu" className="admin-topbar__user-menu">
+                <div className="admin-topbar__user-meta">
                   <p className="text-small font-medium">{userName ?? adminTr.topbar.admin}</p>
                   <p className="text-caption text-muted-foreground">{userEmail}</p>
                 </div>
                 <button
                   type="button"
                   role="menuitem"
-                  className="mt-2 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-small text-foreground hover:bg-muted"
+                  className="admin-topbar__logout"
                   onClick={() => {
                     setIsMenuOpen(false);
                     void signOut({ callbackUrl: ADMIN_ROUTES.login });

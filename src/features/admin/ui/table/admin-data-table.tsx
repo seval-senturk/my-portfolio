@@ -155,7 +155,7 @@ export function AdminDataTable<T extends { id: string }>({
   }
 
   return (
-    <div className="admin-surface overflow-hidden">
+    <div className="admin-surface admin-table-wrap overflow-hidden">
       <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative max-w-sm flex-1">
           <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -176,10 +176,10 @@ export function AdminDataTable<T extends { id: string }>({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full text-left text-small">
-          <thead className="border-b border-border bg-muted/40">
+        <table className="admin-table">
+          <thead>
             <tr>
-              <th scope="col" className="w-10 px-4 py-3">
+              <th scope="col" className="w-10">
                 <input
                   type="checkbox"
                   aria-label={adminTr.table.selectAll}
@@ -191,7 +191,7 @@ export function AdminDataTable<T extends { id: string }>({
                 <th
                   key={column.id}
                   scope="col"
-                  className={cn("px-4 py-3 font-medium text-muted-foreground", column.className)}
+                  className={cn("font-medium text-muted-foreground", column.className)}
                 >
                   {column.sortValue ? (
                     <button
@@ -214,7 +214,7 @@ export function AdminDataTable<T extends { id: string }>({
                 </th>
               ))}
               {rowActions ? (
-                <th scope="col" className="px-4 py-3 text-right font-medium text-muted-foreground">
+                <th scope="col" className="text-right font-medium text-muted-foreground">
                   {adminTr.common.actions}
                 </th>
               ) : null}
@@ -228,12 +228,9 @@ export function AdminDataTable<T extends { id: string }>({
               <tr
                 key={row.id}
                 {...rowProps}
-                className={cn(
-                  "border-b border-border last:border-b-0",
-                  rowProps?.className,
-                )}
+                className={cn(rowProps?.className)}
               >
-                <td className="px-4 py-3">
+                <td>
                   <input
                     type="checkbox"
                     aria-label={`Select row ${row.id}`}
@@ -242,12 +239,12 @@ export function AdminDataTable<T extends { id: string }>({
                   />
                 </td>
                 {columns.map((column) => (
-                  <td key={column.id} className={cn("px-4 py-3", column.className)}>
+                  <td key={column.id} className={column.className}>
                     {column.accessor(row)}
                   </td>
                 ))}
                 {rowActions ? (
-                  <td className="px-4 py-3 text-right">{rowActions(row)}</td>
+                  <td className="text-right">{rowActions(row)}</td>
                 ) : null}
               </tr>
               );

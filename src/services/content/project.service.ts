@@ -2,6 +2,7 @@ import type { ContentQueryOptions } from "@/content/shared/types";
 import { validateSlug } from "@/content/shared/validation";
 import type { ProjectsRepository } from "@/content/domains/projects/repository";
 import { cacheContent } from "@/lib/cache/server";
+import { normalizeProjectsContent } from "@/lib/projects/normalize";
 import { prismaProjectsRepository } from "@/repositories/prisma/projects.repository";
 import { resolveLocale } from "@/repositories/shared/locale";
 import type {
@@ -17,8 +18,8 @@ export class ProjectService {
 
   get(options?: ContentQueryOptions): Promise<ProjectsContent> {
     const locale = resolveLocale(options);
-    return cacheContent("projects", [locale], () =>
-      this.repository.get({ ...options, locale }),
+    return cacheContent("projects-v2", [locale], async () =>
+      normalizeProjectsContent(await this.repository.get({ ...options, locale })),
     );
   }
 

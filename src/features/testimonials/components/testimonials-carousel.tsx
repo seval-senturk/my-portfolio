@@ -45,10 +45,8 @@ export function TestimonialsCarousel({
 }: TestimonialsCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const carouselId = useId();
-  const autoplayTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [slidesPerView, setSlidesPerView] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
 
   const pageCount = Math.max(1, items.length - slidesPerView + 1);
 
@@ -106,37 +104,6 @@ export function TestimonialsCarousel({
     return () => track.removeEventListener("scroll", onScroll);
   }, [pageCount]);
 
-  useEffect(() => {
-    if (!settings.enabled || !settings.autoplay || isPaused || pageCount <= 1) {
-      if (autoplayTimerRef.current) {
-        clearInterval(autoplayTimerRef.current);
-        autoplayTimerRef.current = null;
-      }
-      return;
-    }
-
-    autoplayTimerRef.current = setInterval(() => {
-      setActiveIndex((current) => {
-        const next = current + 1;
-        scrollToIndex(next >= pageCount ? 0 : next);
-        return next >= pageCount ? 0 : next;
-      });
-    }, Math.max(settings.autoplayDelayMs, 2000));
-
-    return () => {
-      if (autoplayTimerRef.current) {
-        clearInterval(autoplayTimerRef.current);
-      }
-    };
-  }, [
-    isPaused,
-    pageCount,
-    scrollToIndex,
-    settings.autoplay,
-    settings.autoplayDelayMs,
-    settings.enabled,
-  ]);
-
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "ArrowRight") {
       event.preventDefault();
@@ -161,10 +128,6 @@ export function TestimonialsCarousel({
       aria-labelledby={labelId}
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onFocus={() => setIsPaused(true)}
-      onBlur={() => setIsPaused(false)}
     >
       <div className="testimonials-carousel__viewport">
         <div

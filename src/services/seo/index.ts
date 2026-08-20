@@ -7,5 +7,6 @@ export {
   buildProfilePageStructuredData,
   buildResumeStructuredData,
   buildProjectsStructuredData,
+  buildProjectDetailStructuredData,
   buildAiCareerStructuredData,
 } from "@/services/seo/seo-structured-data.service";

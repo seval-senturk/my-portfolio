@@ -26,15 +26,14 @@ export function AdminForgotPasswordForm() {
 
   if (state?.success) {
     return (
-      <div className="space-y-4 text-center">
-        <h1 className="text-h3 font-semibold">{adminTr.forgotPassword.successTitle}</h1>
-        <p className="text-small text-muted-foreground">
-          {adminTr.forgotPassword.successDescription}
-        </p>
-        <Link
-          href={ADMIN_ROUTES.login}
-          className="inline-block text-small text-[var(--admin-brand,#7c3aed)] hover:underline"
-        >
+      <div className="admin-login-form">
+        <div className="admin-login-form__header">
+          <h1 className="admin-login-form__title">{adminTr.forgotPassword.successTitle}</h1>
+          <p className="admin-login-form__description">
+            {adminTr.forgotPassword.successDescription}
+          </p>
+        </div>
+        <Link href={ADMIN_ROUTES.login} className="admin-link text-center text-small">
           {adminTr.forgotPassword.backToLogin}
         </Link>
       </div>
@@ -42,17 +41,15 @@ export function AdminForgotPasswordForm() {
   }
 
   return (
-    <div>
-      <div className="mb-6 text-center">
-        <h1 className="text-h3 font-semibold">{adminTr.forgotPassword.title}</h1>
-        <p className="mt-2 text-small text-muted-foreground">
-          {adminTr.forgotPassword.description}
-        </p>
+    <div className="admin-login-form">
+      <div className="admin-login-form__header">
+        <h1 className="admin-login-form__title">{adminTr.forgotPassword.title}</h1>
+        <p className="admin-login-form__description">{adminTr.forgotPassword.description}</p>
       </div>
 
-      <form action={formAction} className="space-y-5" noValidate>
-        <div>
-          <Label htmlFor="forgot-email" required>
+      <form action={formAction} className="admin-login-form__fields" noValidate>
+        <div className="admin-login-form__field">
+          <Label htmlFor="forgot-email" required className="admin-login-form__label">
             {adminTr.forgotPassword.email}
           </Label>
           <Input
@@ -60,7 +57,7 @@ export function AdminForgotPasswordForm() {
             name="email"
             type="email"
             autoComplete="email"
-            className="mt-2"
+            className="admin-login-form__input"
             placeholder="ornek@email.com"
           />
         </div>
@@ -71,17 +68,14 @@ export function AdminForgotPasswordForm() {
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full bg-[var(--admin-brand,#7c3aed)] hover:bg-[var(--admin-brand-hover,#6d28d9)]"
+          className="admin-login-form__submit"
           isLoading={isPending}
         >
           {adminTr.forgotPassword.submit}
         </Button>
 
         <p className="text-center">
-          <Link
-            href={ADMIN_ROUTES.login}
-            className="text-caption text-[var(--admin-brand,#7c3aed)] hover:underline"
-          >
+          <Link href={ADMIN_ROUTES.login} className="admin-link text-caption">
             {adminTr.forgotPassword.backToLogin}
           </Link>
         </p>

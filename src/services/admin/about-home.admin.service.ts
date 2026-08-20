@@ -22,7 +22,12 @@ export async function getAboutHomeConfig() {
     return null;
   }
 
-  return prisma.aboutHomeConfig.findUnique({ where: { locale: "en" } });
+  try {
+    return await prisma.aboutHomeConfig.findUnique({ where: { locale: "en" } });
+  } catch (error) {
+    console.error("[about-home.admin] Failed to load AboutHomeConfig.", error);
+    return null;
+  }
 }
 
 export async function listAboutHomeFeatureCards() {
@@ -30,7 +35,12 @@ export async function listAboutHomeFeatureCards() {
     return [];
   }
 
-  return prisma.aboutHomeFeatureCard.findMany({ orderBy: { sortOrder: "asc" } });
+  try {
+    return await prisma.aboutHomeFeatureCard.findMany({ orderBy: { sortOrder: "asc" } });
+  } catch (error) {
+    console.error("[about-home.admin] Failed to load AboutHomeFeatureCards.", error);
+    return [];
+  }
 }
 
 export async function getAboutHomeAdminContent() {
@@ -56,6 +66,13 @@ export async function updateAboutHomeConfig(input: AboutHomeConfigInput) {
       ctaLabel: input.ctaLabel,
       ctaHref: input.ctaHref,
       ctaVisible: input.ctaVisible,
+      secondaryCtaLabel: input.secondaryCtaLabel,
+      secondaryCtaHref: input.secondaryCtaHref,
+      secondaryCtaVisible: input.secondaryCtaVisible,
+      profileImageUrl: input.profileImageUrl ?? null,
+      profileImageAlt: input.profileImageAlt,
+      profileInitials: input.profileInitials,
+      profileVisible: input.profileVisible,
     },
     create: {
       locale: "en",
@@ -67,6 +84,13 @@ export async function updateAboutHomeConfig(input: AboutHomeConfigInput) {
       ctaLabel: input.ctaLabel,
       ctaHref: input.ctaHref,
       ctaVisible: input.ctaVisible,
+      secondaryCtaLabel: input.secondaryCtaLabel,
+      secondaryCtaHref: input.secondaryCtaHref,
+      secondaryCtaVisible: input.secondaryCtaVisible,
+      profileImageUrl: input.profileImageUrl ?? null,
+      profileImageAlt: input.profileImageAlt,
+      profileInitials: input.profileInitials,
+      profileVisible: input.profileVisible,
     },
   });
 }

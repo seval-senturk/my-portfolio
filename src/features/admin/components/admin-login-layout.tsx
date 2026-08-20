@@ -16,20 +16,23 @@ export function AdminLoginLayout({
   enableGoogleAuth = false,
 }: AdminLoginLayoutProps) {
   return (
-    <div className="admin-login-page min-h-screen">
-      <div className="flex min-h-screen items-center justify-center px-4 py-12">
-        <div className="admin-login-card w-full max-w-md p-8 sm:p-10">
-          <div className="mb-8 flex flex-col items-center text-center">
-            <AdminBrandLogo size="lg" />
-            <p className="mt-4 text-caption font-medium tracking-wide text-muted-foreground uppercase">
-              {siteConfig.name}
-            </p>
-            <p className="mt-1 text-small text-muted-foreground">
-              {adminTr.login.brandSubtitle}
-            </p>
-          </div>
+    <div className="admin-login-page">
+      <div className="admin-login-page__ambient" aria-hidden="true">
+        <span className="admin-login-page__orb admin-login-page__orb--primary" />
+        <span className="admin-login-page__orb admin-login-page__orb--secondary" />
+      </div>
 
-          {children ?? <AdminLoginForm enableGoogleAuth={enableGoogleAuth} />}
+      <div className="admin-login-page__inner">
+        <div className="admin-login-card">
+          <header className="admin-login-card__header">
+            <AdminBrandLogo size="lg" />
+            <p className="admin-login-card__site-name">{siteConfig.name}</p>
+            <p className="admin-login-card__subtitle">{adminTr.login.brandSubtitle}</p>
+          </header>
+
+          <div className="admin-login-card__body">
+            {children ?? <AdminLoginForm enableGoogleAuth={enableGoogleAuth} />}
+          </div>
         </div>
       </div>
     </div>

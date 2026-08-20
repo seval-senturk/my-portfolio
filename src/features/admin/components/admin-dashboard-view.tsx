@@ -117,15 +117,9 @@ export async function AdminDashboardView() {
         </div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {adminQuickActions.map((action) => (
-            <Link
-              key={action.id}
-              href={action.href}
-              className="rounded-xl border border-border bg-background p-4 transition-base hover:border-[var(--admin-brand,#7c3aed)]/40 hover:bg-[var(--admin-brand-muted,rgb(124_58_237_/_0.12))]"
-            >
-              <p className="text-small font-medium text-foreground">{action.label}</p>
-              <p className="mt-1 text-caption text-muted-foreground">
-                {action.description}
-              </p>
+            <Link key={action.id} href={action.href} className="admin-action-card">
+              <p className="admin-action-card__title">{action.label}</p>
+              <p className="admin-action-card__description">{action.description}</p>
             </Link>
           ))}
         </div>

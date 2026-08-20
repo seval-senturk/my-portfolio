@@ -251,8 +251,8 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
                 type="button"
                 onClick={() => setSelected(asset)}
                 className={cn(
-                  "overflow-hidden rounded-xl border text-left transition-base hover:border-[var(--admin-brand,#7c3aed)]",
-                  selected?.id === asset.id && "border-[var(--admin-brand,#7c3aed)] ring-2 ring-[var(--admin-brand,#7c3aed)]/20",
+                  "overflow-hidden rounded-xl border text-left transition-base hover:border-[var(--admin-brand)]",
+                  selected?.id === asset.id && "border-[var(--admin-brand)] ring-2 ring-[var(--admin-brand)]/20",
                 )}
               >
                 <div className="flex aspect-video items-center justify-center bg-muted/50">
@@ -350,7 +350,7 @@ export function MediaLibraryView({ initialData }: MediaLibraryViewProps) {
               href={selected.publicUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-small text-[var(--admin-brand,#7c3aed)]"
+              className="admin-link inline-flex items-center gap-2 text-small"
             >
               <FileText className="h-4 w-4" />
               {adminTr.media.openPreview}

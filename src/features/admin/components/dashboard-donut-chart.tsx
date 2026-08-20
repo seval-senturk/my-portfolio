@@ -25,8 +25,8 @@ export function DashboardDonutChart({ data, title }: DashboardDonutChartProps) {
         });
 
   return (
-    <div className="admin-surface rounded-xl border p-5">
-      <h3 className="mb-4 text-small font-semibold">{title}</h3>
+    <div className="admin-surface admin-chart-panel">
+      <h3 className="admin-chart-panel__title">{title}</h3>
       <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
         <div className="relative">
           <svg width="160" height="160" viewBox="0 0 160 160" role="img" aria-label={title}>

@@ -14,12 +14,17 @@ interface AdminShellProps {
 export function AdminShell({ user, children }: AdminShellProps) {
   return (
     <AdminShellProvider>
-      <div className="admin-shell min-h-screen bg-background">
-        <div className="flex min-h-screen flex-col lg:grid lg:grid-cols-[auto_1fr]">
+      <div className="admin-shell">
+        <div className="admin-shell__ambient" aria-hidden="true">
+          <span className="admin-shell__orb admin-shell__orb--primary" />
+          <span className="admin-shell__orb admin-shell__orb--secondary" />
+        </div>
+
+        <div className="admin-shell__layout">
           <AdminSidebar />
           <div className="flex min-h-screen min-w-0 flex-1 flex-col">
             <AdminTopbar userName={user.name} userEmail={user.email} />
-            <main className="flex-1 p-4 lg:p-6">{children}</main>
+            <main className="admin-main">{children}</main>
           </div>
         </div>
       </div>

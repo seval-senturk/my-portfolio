@@ -1,44 +1,32 @@
-import { headerCta } from "@/config/navigation.config";
+import { requestContactContent } from "@/lib/cache/request-dedupe";
 import { cn } from "@/lib/cn";
 
 import { HeaderBrand } from "@/features/layout/components/header-brand";
-import { DesktopNav } from "@/features/layout/components/desktop-nav";
-import { MobileNav } from "@/features/layout/components/mobile-nav";
+import { SlideNavigationMenu } from "@/features/layout/components/slide-navigation-menu";
 import { SiteHeaderShell } from "@/features/layout/components/site-header-shell";
-import { ButtonLink } from "@/components/ui/button-link";
+import { SectionNavProvider } from "@/features/layout/context/section-nav-context";
 import { Container } from "@/components/ui/container";
 
 interface HeaderProps {
   className?: string;
 }
 
-export function Header({ className }: HeaderProps) {
+export async function Header({ className }: HeaderProps) {
+  const contact = await requestContactContent();
+
   return (
     <SiteHeaderShell>
-      <Container size="wide" className={cn(className)}>
-        <div className="grid h-16 grid-cols-[1fr_auto] items-center gap-4 lg:h-[4.5rem] lg:grid-cols-[1fr_auto_1fr]">
-          <HeaderBrand />
-
-          <div className="hidden justify-center lg:flex">
-            <DesktopNav />
+      <SectionNavProvider>
+        <Container size="wide" className={cn(className)}>
+          <div className="flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
+            <HeaderBrand />
+            <SlideNavigationMenu
+              availabilityLabel={contact.availabilityStatus}
+              resumeHref={contact.resumeHref}
+            />
           </div>
-
-          <div className="flex items-center justify-end gap-2 sm:gap-3">
-            <ButtonLink
-              href={headerCta.href}
-              variant="outline"
-              size="sm"
-              className="hidden rounded-full border-border/70 bg-surface/20 px-5 hover:border-accent/40 hover:bg-surface/40 lg:inline-flex"
-            >
-              {headerCta.label}
-              <span aria-hidden className="ml-0.5 opacity-70">
-                »
-              </span>
-            </ButtonLink>
-            <MobileNav />
-          </div>
-        </div>
-      </Container>
+        </Container>
+      </SectionNavProvider>
     </SiteHeaderShell>
   );
 }

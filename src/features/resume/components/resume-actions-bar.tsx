@@ -33,7 +33,7 @@ export function ResumeActionsBar({
               BUTTON_BASE_CLASSES,
               FOCUS_RING_CLASS,
               BUTTON_VARIANT_CLASSES.primary,
-              BUTTON_SIZE_CLASSES.md,
+              BUTTON_SIZE_CLASSES.lg,
             )}
           >
             {actions.downloadLabel}
@@ -46,7 +46,7 @@ export function ResumeActionsBar({
               BUTTON_BASE_CLASSES,
               FOCUS_RING_CLASS,
               BUTTON_VARIANT_CLASSES.secondary,
-              BUTTON_SIZE_CLASSES.md,
+              BUTTON_SIZE_CLASSES.lg,
             )}
           >
             {actions.viewLabel}
@@ -57,7 +57,7 @@ export function ResumeActionsBar({
           Resume PDF is temporarily unavailable.
         </p>
       )}
-      <ButtonLink href={actions.contactHref} variant="outline" size="md">
+      <ButtonLink href={actions.contactHref} variant="outline" size="lg">
         {actions.contactLabel}
       </ButtonLink>
     </nav>

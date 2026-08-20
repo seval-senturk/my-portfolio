@@ -87,13 +87,13 @@ export function ContactInfoView({ content }: ContactInfoViewProps) {
         </address>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <ButtonLink href={resumeHref} variant="secondary" size="md">
+          <ButtonLink href={resumeHref} variant="secondary" size="lg">
             {resumeLabel}
           </ButtonLink>
           <ButtonLink
             href={`mailto:${information.email}`}
             variant="outline"
-            size="md"
+            size="lg"
           >
             Email Me
           </ButtonLink>

@@ -1,17 +1,38 @@
+"use client";
+
 import NextLink from "next/link";
+import { usePathname } from "next/navigation";
+import type { MouseEvent } from "react";
 
 import { brandConfig } from "@/config/navigation.config";
+import { SECTION_IDS } from "@/constants/sections";
+import { ROUTES } from "@/constants/routes";
 import { FOCUS_RING_CLASS } from "@/lib/accessibility";
 import { cn } from "@/lib/cn";
+import { useSectionNav } from "@/features/layout/context/section-nav-context";
 
 interface HeaderBrandProps {
   className?: string;
 }
 
 export function HeaderBrand({ className }: HeaderBrandProps) {
+  const pathname = usePathname();
+  const { scrollToSection, isOnePageActive } = useSectionNav();
+
+  function handleClick(event: MouseEvent<HTMLAnchorElement>) {
+    if (!isOnePageActive) {
+      return;
+    }
+
+    event.preventDefault();
+    scrollToSection(SECTION_IDS.hero, { pushHash: true });
+  }
+
   return (
     <NextLink
       href={brandConfig.href}
+      prefetch={pathname === ROUTES.home}
+      onClick={handleClick}
       className={cn(
         "group inline-flex items-center gap-3 rounded-lg transition-base",
         FOCUS_RING_CLASS,
@@ -25,7 +46,7 @@ export function HeaderBrand({ className }: HeaderBrandProps) {
       >
         {brandConfig.shortName}
       </span>
-      <span className="hidden font-medium tracking-tight text-foreground sm:inline">
+      <span className="font-medium tracking-tight text-foreground">
         {brandConfig.name}
       </span>
     </NextLink>

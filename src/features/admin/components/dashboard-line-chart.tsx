@@ -31,8 +31,8 @@ export function DashboardLineChart({ data, title }: DashboardLineChartProps) {
   ].join(" ");
 
   return (
-    <div className="admin-surface rounded-xl border p-5">
-      <h3 className="mb-4 text-small font-semibold">{title}</h3>
+    <div className="admin-surface admin-chart-panel">
+      <h3 className="admin-chart-panel__title">{title}</h3>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="h-auto w-full"
@@ -41,22 +41,22 @@ export function DashboardLineChart({ data, title }: DashboardLineChartProps) {
       >
         <defs>
           <linearGradient id="admin-line-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#7c3aed" stopOpacity="0" />
+            <stop offset="0%" stopColor="var(--admin-brand)" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="var(--admin-brand)" stopOpacity="0" />
           </linearGradient>
         </defs>
         <polygon points={area} fill="url(#admin-line-fill)" />
         <polyline
           points={polyline}
           fill="none"
-          stroke="#7c3aed"
+          stroke="var(--admin-brand)"
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         {points.map((point) => (
           <g key={point.label}>
-            <circle cx={point.x} cy={point.y} r="4" fill="#7c3aed" />
+            <circle cx={point.x} cy={point.y} r="4" fill="var(--admin-brand)" />
             <text
               x={point.x}
               y={height - 6}

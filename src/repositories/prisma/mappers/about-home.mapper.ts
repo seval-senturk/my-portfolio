@@ -1,6 +1,20 @@
 import type { AboutHomeConfig, AboutHomeFeatureCard } from "@prisma/client";
 
-import type { AboutHomeContent, AboutHomeFeatureCard as FeatureCardType } from "@/types/about-home";
+import { aboutHomeContent } from "@/data/about-home.data";
+import type {
+  AboutHomeContent,
+  AboutHomeFeatureCard as FeatureCardType,
+  AboutHomeProfile,
+} from "@/types/about-home";
+
+function mapProfile(config: AboutHomeConfig): AboutHomeProfile {
+  return {
+    imageSrc: config.profileImageUrl ?? undefined,
+    imageAlt: config.profileImageAlt || aboutHomeContent.profile.imageAlt,
+    initials: config.profileInitials || aboutHomeContent.profile.initials,
+    visible: config.profileVisible ?? aboutHomeContent.profile.visible,
+  };
+}
 
 function mapVisibleFeatureCards(cards: AboutHomeFeatureCard[]): FeatureCardType[] {
   return cards
@@ -33,9 +47,9 @@ export function mapAboutHomeAdminFeatureCards(
     }));
 }
 
-export function mapAboutHomeToContent(
+function mapAboutHomeCore(
   config: AboutHomeConfig,
-  featureCards: AboutHomeFeatureCard[] = [],
+  featureCards: AboutHomeFeatureCard[],
 ): AboutHomeContent {
   return {
     section: {
@@ -45,13 +59,26 @@ export function mapAboutHomeToContent(
       titleAccent: config.titleAccent,
       description: config.description,
     },
+    profile: mapProfile(config),
     cta: {
-      label: config.ctaLabel,
-      href: config.ctaHref,
-      visible: config.ctaVisible,
+      label: config.ctaLabel || aboutHomeContent.cta.label,
+      href: config.ctaHref || aboutHomeContent.cta.href,
+      visible: config.ctaVisible ?? aboutHomeContent.cta.visible,
+    },
+    secondaryCta: {
+      label: config.secondaryCtaLabel || aboutHomeContent.secondaryCta.label,
+      href: config.secondaryCtaHref || aboutHomeContent.secondaryCta.href,
+      visible: config.secondaryCtaVisible ?? aboutHomeContent.secondaryCta.visible,
     },
     featureCards: mapVisibleFeatureCards(featureCards),
   };
+}
+
+export function mapAboutHomeToContent(
+  config: AboutHomeConfig,
+  featureCards: AboutHomeFeatureCard[] = [],
+): AboutHomeContent {
+  return mapAboutHomeCore(config, featureCards);
 }
 
 export function mapAboutHomeToAdminContent(
@@ -59,18 +86,7 @@ export function mapAboutHomeToAdminContent(
   featureCards: AboutHomeFeatureCard[] = [],
 ): AboutHomeContent {
   return {
-    section: {
-      visible: config.visible,
-      label: config.sectionLabel,
-      title: config.title,
-      titleAccent: config.titleAccent,
-      description: config.description,
-    },
-    cta: {
-      label: config.ctaLabel,
-      href: config.ctaHref,
-      visible: config.ctaVisible,
-    },
+    ...mapAboutHomeCore(config, featureCards),
     featureCards: mapAboutHomeAdminFeatureCards(featureCards),
   };
 }

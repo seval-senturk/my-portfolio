@@ -17,7 +17,7 @@ export default async function SeoHealthAdminPage() {
       >
         <div className="admin-surface rounded-xl border p-5">
           <p className="text-caption text-muted-foreground">{adminTr.seo.health.score}</p>
-          <p className="mt-1 text-h2 font-semibold text-[var(--admin-brand,#7c3aed)]">
+          <p className="mt-1 text-h2 font-semibold text-[var(--admin-brand)]">
             {health.score}/100
           </p>
           <p className="mt-2 text-small text-muted-foreground">

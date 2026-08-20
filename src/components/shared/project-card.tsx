@@ -1,5 +1,5 @@
 import type { ProjectEntry } from "@/types/project";
-import { getProjectAnchorPath } from "@/lib/projects";
+import { getProjectDetailPath } from "@/lib/projects";
 import { formatTechnologyList } from "@/lib/content";
 import { cn } from "@/lib/cn";
 
@@ -88,7 +88,7 @@ export function ProjectCard({
           )}
           {showCaseStudy && (
             <Link
-              href={getProjectAnchorPath(project.slug)}
+              href={getProjectDetailPath(project.slug)}
               variant="accent"
               className="text-small no-underline hover:underline"
               showExternalIcon={false}

@@ -174,7 +174,7 @@ export function SettingsAdminView({ settings, environment }: SettingsAdminViewPr
             <input
               name="primaryColor"
               defaultValue={settings.branding.primaryColor ?? ""}
-              placeholder="#7c3aed"
+              placeholder="#7c83ff"
               className="w-full rounded-lg border border-border bg-surface px-3 py-2"
             />
           </label>
@@ -183,7 +183,7 @@ export function SettingsAdminView({ settings, environment }: SettingsAdminViewPr
             <input
               name="adminBrandColor"
               defaultValue={settings.branding.adminBrandColor ?? ""}
-              placeholder="#7c3aed"
+              placeholder="#7c83ff"
               className="w-full rounded-lg border border-border bg-surface px-3 py-2"
             />
           </label>

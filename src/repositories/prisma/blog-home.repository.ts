@@ -78,22 +78,27 @@ export const prismaBlogHomeRepository: BlogHomeRepository = {
       return blogHomeContent;
     }
 
-    const locale = resolveLocale(options);
-    const config = await prisma.blogHomeSectionConfig.findUnique({
-      where: { locale },
-    });
+    try {
+      const locale = resolveLocale(options);
+      const config = await prisma.blogHomeSectionConfig.findUnique({
+        where: { locale },
+      });
 
-    if (!config) {
+      if (!config) {
+        return blogHomeContent;
+      }
+
+      const posts = await fetchPostsForMode(
+        locale,
+        config.selectionMode as BlogHomeSelectionMode,
+        config.postLimit,
+      );
+      const seoByPostId = await loadSeoByPostIds(posts.map((post) => post.id));
+
+      return mapBlogHomeToContent(config, posts, seoByPostId);
+    } catch (error) {
+      console.error("[blog-home.repository] Falling back to static blog home content.", error);
       return blogHomeContent;
     }
-
-    const posts = await fetchPostsForMode(
-      locale,
-      config.selectionMode as BlogHomeSelectionMode,
-      config.postLimit,
-    );
-    const seoByPostId = await loadSeoByPostIds(posts.map((post) => post.id));
-
-    return mapBlogHomeToContent(config, posts, seoByPostId);
   },
 };
