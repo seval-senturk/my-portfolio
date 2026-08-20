@@ -19,7 +19,7 @@ export function AdminSidebar() {
   const pathname = usePathname();
   const { isSidebarCollapsed, toggleSidebar } = useAdminShell();
 
-  const sections = ["main", "content", "system"] as const;
+  const sections = ["main", "content", "pages", "system"] as const;
 
   return (
     <aside

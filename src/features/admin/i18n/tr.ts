@@ -3,7 +3,8 @@ export const adminTr = {
     console: "Yönetim Paneli",
     sections: {
       main: "Genel",
-      content: "İçerik",
+      content: "Anasayfa",
+      pages: "Site & Sayfalar",
       system: "Sistem",
     },
     expand: "Kenar çubuğunu genişlet",
