@@ -22,7 +22,35 @@ interface AdminLoginFormProps {
   enableGoogleAuth?: boolean;
 }
 
+function AdminLoginFormSkeleton({ enableGoogleAuth = false }: AdminLoginFormProps) {
+  return (
+    <div className="admin-login-form admin-login-form--skeleton" aria-hidden="true">
+      <div className="admin-login-form__header">
+        <div className="admin-login-form__skeleton admin-login-form__skeleton--title" />
+        <div className="admin-login-form__skeleton admin-login-form__skeleton--subtitle" />
+      </div>
+
+      <div className="admin-login-form__fields">
+        <div className="admin-login-form__skeleton admin-login-form__skeleton--label" />
+        <div className="admin-login-form__skeleton admin-login-form__skeleton--input" />
+        <div className="admin-login-form__skeleton admin-login-form__skeleton--label" />
+        <div className="admin-login-form__skeleton admin-login-form__skeleton--input" />
+      </div>
+
+      <div className="admin-login-form__skeleton admin-login-form__skeleton--button" />
+
+      {enableGoogleAuth ? (
+        <>
+          <div className="admin-login-form__divider" />
+          <div className="admin-login-form__skeleton admin-login-form__skeleton--button" />
+        </>
+      ) : null}
+    </div>
+  );
+}
+
 export function AdminLoginForm({ enableGoogleAuth = false }: AdminLoginFormProps) {
+  const [isReady, setIsReady] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -39,6 +67,7 @@ export function AdminLoginForm({ enableGoogleAuth = false }: AdminLoginFormProps
       setEmail(remembered);
       setRememberMe(true);
     }
+    setIsReady(true);
   }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -91,18 +120,20 @@ export function AdminLoginForm({ enableGoogleAuth = false }: AdminLoginFormProps
     await signIn("google", { callbackUrl: ADMIN_ROUTES.dashboard });
   }
 
+  if (!isReady) {
+    return <AdminLoginFormSkeleton enableGoogleAuth={enableGoogleAuth} />;
+  }
+
   return (
-    <div className="w-full">
-      <div className="mb-6 text-center">
-        <h1 className="text-h3 font-semibold tracking-tight">{adminTr.login.welcome}</h1>
-        <p className="mt-2 text-small text-muted-foreground">
-          {adminTr.login.description}
-        </p>
+    <div className="admin-login-form">
+      <div className="admin-login-form__header">
+        <h1 className="admin-login-form__title">{adminTr.login.welcome}</h1>
+        <p className="admin-login-form__description">{adminTr.login.description}</p>
       </div>
 
-      <form className="space-y-5" onSubmit={handleSubmit} noValidate>
-        <div>
-          <Label htmlFor="admin-email" required>
+      <form className="admin-login-form__fields" onSubmit={handleSubmit} noValidate>
+        <div className="admin-login-form__field">
+          <Label htmlFor="admin-email" required className="admin-login-form__label">
             {adminTr.login.email}
           </Label>
           <Input
@@ -113,20 +144,20 @@ export function AdminLoginForm({ enableGoogleAuth = false }: AdminLoginFormProps
             value={email}
             hasError={Boolean(fieldErrors.email)}
             onChange={(event) => setEmail(event.target.value)}
-            className="mt-2"
+            className="admin-login-form__input"
             placeholder="ornek@email.com"
           />
           <FieldError id="admin-email-error" message={fieldErrors.email} />
         </div>
 
-        <div>
-          <div className="flex items-center justify-between gap-3">
-            <Label htmlFor="admin-password" required>
+        <div className="admin-login-form__field">
+          <div className="admin-login-form__password-row">
+            <Label htmlFor="admin-password" required className="admin-login-form__label">
               {adminTr.login.password}
             </Label>
             <button
               type="button"
-              className="text-caption text-[var(--admin-brand,#7c3aed)] hover:underline"
+              className="admin-login-form__toggle-password"
               onClick={() => setShowPassword((current) => !current)}
             >
               {showPassword ? adminTr.login.hidePassword : adminTr.login.showPassword}
@@ -140,25 +171,22 @@ export function AdminLoginForm({ enableGoogleAuth = false }: AdminLoginFormProps
             value={password}
             hasError={Boolean(fieldErrors.password)}
             onChange={(event) => setPassword(event.target.value)}
-            className="mt-2"
+            className="admin-login-form__input"
           />
           <FieldError id="admin-password-error" message={fieldErrors.password} />
         </div>
 
-        <div className="flex items-center justify-between gap-4">
-          <label className="inline-flex items-center gap-2 text-small text-muted-foreground">
+        <div className="admin-login-form__meta">
+          <label className="admin-login-form__remember">
             <input
               type="checkbox"
               checked={rememberMe}
               onChange={(event) => setRememberMe(event.target.checked)}
-              className="rounded border-border"
+              className="admin-login-form__checkbox"
             />
             {adminTr.login.rememberMe}
           </label>
-          <Link
-            href={ADMIN_ROUTES.forgotPassword}
-            className="text-caption text-[var(--admin-brand,#7c3aed)] hover:underline"
-          >
+          <Link href={ADMIN_ROUTES.forgotPassword} className="admin-login-form__forgot">
             {adminTr.login.forgotPassword}
           </Link>
         </div>
@@ -166,7 +194,7 @@ export function AdminLoginForm({ enableGoogleAuth = false }: AdminLoginFormProps
         <FieldError id="admin-login-error" message={error} />
 
         {successMessage ? (
-          <p className="rounded-lg border border-success/20 bg-success/10 px-3 py-2 text-small text-success">
+          <p className="admin-login-form__success" role="status">
             {successMessage}
           </p>
         ) : null}
@@ -175,7 +203,7 @@ export function AdminLoginForm({ enableGoogleAuth = false }: AdminLoginFormProps
           type="submit"
           variant="primary"
           size="lg"
-          className="w-full bg-[var(--admin-brand,#7c3aed)] text-white hover:bg-[var(--admin-brand-hover,#6d28d9)]"
+          className="admin-login-form__submit"
           isLoading={isLoading}
           disabled={isLoading || isGoogleLoading}
         >
@@ -185,16 +213,14 @@ export function AdminLoginForm({ enableGoogleAuth = false }: AdminLoginFormProps
 
       {enableGoogleAuth ? (
         <>
-          <div className="my-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-border" />
-            <span className="text-caption text-muted-foreground">veya</span>
-            <div className="h-px flex-1 bg-border" />
+          <div className="admin-login-form__divider">
+            <span>{adminTr.login.or}</span>
           </div>
           <Button
             type="button"
             variant="outline"
             size="lg"
-            className="w-full"
+            className="admin-login-form__google"
             isLoading={isGoogleLoading}
             disabled={isLoading || isGoogleLoading}
             onClick={handleGoogleSignIn}

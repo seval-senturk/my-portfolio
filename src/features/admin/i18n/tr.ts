@@ -85,6 +85,7 @@ export const adminTr = {
     notificationsTitle: "Uygulama içi bildirimler — platform servisi hazır",
     logout: "Çıkış yap",
     admin: "Admin",
+    viewSite: "Siteyi görüntüle",
   },
   login: {
     brandSubtitle: "Seval Portfolio Yönetim Paneli",

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { ADMIN_ROUTES } from "@/config/admin-routes.config";
+import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
 import { adminTr } from "@/features/admin/i18n/tr";
 import { cn } from "@/lib/cn";
 
@@ -24,12 +25,9 @@ export function MediaAdminShell({ title, description, children }: MediaAdminShel
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-h3 font-semibold tracking-tight">{title}</h1>
-        <p className="mt-2 text-small text-muted-foreground">{description}</p>
-      </div>
+      <AdminPageHeader title={title} description={description} />
 
-      <nav className="flex flex-wrap gap-2" aria-label="Medya bölümleri">
+      <nav className="admin-subnav" aria-label="Medya bölümleri">
         {MEDIA_NAV.map((item) => {
           const active =
             "exact" in item && item.exact
@@ -40,12 +38,7 @@ export function MediaAdminShell({ title, description, children }: MediaAdminShel
             <Link
               key={item.href}
               href={item.href}
-              className={cn(
-                "rounded-lg border px-3 py-1.5 text-caption font-medium transition-base",
-                active
-                  ? "border-[var(--admin-brand,#7c3aed)] bg-[var(--admin-brand-muted,rgb(124_58_237_/_0.12))] text-foreground"
-                  : "border-border text-muted-foreground hover:bg-muted hover:text-foreground",
-              )}
+              className={cn("admin-subnav-link", active && "admin-subnav-link--active")}
             >
               {item.label}
             </Link>

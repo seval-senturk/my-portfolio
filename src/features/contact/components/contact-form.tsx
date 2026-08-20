@@ -165,7 +165,7 @@ export function ContactForm({ config, messages }: ContactFormProps) {
           <Button
             type="button"
             variant="outline"
-            size="md"
+            size="lg"
             onClick={() => setStatus("idle")}
           >
             Send another message
@@ -301,34 +301,34 @@ export function ContactForm({ config, messages }: ContactFormProps) {
                 />
               </ContactField>
             ) : null}
-          </div>
 
-          {config.message.enabled ? (
-            <ContactField
-              id="contact-message"
-              label={config.message.label}
-              required={config.message.required}
-              error={getFieldErrorMessage(errors, "message")}
-              icon={<MessageSquare size={18} strokeWidth={1.75} />}
-              className="contact-form__field--full"
-            >
-              <textarea
+            {config.message.enabled ? (
+              <ContactField
                 id="contact-message"
-                name="message"
+                label={config.message.label}
                 required={config.message.required}
-                placeholder={config.message.placeholder}
-                maxLength={CONTACT_FIELD_LIMITS.message.max}
-                aria-invalid={getFieldErrorMessage(errors, "message") ? true : undefined}
-                aria-describedby={
-                  getFieldErrorMessage(errors, "message") ? "contact-message-error" : undefined
-                }
-                value={form.message}
-                onChange={(event) => updateField("message", event.target.value)}
-                className="contact-form__textarea"
-                rows={5}
-              />
-            </ContactField>
-          ) : null}
+                error={getFieldErrorMessage(errors, "message")}
+                icon={<MessageSquare size={18} strokeWidth={1.75} />}
+                className="contact-form__field--full"
+              >
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  required={config.message.required}
+                  placeholder={config.message.placeholder}
+                  maxLength={CONTACT_FIELD_LIMITS.message.max}
+                  aria-invalid={getFieldErrorMessage(errors, "message") ? true : undefined}
+                  aria-describedby={
+                    getFieldErrorMessage(errors, "message") ? "contact-message-error" : undefined
+                  }
+                  value={form.message}
+                  onChange={(event) => updateField("message", event.target.value)}
+                  className="contact-form__textarea"
+                  rows={5}
+                />
+              </ContactField>
+            ) : null}
+          </div>
 
           {status === "error" && serverError ? (
             <Text
@@ -348,7 +348,7 @@ export function ContactForm({ config, messages }: ContactFormProps) {
               variant="primary"
               size="lg"
               isLoading={status === "loading"}
-              className="contact-form__submit rounded-full px-7 shadow-[0_12px_32px_rgba(124,131,255,0.28)]"
+              className="contact-form__submit shadow-[0_12px_32px_rgba(124,131,255,0.28)]"
             >
               {status === "loading" ? messages.loadingLabel : config.submitLabel}
               <ArrowUpRight size={18} aria-hidden />

@@ -96,7 +96,7 @@ export function MediaPickerModal({
                 key={asset.id}
                 type="button"
                 onClick={() => onSelect(asset)}
-                className="overflow-hidden rounded-lg border border-border text-left transition-base hover:border-[var(--admin-brand,#7c3aed)]"
+                className="overflow-hidden rounded-lg border border-border text-left transition-base hover:border-[var(--admin-brand)]"
               >
                 <div className="flex aspect-video items-center justify-center bg-muted/40">
                   {["IMAGE", "SVG", "ICON", "LOGO"].includes(asset.assetType) ? (

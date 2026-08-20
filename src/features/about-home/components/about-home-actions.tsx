@@ -27,7 +27,7 @@ export function AboutHomeActions({ primaryCta, secondaryCta }: AboutHomeActionsP
           variant="primary"
           size="lg"
           className={cn(
-            "about-home__actions-primary !rounded-[1rem] px-7 shadow-[0_12px_32px_rgba(124,131,255,0.24)]",
+            "about-home__actions-primary shadow-[0_12px_32px_rgba(124,131,255,0.24)]",
             FOCUS_RING_CLASS,
           )}
         >
@@ -42,7 +42,7 @@ export function AboutHomeActions({ primaryCta, secondaryCta }: AboutHomeActionsP
           variant="outline"
           size="lg"
           className={cn(
-            "about-home__actions-secondary !rounded-[1rem] bg-transparent px-7 hover:bg-surface/30",
+            "about-home__actions-secondary bg-transparent hover:bg-surface/30",
             FOCUS_RING_CLASS,
           )}
         >

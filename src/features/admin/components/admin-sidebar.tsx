@@ -4,12 +4,12 @@ import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { adminNavigation } from "@/config/admin-navigation.config";
+import { siteConfig } from "@/config/site.config";
 import { AdminBrandLogo } from "@/features/admin/components/admin-brand-logo";
 import { useAdminShell } from "@/features/admin/context";
 import { adminTr } from "@/features/admin/i18n/tr";
 import { cn } from "@/lib/cn";
 import { FOCUS_RING_CLASS } from "@/lib/accessibility";
-import { siteConfig } from "@/config/site.config";
 
 import { Link } from "@/components/ui/link";
 
@@ -24,17 +24,17 @@ export function AdminSidebar() {
   return (
     <aside
       className={cn(
-        "flex w-full border-b border-border bg-surface lg:w-auto lg:flex-col lg:border-r lg:border-b-0",
-        isSidebarCollapsed ? "lg:w-[4.5rem]" : "lg:w-64",
+        "admin-sidebar",
+        isSidebarCollapsed ? "admin-sidebar--collapsed" : "admin-sidebar--expanded",
       )}
     >
-      <div className="flex items-center justify-between border-b border-border px-4 py-4">
+      <div className="admin-sidebar__brand">
         {!isSidebarCollapsed ? (
-          <div className="flex items-center gap-3">
+          <div className="admin-sidebar__brand-info">
             <AdminBrandLogo size="sm" />
-            <div>
-              <p className="text-small font-semibold text-foreground">{siteConfig.name}</p>
-              <p className="text-caption text-muted-foreground">{adminTr.sidebar.console}</p>
+            <div className="min-w-0">
+              <p className="admin-sidebar__brand-name truncate">{siteConfig.name}</p>
+              <p className="admin-sidebar__brand-tag">{adminTr.sidebar.console}</p>
             </div>
           </div>
         ) : (
@@ -43,10 +43,7 @@ export function AdminSidebar() {
         <button
           type="button"
           onClick={toggleSidebar}
-          className={cn(
-            "rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground",
-            FOCUS_RING_CLASS,
-          )}
+          className={cn("admin-sidebar__toggle", FOCUS_RING_CLASS)}
           aria-label={isSidebarCollapsed ? adminTr.sidebar.expand : adminTr.sidebar.collapse}
         >
           {isSidebarCollapsed ? (
@@ -57,21 +54,16 @@ export function AdminSidebar() {
         </button>
       </div>
 
-      <nav
-        aria-label="Admin navigation"
-        className="flex gap-2 overflow-x-auto p-3 lg:flex-1 lg:flex-col lg:overflow-visible"
-      >
+      <nav aria-label="Admin navigation" className="admin-sidebar__nav">
         {sections.map((section) => {
           const items = adminNavigation.filter((item) => item.section === section);
 
           return (
-            <div key={section} className="mb-5">
+            <div key={section} className="admin-sidebar__section">
               {!isSidebarCollapsed ? (
-                <p className="mb-2 px-3 text-caption font-medium tracking-wide text-muted-foreground uppercase">
-                  {SECTION_LABELS[section]}
-                </p>
+                <p className="admin-sidebar__section-label">{SECTION_LABELS[section]}</p>
               ) : null}
-              <ul className="space-y-1">
+              <ul className="admin-sidebar__list">
                 {items.map((item) => {
                   const Icon = item.icon;
                   const isActive =
@@ -83,16 +75,14 @@ export function AdminSidebar() {
                         href={item.href}
                         title={isSidebarCollapsed ? item.label : undefined}
                         className={cn(
-                          "flex items-center gap-3 rounded-lg px-3 py-2.5 text-small no-underline transition-base",
+                          "admin-nav-link",
+                          isActive && "admin-nav-link--active",
+                          isSidebarCollapsed && "admin-nav-link--collapsed",
                           FOCUS_RING_CLASS,
-                          isActive
-                            ? "bg-[var(--admin-brand,#7c3aed)] text-white"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                          isSidebarCollapsed && "justify-center px-2",
                         )}
                         aria-current={isActive ? "page" : undefined}
                       >
-                        <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                        <Icon className="admin-nav-link__icon" aria-hidden />
                         {!isSidebarCollapsed ? <span>{item.label}</span> : null}
                       </Link>
                     </li>

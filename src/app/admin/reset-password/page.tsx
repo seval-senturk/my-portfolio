@@ -30,7 +30,7 @@ export default async function AdminResetPasswordPage({
           <p className="text-small text-error">Geçersiz veya süresi dolmuş sıfırlama bağlantısı.</p>
           <Link
             href={ADMIN_ROUTES.forgotPassword}
-            className="inline-block text-small text-[var(--admin-brand,#7c3aed)] hover:underline"
+            className="admin-link inline-block text-small"
           >
             Yeni bağlantı iste
           </Link>

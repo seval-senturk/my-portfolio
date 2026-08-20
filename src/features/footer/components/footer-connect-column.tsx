@@ -33,7 +33,7 @@ export function FooterConnectColumn({ sectionLabel, connect }: FooterConnectColu
           variant="primary"
           size="lg"
           className={cn(
-            "site-footer__connect-cta rounded-full px-7 shadow-[0_12px_32px_rgba(124,131,255,0.28)]",
+            "site-footer__connect-cta shadow-[0_12px_32px_rgba(124,131,255,0.28)]",
             FOCUS_RING_CLASS,
           )}
         >

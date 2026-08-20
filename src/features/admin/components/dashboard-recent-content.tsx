@@ -23,7 +23,7 @@ function formatDate(date: Date): string {
 
 export function DashboardRecentContent({ items }: DashboardRecentContentProps) {
   return (
-    <div className="admin-surface overflow-hidden rounded-xl border">
+    <div className="admin-surface admin-table-wrap">
       <div className="border-b border-border px-5 py-4">
         <h3 className="text-small font-semibold">{adminTr.dashboard.recentContent}</h3>
       </div>
@@ -34,35 +34,28 @@ export function DashboardRecentContent({ items }: DashboardRecentContentProps) {
         </p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="min-w-full text-left text-small">
-            <thead className="bg-muted/40 text-caption uppercase tracking-wide text-muted-foreground">
+          <table className="admin-table">
+            <thead>
               <tr>
-                <th className="px-5 py-3 font-medium">Başlık</th>
-                <th className="px-5 py-3 font-medium">Tür</th>
-                <th className="px-5 py-3 font-medium">Durum</th>
-                <th className="px-5 py-3 font-medium">Güncelleme</th>
+                <th>Başlık</th>
+                <th>Tür</th>
+                <th>Durum</th>
+                <th>Güncelleme</th>
               </tr>
             </thead>
             <tbody>
               {items.map((item) => (
-                <tr
-                  key={`${item.type}-${item.id}`}
-                  className="border-t border-border"
-                >
-                  <td className="px-5 py-3 font-medium">{item.title}</td>
-                  <td className="px-5 py-3 text-muted-foreground">
-                    {TYPE_LABELS[item.type]}
-                  </td>
-                  <td className="px-5 py-3">
+                <tr key={`${item.type}-${item.id}`}>
+                  <td className="font-medium">{item.title}</td>
+                  <td className="text-muted-foreground">{TYPE_LABELS[item.type]}</td>
+                  <td>
                     <Badge variant={item.status === "published" ? "accent" : "secondary"}>
                       {item.status === "published"
                         ? adminTr.dashboard.published
                         : adminTr.dashboard.draft}
                     </Badge>
                   </td>
-                  <td className="px-5 py-3 text-muted-foreground">
-                    {formatDate(item.updatedAt)}
-                  </td>
+                  <td className="text-muted-foreground">{formatDate(item.updatedAt)}</td>
                 </tr>
               ))}
             </tbody>
